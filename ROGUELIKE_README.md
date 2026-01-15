@@ -114,15 +114,7 @@ bun run dev
 
 ### Running Tests
 
-Currently, manual testing is required for UI interactions.
-
-1.  Open the console with `Ctrl+Shift+I`.
-2.  Invoke the scene manually for testing:
-    ```javascript
     game.main.roguelikeScene.open();
-    ```
-
-## 🤝 Contributing
 
 We welcome contributions to balance the RNG, add new rewards, or improve the UI!
 
