@@ -6,6 +6,49 @@ import { pokemonData } from "../data/pokemonData.js";
 import { itemData } from "../data/itemData.js";
 import { Pokemon } from "../component/Pokemon.js";
 
+const rewardStrategies = {
+  pokemon: (scene, reward) => {
+    const newPokemon = new Pokemon(reward.data, 1, null, scene.main);
+    if (scene.main.team.pokemon.length < scene.main.player.teamSlots) {
+      scene.main.team.addPokemon(newPokemon);
+    } else {
+      scene.main.box.addPokemon(newPokemon);
+      scene.main.notification.display("Team full! Sent to Box.");
+      setTimeout(() => scene.main.notification.hide(), 2000);
+    }
+  },
+  upgrade: (scene, reward) => {
+    try {
+      const currentLvl = reward.data.lvl;
+      let levelsToAdd = 1;
+      if (currentLvl < 4) levelsToAdd = 3;
+      else if (currentLvl < 6) levelsToAdd = 2;
+
+      for (let i = 0; i < levelsToAdd; i++) reward.data.levelUp();
+
+      playSound("levelUp", "ui");
+    } catch (e) {
+      console.error("Upgrade Error:", e);
+    }
+  },
+  gold: (scene, reward) => {
+    scene.main.player.changeGold(reward.amount);
+  },
+  potion: (scene, reward) => {
+    scene.main.player.getHealed(1);
+  },
+  candy: (scene, reward) => {
+    for (let i = 0; i < 3; i++) {
+      const member =
+        scene.main.team.pokemon[
+          Math.floor(Math.random() * scene.main.team.pokemon.length)
+        ];
+      if (member) member.levelUp();
+    }
+    playSound("levelUp", "ui");
+  },
+};
+
 export class RoguelikeScene extends GameScene {
   constructor(main) {
     super(700, 400); // 700x400 window for better card spacing
@@ -38,6 +81,8 @@ export class RoguelikeScene extends GameScene {
       this.main.area &&
       typeof this.main.area.endWaveContinue === "function"
     ) {
+      // NOTE: Logic moved inside Area.js for timing control, 
+      // but this call ensures flow continues if triggered manually
       this.main.area.endWaveContinue();
     } else {
       console.error("endWaveContinue not found in Area");
@@ -407,46 +452,12 @@ export class RoguelikeScene extends GameScene {
   selectReward(reward) {
     playSound("equip", "ui");
 
-    if (reward.type === "pokemon") {
-      const newPokemon = new Pokemon(reward.data, 1, null, this.main);
-      if (this.main.team.pokemon.length < this.main.player.teamSlots) {
-        this.main.team.addPokemon(newPokemon);
-      } else {
-        this.main.box.addPokemon(newPokemon);
-        this.main.notification.display("Team full! Sent to Box.");
-        setTimeout(() => this.main.notification.hide(), 2000);
-      }
-    } else if (reward.type === "upgrade") {
-      // Level up existing pokemon with Diminishing Returns
-      try {
-          const currentLvl = reward.data.lvl;
-          let levelsToAdd = 1;
-          if (currentLvl < 4) levelsToAdd = 3;
-          else if (currentLvl < 6) levelsToAdd = 2;
-          
-          for(let i=0; i<levelsToAdd; i++) reward.data.levelUp();
-          
-          playSound("levelUp", "ui"); 
-      } catch (e) {
-          console.error("Upgrade Error:", e);
-      }
+    const strategy = rewardStrategies[reward.type];
+    if (strategy) {
+      strategy(this, reward);
     } else if (reward.type === "item") {
       this.openItemAssignment(reward.data);
       return; // Do not finish selection yet
-    } else if (reward.type === "gold") {
-      this.main.player.changeGold(reward.amount);
-    } else if (reward.type === "potion") {
-      this.main.player.getHealed(1);
-    } else if (reward.type === "candy") {
-      // Level up 3 random unique members if possible, or repeat
-      for (let i = 0; i < 3; i++) {
-        const member =
-          this.main.team.pokemon[
-            Math.floor(Math.random() * this.main.team.pokemon.length)
-          ];
-        if (member) member.levelUp();
-      }
-      playSound("levelUp", "ui");
     }
 
     this.finishSelection();

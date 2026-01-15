@@ -244,21 +244,6 @@ export class Area {
     // Apply Passive XP to deployed towers
     this.applyPassiveXP();
 
-    // ROGUELIKE MODE HOOK
-    if (this.main.gameMode === 1) {
-      // Scaling Interest: 10% of current gold
-      const interest = Math.floor(this.main.player.gold * 0.1);
-      if (interest > 0) {
-        this.main.player.changeGold(interest);
-        // Optional: Display floating text for interest?
-        this.main.notification.display(`Interest: +${interest}g`);
-        setTimeout(() => this.main.notification.hide(), 2000);
-      }
-
-      this.main.roguelikeScene.open();
-      return; // Stop here, scene closing will resume/nextWave
-    }
-
     this.endWaveContinue();
   }
 
@@ -416,6 +401,24 @@ export class Area {
         msg.style.opacity = 0;
         setTimeout(() => msg.remove(), 500);
       }, 1500);
+
+      // ROGUELIKE MODE HOOK (Moved Here to execute AFTER message appears)
+      if (this.main.gameMode === 1) {
+        // Scaling Interest: 10% of current gold
+        const interest = Math.floor(this.main.player.gold * 0.1);
+        if (interest > 0) {
+          this.main.player.changeGold(interest);
+          this.main.notification.display(`Interest: +${interest}g`);
+          setTimeout(() => this.main.notification.hide(), 2000);
+        }
+
+        // Wait for 1.5s (animation time) before opening rewards
+        setTimeout(() => {
+           this.main.roguelikeScene.open();
+        }, 1500);
+        
+        return; // Stop normal flow
+      }
 
       playSound("end", "ui");
       this.main.UI.displayEnemyInfo(this.waves[this.waveNumber].preview[0], 0);

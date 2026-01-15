@@ -5,6 +5,7 @@ import { Tooltip } from "../utils/Tooltip.js";
 import { Notification } from "../utils/Notification.js";
 import { UI } from "./UI.js";
 import { Game } from "./Game.js";
+import { GAME_CONFIG } from "./Config.js";
 
 import { BoxScene } from "./scenes/BoxScene.js";
 import { MapScene } from "./scenes/MapScene.js";
@@ -20,6 +21,7 @@ import { BanetteScene } from "./scenes/BanetteScene.js";
 import { FinalScene } from "./scenes/FinalScene.js";
 import { DraftScene } from "./scenes/DraftScene.js";
 import { RoguelikeScene } from "./scenes/RoguelikeScene.js";
+import { RoguelikeStarterScene } from "./scenes/RoguelikeStarterScene.js";
 
 import { Player } from "./core/Player.js";
 import { Team } from "./core/Team.js";
@@ -84,6 +86,7 @@ export class Main {
     this.finalScene = new FinalScene(this);
     this.draftScene = new DraftScene(this);
     this.roguelikeScene = new RoguelikeScene(this);
+    this.roguelikeStarterScene = new RoguelikeStarterScene(this);
 
     // CORE
     this.player = new Player(this, this.events, this.data.player);
@@ -104,19 +107,25 @@ export class Main {
   }
 
   load() {
-    this.UI.update();
-    this.game.load();
-    if (this.data.new) this.newGameScene.open();
-    if (this.data.autoReset == undefined) this.data.autoReset = 0;
-    //if (this.data.showRoute == undefined) this.data.showRoute = 0;
-    if (this.data.autoStop == undefined) this.data.autoStop = 0;
-    if (this.data.autoStopBoss == undefined) this.data.autoStopBoss = 0;
-    if (this.data.displayHealth == undefined) this.data.displayHealth = 0;
-    //if (this.data.showTC == undefined) this.data.showTC = 0;
+    try {
+      this.UI.update();
+      this.game.load();
+      if (this.data.new) this.newGameScene.open();
+      if (this.data.autoReset == undefined) this.data.autoReset = 0;
+      //if (this.data.showRoute == undefined) this.data.showRoute = 0;
+      if (this.data.autoStop == undefined) this.data.autoStop = 0;
+      if (this.data.autoStopBoss == undefined) this.data.autoStopBoss = 0;
+      if (this.data.displayHealth == undefined) this.data.displayHealth = 0;
+      //if (this.data.showTC == undefined) this.data.showTC = 0;
 
-    setInterval(() => {
-      this.player.stats.timePlayed++;
-    }, 60000);
+      setInterval(() => {
+        this.player.stats.timePlayed++;
+      }, 60000);
+    } catch (error) {
+      console.error("Critical error loading the game:", error);
+      // Optional: Display a user-friendly error notification
+      // this.notification.display("Error loading game resources.");
+    }
   }
 
   checkUpdates() {
@@ -133,8 +142,8 @@ export class Main {
 }
 
 function resize() {
-  const BASE_WIDTH = 1238;
-  const BASE_HEIGHT = 674;
+  const BASE_WIDTH = GAME_CONFIG.WINDOW.BASE_WIDTH;
+  const BASE_HEIGHT = GAME_CONFIG.WINDOW.BASE_HEIGHT;
 
   const scale = Math.min(
     window.innerWidth / BASE_WIDTH,

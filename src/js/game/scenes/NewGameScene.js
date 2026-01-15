@@ -303,9 +303,9 @@ export class NewGameScene extends GameScene {
     super.close();
 
     // Save Game Mode
-    // Assuming we might want to store this in dataManager if needed for run persistence
-    // For now we just pass it conceptually or use it to decide flow
     this.main.gameMode = this.gameMode;
+    // Persist this choice to the data structure so it is saved
+    this.main.data.gameMode = this.gameMode; 
 
     if (this.gameMode === 0) {
       // Classic Mode
@@ -326,27 +326,10 @@ export class NewGameScene extends GameScene {
 
       this.main.tutorialScene.open();
     } else {
-      // Roguelike Mode: Random Starter & Skip Draft
-      const randomStarterIndex = Math.floor(Math.random() * STARTER.length);
-      const randomStarter = STARTER[randomStarterIndex];
-
-      this.main.team.addPokemon(new Pokemon(randomStarter, 1, null, this.main));
-      // We don't remove it from eggList to allow finding it later perhaps, or we can remove it.
-      // Let's remove it to avoid immediate duplicate possibility in rewards if that Logic uses eggList.
-      // But for now, let's just add it.
-      this.main.shop.eggList.splice(randomStarterIndex, 1);
-
-      this.main.UI.update();
-      this.main.dataManager.saveGame(
-        this.main.player,
-        this.main.team,
-        this.main.box,
-        this.main.area,
-        this.main.shop,
-        this.main.teamManager
-      );
-
-      this.main.tutorialScene.open();
+      // Roguelike Mode: Starter Selection (Draft)
+      
+      // Removed automatic random assignment and Tutorial
+      this.main.roguelikeStarterScene.open();
     }
 
     playSound("button2", "ui");

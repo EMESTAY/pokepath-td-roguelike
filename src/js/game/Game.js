@@ -1,14 +1,15 @@
 import { Tower } from "./component/Tower.js";
 import { text } from "../file/text.js";
 import { playSound } from "../file/audio.js";
+import { GAME_CONFIG, COLORS } from "./Config.js";
 
 export class Game {
   constructor(main) {
     this.main = main;
 
     this.canvas = document.createElement("canvas");
-    this.canvas.width = 720;
-    this.canvas.height = 624;
+    this.canvas.width = GAME_CONFIG.CANVAS.WIDTH;
+    this.canvas.height = GAME_CONFIG.CANVAS.HEIGHT;
     this.ctx = this.canvas.getContext("2d");
     this.canvasBackground = new Image();
     this.canvasEffect = new Image();
@@ -21,7 +22,7 @@ export class Game {
     this.activeTile = undefined;
     this.mouse = { x: undefined, y: undefined };
 
-    this.FPS = 60;
+    this.FPS = GAME_CONFIG.FPS;
     this.frameDuration = 1000 / this.FPS;
     this.lastTime = 0;
 
@@ -29,7 +30,7 @@ export class Game {
     this.animate = this.animate.bind(this);
 
     this.ranges = false;
-    this.speedFactor = 1;
+    this.speedFactor = GAME_CONFIG.SPEED_FACTORS.NORMAL;
     this.chrono;
   }
 
@@ -52,7 +53,7 @@ export class Game {
     // Calculate delta time in milliseconds
     const delta = time - this.lastTime;
     // Cap max delta to prevent huge jumps if tab was inactive
-    if (delta > 1000) {
+    if (delta > GAME_CONFIG.MAX_DELTA_TIME) {
       this.lastTime = time;
       return;
     }
@@ -81,28 +82,34 @@ export class Game {
       }
     }
 
-    // --- calcular delta escalado POR ÚNICA VEZ ---
-    const scaledDelta = this.frameDuration * this.speedFactor; // ms escalados por speedFactor
+    // --- calculate scaled delta ONCE ---
+    const scaledDelta = this.frameDuration * this.speedFactor; // ms scaled by speedFactor
 
-    // actualizar enemigos
-    for (let i = this.main.area.enemies.length - 1; i >= 0; i--) {
-      const enemy = this.main.area.enemies[i];
+    // PERFORMANCE OPTIMIZATION: Cache references and use FOR loops
+    const area = this.main.area;
+    const enemies = area.enemies;
+    const tiles = area.placementTiles;
+    const towers = area.towers;
+
+    // update enemies
+    for (let i = enemies.length - 1; i >= 0; i--) {
+      const enemy = enemies[i];
 
       enemy.update(scaledDelta);
 
-      if (this.main.area.enemies.indexOf(enemy) === -1) continue;
+      if (enemies.indexOf(enemy) === -1) continue;
 
       if (enemy.waypoints.length === enemy.waypointIndex + 1) {
         if (
           enemy.position.x > this.canvas.width ||
           enemy.position.x < 0 ||
-          enemy.position.y - 20 > this.canvas.height ||
-          enemy.position.y < -20
+          enemy.position.y - GAME_CONFIG.ENEMY_BOUNDS_MARGIN > this.canvas.height ||
+          enemy.position.y < -GAME_CONFIG.ENEMY_BOUNDS_MARGIN
         ) {
           playSound("hit2", "effect");
           this.main.player.getDamaged(enemy.power);
-          const idx = this.main.area.enemies.indexOf(enemy);
-          if (idx !== -1) this.main.area.enemies.splice(idx, 1);
+          const idx = enemies.indexOf(enemy);
+          if (idx !== -1) enemies.splice(idx, 1);
           continue;
         }
       }
@@ -110,39 +117,42 @@ export class Game {
 
     this.main.UI.updateDamageDealt();
 
-    // actualizar tiles
-    this.main.area.placementTiles.forEach((tile) => tile.update(this.mouse));
-
-    // actualizar torres
-    this.main.area.towers.forEach((tower) => {
-      tower.update(this.main.area.enemies, scaledDelta);
-    });
-
-    // fin de la oleada
-    if (this.main.area.waveActive && this.main.area.enemies.length === 0) {
-      this.main.area.endWave();
+    // update tiles
+    for (let i = 0; i < tiles.length; i++) {
+        tiles[i].update(this.mouse);
     }
 
-    // dibujar textos  de daño
+    // update towers
+    for (let i = 0; i < towers.length; i++) {
+        towers[i].update(enemies, scaledDelta);
+    }
+
+    // end of wave
+    if (area.waveActive && enemies.length === 0) {
+      area.endWave();
+    }
+
+    // draw damage texts
     if (this.main.showDamage) {
-      this.main.area.enemies.forEach((enemy) => {
-        enemy.drawFloatingTexts();
-      });
+        for (let i = 0; i < enemies.length; i++) {
+            enemies[i].drawFloatingTexts();
+        }
     }
 
     if (this.ranges) {
-      this.main.area.placementTiles.forEach((tile) => {
-        if (tile.tower) {
-          tile.drawRange(
-            tile.tower.range,
-            tile.tower.rangeType,
-            tile.tower.innerRange,
-            tile.tower.ability,
-            tile.tower.item,
-            true
-          );
+        for (let i = 0; i < tiles.length; i++) {
+            const tile = tiles[i];
+            if (tile.tower) {
+                tile.drawRange(
+                    tile.tower.range,
+                    tile.tower.rangeType,
+                    tile.tower.innerRange,
+                    tile.tower.ability,
+                    tile.tower.item,
+                    true
+                );
+            }
         }
-      });
     }
 
     if (this.effectEnabled) {
@@ -228,7 +238,7 @@ export class Game {
     playSound("equip", "ui");
     this.deployingUnit.isDeployed = true;
 
-    // AÑADIR TORRE
+    // ADD TOWER
     this.main.area.towers.push(
       new Tower(
         this.main,
@@ -302,7 +312,7 @@ export class Game {
           (pokemon) => this.activeTile.tower === pokemon
         );
         this.tryDeployUnit(index);
-        this.tryDeployUnit(index); // no esta mal , es 2 veces para recolocar xdd
+        this.tryDeployUnit(index); // not wrong, it's 2 times to redeploy lol
         //this.main.pokemonScene.open(this.activeTile.tower, index);
       }
     });
@@ -319,18 +329,15 @@ export class Game {
 
   toggleSpeed() {
     playSound("option", "ui");
-    if (this.speedFactor === 1) {
-      this.speedFactor = 1.5;
-      this.main.UI.speedWave.style.background =
-        "linear-gradient(0deg,rgba(112, 172, 76, 1) 50%, rgba(194, 177, 183, 1) 50%)";
-    } else if (this.speedFactor === 1.5) {
-      this.speedFactor = 1.75;
-      this.main.UI.speedWave.style.background =
-        "linear-gradient(0deg,rgba(112, 172, 76, 1) 50%, rgba(112, 172, 76, 1) 50%)";
+    if (this.speedFactor === GAME_CONFIG.SPEED_FACTORS.NORMAL) {
+      this.speedFactor = GAME_CONFIG.SPEED_FACTORS.FAST;
+      this.main.UI.speedWave.style.background = COLORS.SPEED_FAST;
+    } else if (this.speedFactor === GAME_CONFIG.SPEED_FACTORS.FAST) {
+      this.speedFactor = GAME_CONFIG.SPEED_FACTORS.SUPER_FAST;
+      this.main.UI.speedWave.style.background = COLORS.SPEED_SUPER_FAST;
     } else {
-      this.speedFactor = 1;
-      this.main.UI.speedWave.style.background =
-        "linear-gradient(0deg,rgba(194, 177, 183, 1) 50%, rgba(194, 177, 183, 1) 50%)";
+      this.speedFactor = GAME_CONFIG.SPEED_FACTORS.NORMAL;
+      this.main.UI.speedWave.style.background = COLORS.SPEED_NORMAL;
     }
   }
 
@@ -339,8 +346,7 @@ export class Game {
   }
 
   restoreSpeed() {
-    this.speedFactor = 1;
-    this.main.UI.speedWave.style.background =
-      "linear-gradient(0deg,rgba(194, 177, 183, 1) 50%, rgba(194, 177, 183, 1) 50%)";
+    this.speedFactor = GAME_CONFIG.SPEED_FACTORS.NORMAL;
+    this.main.UI.speedWave.style.background = COLORS.SPEED_NORMAL;
   }
 }
