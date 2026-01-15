@@ -1,39 +1,58 @@
-import { Element } from '../features/ui/Element.js';
-import { playSound } from './AudioSystem.js';
+export class InputSystem {
+  constructor(main, canvas) {
+    this.main = main;
+    this.canvas = canvas;
+    this.mouse = { x: 0, y: 0 };
+    this.activeTile = null;
 
-export class Input {
-  constructor(container, type, options = {}) {
-    this.container = container;
-    this.type = type;
-    this.options = options;
-
-    this.render();
+    this.init();
   }
 
-  render() {
-    this.input = new Element(this.container, {}).element;
-    if (this.type === 'text') this.renderTypeText();
+  init() {
+    this.canvas.addEventListener('mousemove', (event) => this.onMouseMove(event));
+    this.canvas.addEventListener('click', (event) => this.onClick(event));
+    this.canvas.addEventListener('contextmenu', (event) => this.onContextMenu(event));
   }
 
-  renderTypeText() {
-    this.value = document.createElement('input');
-    //this.value.className = 'input-value';
-    this.value.setAttribute('type', 'text');
+  onMouseMove(event) {
+    this.mouse.x = event.offsetX;
+    this.mouse.y = event.offsetY;
 
-    if (this.options.className) this.value.className = this.options.className;
-    if (this.options.maxlength) this.value.setAttribute('maxlength', this.options.maxlength);
-    if (this.options.placeholder) this.value.placeholder = this.options.placeholder;
-    if (this.options.readonly) this.value.setAttribute('readonly', true);
+    this.activeTile = null;
 
-    this.input.appendChild(this.value);
+    if (this.main.area && this.main.area.placementTiles) {
+      // Optimization: Spatial Grid or check only if mouse inside canvas?
+      // For now, keep existing logic but encapsulated here.
+      for (let i = 0; i < this.main.area.placementTiles.length; i++) {
+        const tile = this.main.area.placementTiles[i];
+        if (
+          this.mouse.x > tile.position.x &&
+          this.mouse.x < tile.position.x + tile.size &&
+          this.mouse.y > tile.position.y &&
+          this.mouse.y < tile.position.y + tile.size
+        ) {
+          this.activeTile = tile;
+          break;
+        }
+      }
+    }
+  }
 
-    this.value.addEventListener('keydown', () => {
-      const keySound = Math.random() < 0.5 ? 'key0' : 'key1';
-      playSound(keySound, 'ui');
+  onClick(event) {
+    this.main.events.emit('canvasClick', {
+      x: this.mouse.x,
+      y: this.mouse.y,
+      tile: this.activeTile,
+      originalEvent: event,
     });
+  }
 
-    this.value.addEventListener('input', () => {
-      if (this.options.cb) this.options.cb();
+  onContextMenu(event) {
+    this.main.events.emit('canvasRightClick', {
+      x: this.mouse.x,
+      y: this.mouse.y,
+      tile: this.activeTile,
+      originalEvent: event,
     });
   }
 }

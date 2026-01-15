@@ -1,6 +1,6 @@
 import { GameScene } from '../../../core/utils/GameScene.js';
 import { Element } from '../Element.js';
-import { Input } from '../../../core/InputSystem.js';
+import { InputComponent } from '../InputComponent.js';
 import { text } from '../../../data/static/text.js';
 import { saveData } from '../../../data/repositories/StorageRepository.js';
 import { Pokemon } from '../../combat/entities/Pokemon.js';
@@ -79,7 +79,7 @@ export class NewGameScene extends GameScene {
 
     // 3. Name Row
     // Input creates its own container, append directly to grid
-    this.name = new Input(this.container, 'text', {
+    this.name = new InputComponent(this.container, 'text', {
       className: 'profile-scene-name-ng',
       maxlength: 11,
       cb: () => {

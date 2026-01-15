@@ -1,0 +1,32 @@
+export const GAMEPLAY_CONSTANTS = {
+  PLAYER: {
+    MAX_HEALTH: 14,
+    MAX_GOLD: 99999999999,
+    ACHIEVEMENT_GOLD_THRESHOLD: 1000000,
+    TEAM_SLOT_UNLOCKS: [40, 160, 320, 540],
+    ACHIEVEMENT_STAR_THRESHOLDS: [600, 900],
+    EXTRA_GOLD_INTERVALS: {
+      25: 1,
+      100: 2,
+      300: 3,
+      400: 4,
+      450: 5,
+      800: 10,
+      850: 20,
+      875: 20,
+    },
+  },
+  WAVE: {
+    GOLD_FORMULA: {
+      BASE_MULTIPLIER: 5,
+      POWER: 1.4,
+      DIVISOR: 2,
+    },
+    STAR_BONUS_THRESHOLD: 50,
+    STAR_BONUS_DIVISOR: 150,
+  },
+  ROGUELIKE: {
+    REROLL_COST_BASE: 200,
+    REROLL_COST_INCREMENT: 150,
+  },
+};

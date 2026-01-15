@@ -25,6 +25,7 @@ export class Team {
     }
 
     this.pokemon.push(pokemon);
+    this.main.events.emit('teamChange');
   }
 
   removePokemon(pokemon) {
@@ -41,5 +42,6 @@ export class Team {
     }
 
     this.pokemon.splice(index, 1);
+    this.main.events.emit('teamChange');
   }
 }

@@ -3,7 +3,7 @@ import { Element } from '../Element.js';
 import { text } from '../../../data/static/text.js';
 import { playSound } from '../../../core/AudioSystem.js';
 import { abilityData } from '../../../data/static/abilityData.js';
-import { Input } from '../../../core/InputSystem.js';
+import { InputComponent } from '../InputComponent.js';
 import { ChangePokemonName } from './ChangePokemonName.js';
 
 const sort = [
@@ -187,7 +187,7 @@ export class BoxScene extends GameScene {
       });
     }
 
-    this.search = new Input(this.container, 'text', {
+    this.search = new InputComponent(this.container, 'text', {
       className: 'box-scene-search',
       maxlength: 10,
       cb: () => {

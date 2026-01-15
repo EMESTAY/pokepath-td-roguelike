@@ -1,6 +1,6 @@
 import { GameScene } from '../../../core/utils/GameScene.js';
 import { Element } from '../Element.js';
-import { Input } from '../../../core/InputSystem.js';
+import { InputComponent } from '../InputComponent.js';
 import { text } from '../../../data/static/text.js';
 import { playSound } from '../../../core/AudioSystem.js';
 
@@ -47,7 +47,7 @@ export class ProfileScene extends GameScene {
       playSound('hover1', 'ui');
     });
 
-    this.name = new Input(this.playerContainer, 'text', {
+    this.name = new InputComponent(this.playerContainer, 'text', {
       className: 'profile-scene-name',
       maxlength: 11,
       cb: () => {

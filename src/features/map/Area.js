@@ -141,7 +141,8 @@ export class Area {
 
     this.waveActive = true;
     this.spawnEnemies();
-    this.main.UI.update();
+    this.main.events.emit('waveStart', this.waveNumber);
+    // this.main.UI.update();
 
     this.towers.forEach((t) => {
       t.moxieBuff = 0;
@@ -328,7 +329,8 @@ export class Area {
 
     this.waveNumber = nextWave;
     this.routeWaves[this.routeNumber] = nextWave;
-    this.main.UI.update();
+    this.main.events.emit('waveChange', this.waveNumber);
+    // this.main.UI.update();
     this.main.UI.revertUI();
     this.waveActive = false;
     this.enemies = [];
@@ -346,7 +348,8 @@ export class Area {
     if (this.waveNumber < 100) {
       this.waveNumber++;
       this.routeWaves[this.routeNumber]++;
-      this.main.UI.update();
+      this.main.events.emit('waveChange', this.waveNumber);
+      // this.main.UI.update();
       this.main.UI.revertUI();
 
       saveData(

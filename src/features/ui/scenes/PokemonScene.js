@@ -3,7 +3,7 @@ import { Element } from '../Element.js';
 import { text } from '../../../data/static/text.js';
 import { playSound } from '../../../core/AudioSystem.js';
 import { pokemonData } from '../../../data/static/pokemonData.js';
-import { Input } from '../../../core/InputSystem.js';
+import { InputComponent } from '../InputComponent.js';
 import { ChangePokemonName } from './ChangePokemonName.js';
 
 const DATA = ['power', 'speed', 'critical', 'range', 'rangeType', 'terrain', 'attackType'];

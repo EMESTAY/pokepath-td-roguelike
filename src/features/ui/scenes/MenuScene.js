@@ -2,7 +2,7 @@ import { GameScene } from '../../../core/utils/GameScene.js';
 import { Element } from '../Element.js';
 import { text } from '../../../data/static/text.js';
 import { playSound, setVolume } from '../../../core/AudioSystem.js';
-import { Input } from '../../../core/InputSystem.js';
+import { InputComponent } from '../InputComponent.js';
 
 const OPTION = {
   language: [
@@ -1214,7 +1214,7 @@ export class ImportData extends GameScene {
     this.importMessage = new Element(this.container, {
       className: 'export-scene-message',
     }).element;
-    this.codeInput = new Input(this.container, 'text', {
+    this.codeInput = new InputComponent(this.container, 'text', {
       className: 'import-export-code',
     });
 
@@ -1277,7 +1277,7 @@ export class ExportData extends GameScene {
       className: 'export-scene-button',
     }).element;
 
-    this.codeInput = new Input(this.container, 'text', {
+    this.codeInput = new InputComponent(this.container, 'text', {
       className: 'import-export-code',
       readonly: true,
     });

@@ -80,7 +80,8 @@ export class Player {
   getDamaged(amount) {
     if (!this.main.area.waveActive) return;
     this.health[this.main.area.map.id] -= amount;
-    this.main.UI.updatePlayer();
+    this.events.emit('healthChange', this.health[this.main.area.map.id]);
+    // this.main.UI.updatePlayer();
     if (this.health[this.main.area.map.id] <= 0) {
       this.health[this.main.area.map.id] = 0;
       if (this.main.area.inChallenge[3]) {
@@ -93,7 +94,8 @@ export class Player {
   getHealed(amount) {
     this.health[this.main.area.map.id] += amount;
     if (this.health[this.main.area.map.id] > 14) this.health[this.main.area.map.id] = 14;
-    this.main.UI.updatePlayer();
+    this.events.emit('healthChange', this.health[this.main.area.map.id]);
+    // this.main.UI.updatePlayer();
   }
 
   changeGold(amount) {
@@ -108,6 +110,7 @@ export class Player {
 
   obtainStar() {
     this.stars++;
+    this.events.emit('starsChange', this.stars);
     if (this.stars == 40 || this.stars == 160 || this.stars == 320 || this.stars == 540)
       this.unlockTeamSlot();
     if (this.stars == 600) this.unlockAchievement(4);

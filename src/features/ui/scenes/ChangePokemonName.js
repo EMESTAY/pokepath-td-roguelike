@@ -2,7 +2,7 @@ import { GameScene } from '../../../core/utils/GameScene.js';
 import { Element } from '../Element.js';
 import { text } from '../../../data/static/text.js';
 import { playSound } from '../../../core/AudioSystem.js';
-import { Input } from '../../../core/InputSystem.js';
+import { InputComponent } from '../InputComponent.js';
 
 export class ChangePokemonName extends GameScene {
   constructor(main) {
@@ -17,7 +17,7 @@ export class ChangePokemonName extends GameScene {
   render() {
     this.title.innerHTML = text.changeName.title[this.main.lang].toUpperCase();
 
-    this.name = new Input(this.container, 'text', {
+    this.name = new InputComponent(this.container, 'text', {
       className: 'name-change-name',
       maxlength: 10,
     });

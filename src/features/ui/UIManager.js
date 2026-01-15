@@ -24,6 +24,12 @@ export class UI {
     this.events.on('goldChange', (gold) => {
       this.playerGold.innerText = `$${this.main.utility.numberDot(gold)}`;
     });
+    this.events.on('healthChange', () => this.updatePlayer());
+    this.events.on('starsChange', () => this.updatePlayer());
+    this.events.on('waveStart', () => this.updateMap());
+    this.events.on('waveChange', () => this.updateMap());
+    this.events.on('teamChange', () => this.updatePokemon());
+    this.events.on('tileChange', (data) => this.updateTiles(data));
   }
 
   render() {
@@ -707,6 +713,16 @@ export class UI {
     arrayCount(grupo.wave);
 
     return grupo.preview.map((pokemon) => res[pokemon.id]);
+  }
+
+  updateTiles(data) {
+    if (data) {
+      this.tilesCountNum[data.landIndex] += data.change;
+    }
+
+    this.tilesCount.forEach((tc, i) => {
+      tc.innerHTML = `${this.tilesCountNum[i]}/${this.main.area.map.tilesNum[i]}`;
+    });
   }
 
   updateDamageDealt() {

@@ -1,4 +1,6 @@
 import { Tower } from '../features/combat/entities/Tower.js';
+import { InputSystem } from './InputSystem.js';
+import { RenderSystem } from './RenderSystem.js';
 import { text } from '../data/static/text.js';
 import { playSound } from './AudioSystem.js';
 import { GAME_CONFIG, COLORS } from '../data/static/Config.js';
@@ -6,21 +8,20 @@ import { GAME_CONFIG, COLORS } from '../data/static/Config.js';
 export class Game {
   constructor(main) {
     this.main = main;
+    this.renderSystem = new RenderSystem(main);
 
-    this.canvas = document.createElement('canvas');
-    this.canvas.width = GAME_CONFIG.CANVAS.WIDTH;
-    this.canvas.height = GAME_CONFIG.CANVAS.HEIGHT;
-    this.ctx = this.canvas.getContext('2d');
-    this.canvasBackground = new Image();
-    this.canvasEffect = new Image();
-    this.effectEnabled = false;
-    this.effectTime = 0;
-    document.getElementById('screen').appendChild(this.canvas);
+    // Aliases to avoid refactoring everything at once
+    this.canvas = this.renderSystem.canvas;
+    this.ctx = this.renderSystem.ctx;
+    // this.canvasBackground/Effect are now in RenderSystem, but Game loop accessed them for assignment?
+    // The Area.js assigns src to main.game.canvasBackground.Src
+    // We need to proxy or update Area.js.
+    // For now, let's keep backward compat setters or update Area.js later?
+    // The cleanest way is to just let Game expose them from RenderSystem.
 
     this.deployingUnit = undefined;
     this.stopped = false;
     this.activeTile = undefined;
-    this.mouse = { x: undefined, y: undefined };
 
     this.FPS = GAME_CONFIG.FPS;
     this.frameDuration = 1000 / this.FPS;
@@ -34,13 +35,28 @@ export class Game {
     this.chrono;
   }
 
+  // getters for backward compatibility with Area.js
+  get canvasBackground() {
+    return this.renderSystem.canvasBackground;
+  }
+  get canvasEffect() {
+    return this.renderSystem.canvasEffect;
+  }
+  get effectEnabled() {
+    return this.renderSystem.effectEnabled;
+  }
+  set effectEnabled(val) {
+    this.renderSystem.effectEnabled = val;
+  }
+
   load() {
     this.stopped = false;
     this.lastTime = performance.now();
     // Cancel any existing loop to avoid duplicates
     if (this.loopId) cancelAnimationFrame(this.loopId);
     this.animate(this.lastTime);
-    this.setEvents();
+    this.inputSystem = new InputSystem(this.main, this.canvas);
+    this.setupInputEvents();
     this.chrono = this.main.utility.chrono(1);
   }
 
@@ -64,14 +80,8 @@ export class Game {
 
     this.lastTime = time - (delta % this.frameDuration);
 
-    // render
-    if (this.ctx) {
-      if (this.canvasBackground.complete && this.canvasBackground.naturalWidth !== 0) {
-        this.ctx.drawImage(this.canvasBackground, 0, 0, this.canvas.width, this.canvas.height);
-      } else {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      }
-    }
+    // render background
+    this.renderSystem.drawBackground();
 
     // --- calculate scaled delta ONCE ---
     const scaledDelta = this.frameDuration * this.speedFactor; // ms scaled by speedFactor
@@ -110,7 +120,7 @@ export class Game {
 
     // update tiles
     for (let i = 0; i < tiles.length; i++) {
-      tiles[i].update(this.mouse);
+      tiles[i].update(this.inputSystem.mouse);
     }
 
     // update towers
@@ -146,15 +156,8 @@ export class Game {
       }
     }
 
-    if (this.effectEnabled) {
-      this.effectTime += scaledDelta;
-      const alpha = 0.85 + 0.15 * Math.sin(this.effectTime * 0.005);
-
-      this.ctx.save();
-      this.ctx.globalAlpha = 0.85 + 0.15 * Math.sin(this.effectTime * 0.002);
-      this.ctx.drawImage(this.canvasEffect, 0, 0, this.canvas.width, this.canvas.height);
-      this.ctx.restore();
-    }
+    // render effect
+    this.renderSystem.drawEffect(scaledDelta);
   }
 
   stop() {
@@ -203,12 +206,13 @@ export class Game {
   }
 
   deployUnit() {
-    if (!this.deployingUnit || !this.activeTile) return;
+    if (!this.deployingUnit || !this.inputSystem.activeTile) return;
+    const activeTile = this.inputSystem.activeTile;
     if (
-      !this.deployingUnit.tiles.includes(this.activeTile.land) &&
-      !(this.deployingUnit?.item?.id == 'airBalloon' && this.activeTile.land == 4) &&
-      !(this.deployingUnit?.item?.id == 'heavyDutyBoots' && this.activeTile.land == 2) &&
-      !(this.deployingUnit?.item?.id == 'dampMulch' && this.activeTile.land == 1)
+      !this.deployingUnit.tiles.includes(activeTile.land) &&
+      !(this.deployingUnit?.item?.id == 'airBalloon' && activeTile.land == 4) &&
+      !(this.deployingUnit?.item?.id == 'heavyDutyBoots' && activeTile.land == 2) &&
+      !(this.deployingUnit?.item?.id == 'dampMulch' && activeTile.land == 1)
     )
       return;
 
@@ -219,14 +223,14 @@ export class Game {
     this.main.area.towers.push(
       new Tower(
         this.main,
-        this.activeTile.position.x,
-        this.activeTile.position.y,
+        activeTile.position.x,
+        activeTile.position.y,
         this.ctx,
         this.deployingUnit,
-        this.activeTile
+        activeTile
       )
     );
-    this.activeTile.tower = this.deployingUnit;
+    activeTile.tower = this.deployingUnit;
     this.deployingUnit = undefined;
 
     this.main.UI.updatePokemon();
@@ -236,8 +240,10 @@ export class Game {
       this.main.UI.nextWave.style.filter = `revert-layer`;
       this.main.UI.nextWave.style.pointerEvents = 'revert-layer';
     }
-    this.main.UI.tilesCountNum[this.activeTile.land - 1]++;
-    this.main.UI.update();
+    this.main.events.emit('tileChange', {
+      landIndex: activeTile.land - 1,
+      change: 1,
+    });
   }
 
   retireUnit() {
@@ -247,57 +253,40 @@ export class Game {
 
     const index = this.main.area.towers.findIndex((tower) => tower.pokemon == this.deployingUnit);
     if (index !== -1) {
-      this.main.UI.tilesCountNum[this.main.area.towers[index].tile.land - 1]--;
+      this.main.events.emit('tileChange', {
+        landIndex: this.main.area.towers[index].tile.land - 1,
+        change: -1,
+      });
       this.main.area.towers[index].tile.tower = false;
       this.main.area.towers[index].pokemon.tilePosition = -1;
       this.main.area.towers.splice(index, 1);
     }
     this.deployingUnit = undefined;
 
-    this.main.UI.update();
+    // this.main.UI.update();
     this.main.area.recalculateAuras();
   }
 
-  setEvents() {
-    this.canvas.addEventListener('mousemove', (event) => {
-      this.mouse.x = event.offsetX;
-      this.mouse.y = event.offsetY;
-
-      this.activeTile = null;
-
-      for (let i = 0; i < this.main.area.placementTiles.length; i++) {
-        const tile = this.main.area.placementTiles[i];
-        if (
-          this.mouse.x > tile.position.x &&
-          this.mouse.x < tile.position.x + tile.size &&
-          this.mouse.y > tile.position.y &&
-          this.mouse.y < tile.position.y + tile.size
-        ) {
-          this.activeTile = tile;
-          break;
-        }
-      }
-    });
-
-    this.canvas.addEventListener('click', (event) => {
-      if (this.activeTile && !this.activeTile.tower && this.deployingUnit) {
+  setupInputEvents() {
+    this.main.events.on('canvasClick', (data) => {
+      const { tile } = data;
+      if (tile && !tile.tower && this.deployingUnit) {
+        // We need to set activeTile in InputSystem, but here we receive it.
+        // However, deployUnit uses this.inputSystem.activeTile.
+        // InputSystem updates activeTile on mousemove, so it should be current.
         this.deployUnit();
-      } else if (this.activeTile?.tower) {
-        const index = this.main.team.pokemon.findIndex(
-          (pokemon) => this.activeTile.tower === pokemon
-        );
+      } else if (tile?.tower) {
+        const index = this.main.team.pokemon.findIndex((pokemon) => tile.tower === pokemon);
         this.tryDeployUnit(index);
-        this.tryDeployUnit(index); // not wrong, it's 2 times to redeploy lol
-        //this.main.pokemonScene.open(this.activeTile.tower, index);
+        this.tryDeployUnit(index);
       }
     });
 
-    this.canvas.addEventListener('contextmenu', (event) => {
-      if (this.activeTile?.tower) {
-        const index = this.main.team.pokemon.findIndex(
-          (pokemon) => this.activeTile.tower === pokemon
-        );
-        this.main.pokemonScene.open(this.activeTile.tower, index);
+    this.main.events.on('canvasRightClick', (data) => {
+      const { tile } = data;
+      if (tile?.tower) {
+        const index = this.main.team.pokemon.findIndex((pokemon) => tile.tower === pokemon);
+        this.main.pokemonScene.open(tile.tower, index);
       }
     });
   }
