@@ -19,6 +19,10 @@ export class Tower extends Sprite {
 
     this.tile = tile;
     this.ctx = ctx;
+    
+    // Performance: Cache ADN canvas
+    this.cachedAdnCanvas = null;
+    this.cachedAdnCtx = null;
 
     this.center = {
       x: this.position.x + this.width / 2,
@@ -553,11 +557,19 @@ export class Tower extends Sprite {
     );
 
     if (this.pokemon.adn != undefined) {
-      // ---- CANVAS TEMPORAL ----
-      const temp = document.createElement("canvas");
-      temp.width = crop.width;
-      temp.height = crop.height;
-      const tctx = temp.getContext("2d");
+      // PERFORMANCE FIX: Cached canvas for ADN blending
+      if (!this.cachedAdnCanvas) {
+        this.cachedAdnCanvas = document.createElement("canvas");
+        this.cachedAdnCtx = this.cachedAdnCanvas.getContext("2d");
+      }
+      
+      if (this.cachedAdnCanvas.width !== crop.width || this.cachedAdnCanvas.height !== crop.height) {
+         this.cachedAdnCanvas.width = crop.width;
+         this.cachedAdnCanvas.height = crop.height;
+      }
+
+      const tctx = this.cachedAdnCtx;
+      tctx.clearRect(0, 0, crop.width, crop.height);
 
       // Dibujar el sprite recortado en el canvas temporal
       tctx.drawImage(
@@ -583,14 +595,64 @@ export class Tower extends Sprite {
 
       // dibujar el resultado en el canvas real
       this.ctx.drawImage(
-        temp,
+        this.cachedAdnCanvas,
         this.position.x + offsetX,
         this.position.y + offsetY
       );
     }
   }
 
-  update(enemiesInRange, deltaTime = 1000 / 60) {
+  checkRange(enemy) {
+    const dx = enemy.center.x - this.center.x;
+    const dy = enemy.center.y - this.center.y;
+    const distance = Math.hypot(dx, dy);
+    const r = this.range;
+
+    switch (this.rangeType) {
+      case "circle":
+        return distance <= r;
+      case "donut":
+        return distance >= this.innerRange && distance <= r;
+      case "cross":
+        if (this.pokemon?.item?.id == "starPiece") {
+          return (
+            (Math.abs(Math.abs(dx) - Math.abs(dy)) < 24 && distance <= r) ||
+            (Math.abs(dx) <= 24 && Math.abs(dy) <= r) ||
+            (Math.abs(dy) <= 24 && Math.abs(dx) <= r)
+          );
+        } else if (this.pokemon?.item?.id == "wideLens") {
+          return (
+            (Math.abs(dx) <= 36 && Math.abs(dy) <= r) ||
+            (Math.abs(dy) <= 36 && Math.abs(dx) <= r)
+          );
+        } else {
+          return (
+            (Math.abs(dx) <= 24 && Math.abs(dy) <= r) ||
+            (Math.abs(dy) <= 24 && Math.abs(dx) <= r)
+          );
+        }
+      case "xShape":
+        if (this.pokemon?.item?.id == "starPiece") {
+          return (
+            (Math.abs(Math.abs(dx) - Math.abs(dy)) < 24 && distance <= r) ||
+            (Math.abs(dx) <= 24 && Math.abs(dy) <= r) ||
+            (Math.abs(dy) <= 24 && Math.abs(dx) <= r)
+          );
+        } else if (this.pokemon?.item?.id == "wideLens") {
+          return Math.abs(Math.abs(dx) - Math.abs(dy)) < 36 && distance <= r;
+        } else {
+          return Math.abs(Math.abs(dx) - Math.abs(dy)) < 24 && distance <= r;
+        }
+      case "horizontalLine":
+        return Math.abs(dy) <= 24 && Math.abs(dx) <= r;
+      case "verticalLine":
+        return Math.abs(dx) <= 24 && Math.abs(dy) <= r;
+      default:
+        return distance <= r;
+    }
+  }
+
+  update(allEnemies, deltaTime = 1000 / 60) {
     const simDelta = deltaTime;
     const frameFactor = simDelta / (1000 / 60);
 
@@ -661,10 +723,25 @@ export class Tower extends Sprite {
       });
     }
 
-    // --- FILTRAR ENEMIGOS segun invis (solo filtrar si la torre NO puede ver invis y el modo no es invi)
-    let validEnemies = (enemiesInRange || []).slice();
-    if (!this.revealInvisible && this.targetMode !== "invisible") {
-      validEnemies = validEnemies.filter((e) => !e.invisible);
+    // --- OPTIMIZATION: Integrated Filtering ---
+    const validEnemies = [];
+    // Only fetch context dimensions if context exists
+    const cw = this.ctx ? this.ctx.canvas.width : 720;
+    const ch = this.ctx ? this.ctx.canvas.height : 624;
+
+    for (let i = 0; i < allEnemies.length; i++) {
+        const e = allEnemies[i];
+        if (e.dying || e.hp <= 0) continue;
+        
+        // Bounds check (Optimization: skip enemies strictly outside view)
+        // Adjusting slightly for enemy radius/size
+        if (e.center.x < -50 || e.center.x > cw + 50 || e.center.y < -50 || e.center.y > ch + 50) continue;
+
+        if (this.checkRange(e)) {
+            // Invisible check moved here
+            if (!this.revealInvisible && this.targetMode !== "invisible" && e.invisible) continue;
+            validEnemies.push(e);
+        }
     }
 
     if (

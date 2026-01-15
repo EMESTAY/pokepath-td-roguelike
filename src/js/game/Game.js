@@ -115,18 +115,7 @@ export class Game {
 
     // actualizar torres
     this.main.area.towers.forEach((tower) => {
-      const enemiesInRange = this.main.area.enemies.filter((enemy) => {
-        const insideCanvas =
-          enemy.center.x >= 0 &&
-          enemy.center.x <= this.canvas.width &&
-          enemy.center.y >= 0 &&
-          enemy.center.y <= this.canvas.height;
-        return (
-          insideCanvas && this.isEnemyInRange(tower, enemy) && !enemy.dying
-        );
-      });
-
-      tower.update(enemiesInRange, scaledDelta);
+      tower.update(this.main.area.enemies, scaledDelta);
     });
 
     // fin de la oleada
@@ -282,56 +271,6 @@ export class Game {
 
     this.main.UI.update();
     this.main.area.recalculateAuras();
-  }
-
-  isEnemyInRange(tower, enemy) {
-    const dx = enemy.center.x - tower.center.x;
-    const dy = enemy.center.y - tower.center.y;
-    const distance = Math.hypot(dx, dy);
-    const r = tower.range;
-
-    switch (tower.pokemon.rangeType) {
-      case "circle":
-        return distance <= r;
-      case "donut":
-        return distance >= tower.innerRange && distance <= tower.range;
-      case "cross":
-        if (tower.pokemon?.item?.id == "starPiece") {
-          return (
-            (Math.abs(Math.abs(dx) - Math.abs(dy)) < 24 && distance <= r) ||
-            (Math.abs(dx) <= 24 && Math.abs(dy) <= r) ||
-            (Math.abs(dy) <= 24 && Math.abs(dx) <= r)
-          );
-        } else if (tower.pokemon?.item?.id == "wideLens") {
-          return (
-            (Math.abs(dx) <= 36 && Math.abs(dy) <= r) ||
-            (Math.abs(dy) <= 36 && Math.abs(dx) <= r)
-          );
-        } else {
-          return (
-            (Math.abs(dx) <= 24 && Math.abs(dy) <= r) ||
-            (Math.abs(dy) <= 24 && Math.abs(dx) <= r)
-          );
-        }
-      case "xShape":
-        if (tower.pokemon?.item?.id == "starPiece") {
-          return (
-            (Math.abs(Math.abs(dx) - Math.abs(dy)) < 24 && distance <= r) ||
-            (Math.abs(dx) <= 24 && Math.abs(dy) <= r) ||
-            (Math.abs(dy) <= 24 && Math.abs(dx) <= r)
-          );
-        } else if (tower.pokemon?.item?.id == "wideLens") {
-          return Math.abs(Math.abs(dx) - Math.abs(dy)) < 36 && distance <= r;
-        } else {
-          return Math.abs(Math.abs(dx) - Math.abs(dy)) < 24 && distance <= r;
-        }
-      case "horizontalLine":
-        return Math.abs(dy) <= 24 && Math.abs(dx) <= r;
-      case "verticalLine":
-        return Math.abs(dx) <= 24 && Math.abs(dy) <= r;
-      default:
-        return distance <= r;
-    }
   }
 
   setEvents() {
