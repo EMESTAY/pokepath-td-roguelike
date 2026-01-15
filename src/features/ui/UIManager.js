@@ -32,6 +32,24 @@ export class UI {
     this.events.on('tileChange', (data) => this.updateTiles(data));
   }
 
+  createTeamButtons(container, className, callback) {
+    const buttons = [];
+    for (let i = 0; i < 5; i++) {
+      const btn = new Element(container, {
+        className: className,
+        text: `#${i + 1}`,
+      }).element;
+      btn.addEventListener('mouseenter', () => {
+        playSound('open', 'ui');
+      });
+      btn.addEventListener('click', () => {
+        callback(i);
+      });
+      buttons[i] = btn;
+    }
+    return buttons;
+  }
+
   render() {
     this.topBar = new Element(this.main.scene, {
       className: 'ui-top-bar',
@@ -41,37 +59,21 @@ export class UI {
       className: 'ui-save-team-button-container',
     }).element;
 
-    this.saveTeamButton = [];
-    for (let i = 0; i < 5; i++) {
-      this.saveTeamButton[i] = new Element(this.saveTeamButtonContainer, {
-        className: 'ui-save-team-button',
-        text: `#${i + 1}`,
-      }).element;
-      this.saveTeamButton[i].addEventListener('mouseenter', () => {
-        playSound('open', 'ui');
-      });
-      this.saveTeamButton[i].addEventListener('click', () => {
-        this.saveTeamButtonHandle(i);
-      });
-    }
+    this.saveTeamButton = this.createTeamButtons(
+      this.saveTeamButtonContainer,
+      'ui-save-team-button',
+      (i) => this.saveTeamButtonHandle(i)
+    );
 
     this.importTeamButtonContainer = new Element(this.topBar, {
       className: 'ui-import-team-button-container',
     }).element;
 
-    this.importTeamButton = [];
-    for (let i = 0; i < 5; i++) {
-      this.importTeamButton[i] = new Element(this.importTeamButtonContainer, {
-        className: 'ui-import-team-button',
-        text: `#${i + 1}`,
-      }).element;
-      this.importTeamButton[i].addEventListener('mouseenter', () => {
-        playSound('open', 'ui');
-      });
-      this.importTeamButton[i].addEventListener('click', () => {
-        this.importTeamButtonHandle(i);
-      });
-    }
+    this.importTeamButton = this.createTeamButtons(
+      this.importTeamButtonContainer,
+      'ui-import-team-button',
+      (i) => this.importTeamButtonHandle(i)
+    );
 
     this.mapRoutCointainer = new Element(this.topBar, {
       className: 'ui-map-route-container',

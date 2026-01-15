@@ -108,13 +108,13 @@ export class Area {
     }
 
     this.enemies = [];
-    this.main.game.canvasBackground.src = this.map.background;
+    this.main.game.renderSystem.canvasBackground.src = this.map.background;
 
     if (this.map.effect != null) {
-      this.main.game.canvasEffect.src = this.map.effect;
-      this.main.game.effectEnabled = true;
+      this.main.game.renderSystem.canvasEffect.src = this.map.effect;
+      this.main.game.renderSystem.effectEnabled = true;
     } else {
-      this.main.game.effectEnabled = false;
+      this.main.game.renderSystem.effectEnabled = false;
     }
 
     this.totalDamageDealt = 0;

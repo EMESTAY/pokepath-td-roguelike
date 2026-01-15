@@ -109,7 +109,8 @@ export class Main {
       if (this.data.displayHealth == undefined) this.data.displayHealth = 0;
       //if (this.data.showTC == undefined) this.data.showTC = 0;
 
-      setInterval(() => {
+      if (this.playTimeInterval) clearInterval(this.playTimeInterval);
+      this.playTimeInterval = setInterval(() => {
         this.player.stats.timePlayed++;
       }, 60000);
     } catch (error) {

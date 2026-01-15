@@ -35,20 +35,6 @@ export class Game {
     this.chrono;
   }
 
-  // getters for backward compatibility with Area.js
-  get canvasBackground() {
-    return this.renderSystem.canvasBackground;
-  }
-  get canvasEffect() {
-    return this.renderSystem.canvasEffect;
-  }
-  get effectEnabled() {
-    return this.renderSystem.effectEnabled;
-  }
-  set effectEnabled(val) {
-    this.renderSystem.effectEnabled = val;
-  }
-
   load() {
     this.stopped = false;
     this.lastTime = performance.now();
@@ -56,6 +42,7 @@ export class Game {
     if (this.loopId) cancelAnimationFrame(this.loopId);
     this.animate(this.lastTime);
     this.inputSystem = new InputSystem(this.main, this.canvas);
+    this.cleanupInputEvents();
     this.setupInputEvents();
     this.chrono = this.main.utility.chrono(1);
   }
@@ -267,28 +254,38 @@ export class Game {
     this.main.area.recalculateAuras();
   }
 
-  setupInputEvents() {
-    this.main.events.on('canvasClick', (data) => {
-      const { tile } = data;
-      if (tile && !tile.tower && this.deployingUnit) {
-        // We need to set activeTile in InputSystem, but here we receive it.
-        // However, deployUnit uses this.inputSystem.activeTile.
-        // InputSystem updates activeTile on mousemove, so it should be current.
-        this.deployUnit();
-      } else if (tile?.tower) {
-        const index = this.main.team.pokemon.findIndex((pokemon) => tile.tower === pokemon);
-        this.tryDeployUnit(index);
-        this.tryDeployUnit(index);
-      }
-    });
+  cleanupInputEvents() {
+    if (this.handlers) {
+      this.main.events.off('canvasClick', this.handlers.canvasClick);
+      this.main.events.off('canvasRightClick', this.handlers.canvasRightClick);
+    }
+  }
 
-    this.main.events.on('canvasRightClick', (data) => {
-      const { tile } = data;
-      if (tile?.tower) {
-        const index = this.main.team.pokemon.findIndex((pokemon) => tile.tower === pokemon);
-        this.main.pokemonScene.open(tile.tower, index);
-      }
-    });
+  setupInputEvents() {
+    this.handlers = {
+      canvasClick: (data) => {
+        const { tile } = data;
+        if (tile && !tile.tower && this.deployingUnit) {
+          // We need to set activeTile in InputSystem, but here we receive it.
+          // However, deployUnit uses this.inputSystem.activeTile.
+          // InputSystem updates activeTile on mousemove, so it should be current.
+          this.deployUnit();
+        } else if (tile?.tower) {
+          const index = this.main.team.pokemon.findIndex((pokemon) => tile.tower === pokemon);
+          this.tryDeployUnit(index);
+        }
+      },
+      canvasRightClick: (data) => {
+        const { tile } = data;
+        if (tile?.tower) {
+          const index = this.main.team.pokemon.findIndex((pokemon) => tile.tower === pokemon);
+          this.main.pokemonScene.open(tile.tower, index);
+        }
+      },
+    };
+
+    this.main.events.on('canvasClick', this.handlers.canvasClick);
+    this.main.events.on('canvasRightClick', this.handlers.canvasRightClick);
   }
 
   toggleSpeed() {
