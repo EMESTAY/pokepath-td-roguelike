@@ -241,6 +241,9 @@ export class Area {
     if (this.main.player.health[this.routeNumber] === 1)
       this.main.player.unlockAchievement(12);
 
+    // Apply Passive XP to deployed towers
+    this.applyPassiveXP();
+
     // ROGUELIKE MODE HOOK
     if (this.main.gameMode === 1) {
       // Scaling Interest: 10% of current gold
@@ -460,5 +463,47 @@ export class Area {
       if (this.routeNumber == 8) this.main.player.unlockAchievement(30);
       this.main.finalScene.open();
     }
+  }
+
+  applyPassiveXP() {
+      const xpAmount = Math.floor(20 + (this.waveNumber * 5));
+      
+      this.towers.forEach(tower => {
+          if (tower.pokemon) {
+              const oldLvl = tower.pokemon.lvl;
+              tower.pokemon.gainXp(xpAmount);
+              const newLvl = tower.pokemon.lvl;
+              
+              const text = newLvl > oldLvl ? `LEVEL UP!` : `+${xpAmount} XP`;
+              const color = newLvl > oldLvl ? '#ffd700' : '#ffffff';
+              const size = newLvl > oldLvl ? '12px' : '10px';
+              
+              const float = new Element(this.main.scene, {
+                  tagName: 'div',
+                  text: text
+              }).element;
+              
+              // Apply styles directly
+              float.style.position = 'absolute';
+              float.style.left = `${tower.x + 12}px`;
+              float.style.top = `${tower.y}px`;
+              float.style.color = color;
+              float.style.fontSize = size;
+              float.style.pointerEvents = 'none';
+              float.style.textShadow = '1px 1px black';
+              float.style.zIndex = '1000';
+              float.style.transition = 'top 1s, opacity 1s';
+              float.style.opacity = '1';
+              
+              setTimeout(() => {
+                  float.style.top = `${tower.y - 20}px`;
+                  float.style.opacity = "0";
+              }, 50);
+              
+              setTimeout(() => {
+                  float.remove();
+              }, 1050);
+          }
+      });
   }
 }

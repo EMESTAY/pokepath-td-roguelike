@@ -47,6 +47,10 @@ export class Pokemon {
 		this.inGroup = false;
 		
 		this.damageDealt = 0;
+		
+		// PASSIVE XP SYSTEM
+		this.xp = 0;
+		this.maxXp = Math.floor(100 * Math.pow(1.1, this.lvl));
 
 		if (targetMode == undefined) {
 			if (this.attackType == 'area') this.targetMode = 'area';
@@ -146,6 +150,21 @@ export class Pokemon {
             const tower = this.main.area.towers.find(t => t.pokemon === this);
             if (tower) tower.targetMode = mode;       
         }
+	}
+
+	gainXp(amount) {
+		if (this.lvl >= 100) return;
+		
+		this.xp += amount;
+		// Check for level up
+		if (this.xp >= this.maxXp) {
+			this.xp -= this.maxXp;
+			this.levelUp();
+			// Recalculate maxXp for next level
+			this.maxXp = Math.floor(100 * Math.pow(1.1, this.lvl));
+			// Handle multiple level ups
+			if (this.xp >= this.maxXp) this.gainXp(0); 
+		}
 	}
 
 	levelUp() {

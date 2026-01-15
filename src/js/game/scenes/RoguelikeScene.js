@@ -22,6 +22,11 @@ export class RoguelikeScene extends GameScene {
       className: "roguelike-card-container",
     }).element;
 
+    this.assignmentContainer = new Element(this.container, {
+      className: "roguelike-assignment-container",
+    }).element;
+    this.assignmentContainer.style.display = "none";
+
     this.rerollCost = 500;
     this.renderRerollButton();
     this.closeButton.style.display = "none"; // Lock the window
@@ -74,9 +79,13 @@ export class RoguelikeScene extends GameScene {
     if (this.main.player.gold >= this.rerollCost) {
       playSound("buy", "ui");
       this.main.player.changeGold(-this.rerollCost);
-      this.rerollCost = Math.floor(this.rerollCost * 1.5);
-      this.rerollBtn.innerText = `REROLL (${this.rerollCost}g)`;
+      
+      this.rerollCount++;
+      this.rerollCost = 200 + (this.rerollCount * 150);
+      
+      this.rerollBtn.innerText = `REROLL (-${this.rerollCost}g)`;
       this.generateRewards();
+      this.renderOdds();
       this.renderCards();
     } else {
       playSound("error", "ui");
@@ -85,11 +94,61 @@ export class RoguelikeScene extends GameScene {
 
   open() {
     super.open();
-    this.rerollCost = 500; // Reset cost on new wave
+    this.rerollCost = 200; // Reset cost on new wave
+    this.rerollCount = 0;
     if (this.rerollBtn)
-      this.rerollBtn.innerText = `REROLL (${this.rerollCost}g)`;
+      this.rerollBtn.innerText = `REROLL (-${this.rerollCost}g)`;
+    
+    // Ensure correct view
+    if (this.cardContainer) this.cardContainer.style.display = "flex";
+    if (this.assignmentContainer) this.assignmentContainer.style.display = "none";
+    if (this.rerollBtn) this.rerollBtn.style.display = "block";
+    if (this.oddsText) this.oddsText.style.display = "block";
+    this.title.innerHTML = "CHOOSE REWARD";
+
     this.generateRewards();
+    this.renderOdds();
     this.renderCards();
+  }
+
+  renderOdds() {
+    let consumable = 5;
+    // Check bad luck protection condition
+    if (this.main.player.health[this.main.area.map.id] <= 4) {
+      consumable = 15;
+    }
+    
+    // Probabilities from getRandomReward:
+    // P(Consumable) = consumable / 100
+    // Remaining = 100 - consumable
+    // P(Pokemon) = 0.45 (constant relative to total? No, relative to 1.0 in logic)
+    // The logic in getRandomReward is:
+    // rand < consumableChance (consumable)
+    // rand < consumableChance + 0.45 (pokemon) -> So Pokemon is strictly 0.45 width
+    // rand < consumableChance + 0.45 + 0.35 (item) -> Item is strictly 0.35 width
+    // Else (Resource) -> Remainder
+    
+    // So:
+    const pokemon = 45;
+    const item = 35;
+    const gold = 100 - (consumable + pokemon + item);
+
+    if (!this.oddsText) {
+      this.oddsText = new Element(this.container, { 
+          tagName: 'div', 
+          className: 'roguelike-odds-text',
+          text: ''
+      }).element;
+      // Style locally or move to CSS
+      this.oddsText.style.marginTop = "8px";
+      this.oddsText.style.fontSize = "10px";
+      this.oddsText.style.color = "#ccc";
+      this.oddsText.style.textAlign = "center";
+      this.oddsText.style.fontFamily = '"Press Start 2P", sans-serif'; // Maintain pixel font
+      this.oddsText.style.textShadow = "1px 1px #000";
+    }
+
+    this.oddsText.innerText = `ODDS: UNIT ${pokemon}% | ITEM ${item}% | GOLD ${gold}% | CONSUMABLE ${consumable}%`;
   }
 
   generateRewards() {
@@ -101,9 +160,15 @@ export class RoguelikeScene extends GameScene {
 
   getRandomReward() {
     const rand = Math.random();
-    if (rand < 0.05) return this.generateConsumableReward(); // 5% chance
-    if (rand < 0.5) return this.generatePokemonReward();
-    if (rand < 0.85) return this.generateItemReward();
+    
+    let consumableChance = 0.05;
+    if (this.main.player.health[this.main.area.map.id] <= 4) {
+      consumableChance = 0.15;
+    }
+
+    if (rand < consumableChance) return this.generateConsumableReward(); 
+    if (rand < consumableChance + 0.45) return this.generatePokemonReward();
+    if (rand < consumableChance + 0.45 + 0.35) return this.generateItemReward();
     return this.generateResourceReward();
   }
 
@@ -132,30 +197,63 @@ export class RoguelikeScene extends GameScene {
   }
 
   generatePokemonReward() {
+    const GEN1_KEYS = [
+        'abra', 'alakazam', 'arbok', 'charizard', 'charmander', 'charmeleon', 
+        'clefable', 'clefairy', 'cubone', 'dewgong', 'ditto', 'ekans', 
+        'electrode', 'farfetchd', 'gastly', 'gengar', 'golduck', 'gyarados', 
+        'haunter', 'kabuto', 'kabutops', 'kadabra', 'koffing', 'lapras', 
+        'machamp', 'machoke', 'machop', 'magikarp', 'mankey', 'marowak', 
+        'meowth', 'omanyte', 'omastar', 'persian', 'pidgeot', 'pidgeotto', 
+        'pidgey', 'pikachu', 'primeape', 'psyduck', 'raichu', 'sandshrew', 
+        'sandslash', 'seel', 'starmie', 'staryu', 'tangela', 'voltorb', 'weezing'
+    ];
+
     const keys = Object.keys(pokemonData);
-    // Filter: Tier 1 (low/mid cost) + No Mega + Has Ability
+    // Filter: Tier 1 (low/mid cost) + No Mega + Has Ability + Gen 1
     const validKeys = keys.filter((key) => {
       const p = pokemonData[key];
       return (
+        GEN1_KEYS.includes(key) &&
         (p.costScale === "low" || p.costScale === "mid") &&
         !key.includes("Mega") &&
         p.ability
       );
     });
 
-    const randomKey = validKeys[Math.floor(Math.random() * validKeys.length)];
+    // TAG WEIGHTING: Identify Preferred Land Types from current team
+    const teamTiles = new Set();
+    this.main.team.pokemon.forEach(p => {
+        if (p.tiles) p.tiles.forEach(t => teamTiles.add(t));
+    });
+
+    const weightedPool = [];
+    validKeys.forEach(key => {
+        weightedPool.push(key); // Base chance
+        const p = pokemonData[key];
+        // If pokemon shares a land type with team, double its weight
+        if (p.tiles && p.tiles.some(t => teamTiles.has(t))) {
+             weightedPool.push(key); 
+        }
+    });
+
+    const randomKey = weightedPool[Math.floor(Math.random() * weightedPool.length)];
     const spec = pokemonData[randomKey];
 
     const existing = this.main.team.pokemon.find(
       (p) => p.specie.id === spec.id
     );
     if (existing) {
+      // DIMINISHING RETURNS DISPLAY
+      let levelsToAdd = 1;
+      if (existing.lvl < 4) levelsToAdd = 3;
+      else if (existing.lvl < 6) levelsToAdd = 2;
+
       return {
         type: "upgrade",
         data: existing, // Pass the existing instance
         name: `UPGRADE: ${spec.name[this.main.lang]}`,
-        desc: "Grant +3 Levels instantly.",
-        subtext: `Current Lvl: ${existing.lvl} -> ${existing.lvl + 3}`,
+        desc: `Grant +${levelsToAdd} Levels instantly.`,
+        subtext: `Current Lvl: ${existing.lvl} -> ${existing.lvl + levelsToAdd}`,
         icon: spec.sprite.base,
         rarity: "rare", // Force blue border for upgrades
       };
@@ -188,8 +286,20 @@ export class RoguelikeScene extends GameScene {
 
   generateItemReward() {
     const keys = Object.keys(itemData);
-    const randomKey = keys[Math.floor(Math.random() * keys.length)];
-    const item = itemData[randomKey];
+    
+    // Filter for items compatible with at least one team member
+    const compatibleKeys = keys.filter(key => {
+        const item = itemData[key];
+        // Use the scene's checkRestriction method
+        return this.main.team.pokemon.some(p => this.checkRestriction(p, item));
+    });
+
+    // Use compatible pool if available, otherwise fallback to all items
+    const pool = compatibleKeys.length > 0 ? compatibleKeys : keys;
+    const randomKey = pool[Math.floor(Math.random() * pool.length)];
+
+    // CLONE ITEM to prevent shared state mutation (equipedBy)
+    const item = JSON.parse(JSON.stringify(itemData[randomKey]));
 
     let desc = "No description.";
     if (item.description) {
@@ -213,7 +323,7 @@ export class RoguelikeScene extends GameScene {
 
   generateResourceReward() {
     const wave = this.main.area.waveNumber;
-    let amount = 300 + wave * 50;
+    let amount = Math.floor(300 + 20 * Math.pow(wave, 1.5));
     let rarity = "common";
 
     // Critical Gold High Roll (10% chance)
@@ -228,7 +338,7 @@ export class RoguelikeScene extends GameScene {
       name: `${amount} GOLD`,
       desc: "Add to your current funds.",
       subtext: "Currency",
-      icon: "./src/assets/images/items/nugget.png",
+      icon: "./src/assets/images/items/amulet-coin.png",
       rarity: rarity,
     };
   }
@@ -307,13 +417,22 @@ export class RoguelikeScene extends GameScene {
         setTimeout(() => this.main.notification.hide(), 2000);
       }
     } else if (reward.type === "upgrade") {
-      // Level up existing pokemon 3 times
-      reward.data.levelUp();
-      reward.data.levelUp();
-      reward.data.levelUp();
-      playSound("levelUp", "ui"); // Hypothetical sound, or reuse 'equip'
+      // Level up existing pokemon with Diminishing Returns
+      try {
+          const currentLvl = reward.data.lvl;
+          let levelsToAdd = 1;
+          if (currentLvl < 4) levelsToAdd = 3;
+          else if (currentLvl < 6) levelsToAdd = 2;
+          
+          for(let i=0; i<levelsToAdd; i++) reward.data.levelUp();
+          
+          playSound("levelUp", "ui"); 
+      } catch (e) {
+          console.error("Upgrade Error:", e);
+      }
     } else if (reward.type === "item") {
-      this.main.player.obtainItem(reward.data);
+      this.openItemAssignment(reward.data);
+      return; // Do not finish selection yet
     } else if (reward.type === "gold") {
       this.main.player.changeGold(reward.amount);
     } else if (reward.type === "potion") {
@@ -331,5 +450,134 @@ export class RoguelikeScene extends GameScene {
     }
 
     this.finishSelection();
+  }
+
+  // --- ITEM ASSIGNMENT LOGIC ---
+
+  openItemAssignment(item) {
+    this.cardContainer.style.display = "none";
+    this.rerollBtn.style.display = "none";
+    if (this.oddsText) this.oddsText.style.display = "none";
+    this.title.innerHTML = "EQUIP ITEM";
+    
+    this.assignmentContainer.style.display = "flex";
+    this.renderAssignment(item);
+  }
+
+  renderAssignment(item) {
+    this.assignmentContainer.innerHTML = "";
+    
+    // Instructions
+    new Element(this.assignmentContainer, {
+        tagName: "div",
+        className: "roguelike-assign-title",
+        text: `Assign ${item.name[this.main.lang]}?`
+    });
+
+    const list = new Element(this.assignmentContainer, {
+        className: "roguelike-assign-list"
+    }).element;
+
+    // Team Members
+    this.main.team.pokemon.forEach(p => {
+        const canEquip = this.checkRestriction(p, item);
+        
+        const btn = new Element(list, {
+            className: "roguelike-assign-btn"
+        }).element;
+        
+        // Icon
+        const icon = new Element(btn, {
+            image: p.sprite.base,
+            className: "roguelike-assign-icon"
+        }).element;
+        
+        // Name
+        new Element(btn, {
+            tagName: "div",
+            text: p.alias || p.name[this.main.lang],
+            className: "roguelike-assign-name"
+        });
+
+        if (canEquip) {
+            btn.onclick = () => this.equipItem(p, item);
+            btn.onmouseenter = () => { 
+                btn.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
+                playSound("hover1", "ui");
+            };
+            btn.onmouseleave = () => { 
+                btn.style.backgroundColor = "transparent";
+            };
+        } else {
+            btn.style.opacity = "0.4";
+            btn.style.cursor = "not-allowed";
+            btn.title = "Cannot equip this item (Restrictions applied)";
+        }
+    });
+
+    // "Put in Bag" Button
+    const bagBtn = new Element(this.assignmentContainer, {
+        tagName: "button",
+        text: "PUT IN BAG",
+        className: "roguelike-bag-btn"
+    }).element;
+    
+    bagBtn.onclick = () => {
+        playSound("equip", "ui"); // Reuse equip sound
+        this.main.player.obtainItem(item);
+        this.finishSelection();
+    };
+  }
+
+  checkRestriction(pokemon, item) {
+    if (!item.restriction) return true;
+    const key = Object.keys(item.restriction)[0];
+    if (!key) return true;
+
+    switch(key) {
+        case 'id':
+            if (item.restriction[key].includes(pokemon.id)) return true;
+            break;
+        case 'idForbidden':	
+            if (!item.restriction[key].includes(pokemon.id)) return true;
+            break;
+        case 'tile': 
+            if (pokemon.id == 70) return false;	
+            if (item.restriction[key].some(tile => pokemon.tiles.includes(tile))) return true;
+            break;
+        case 'tileForbidden':
+            if (pokemon.id == 70) return false;	
+            if (!item.restriction[key].some(tile => pokemon.tiles.includes(tile)))  return true;
+            break;
+        case 'attackType':
+            if (pokemon.id == 70) return false;	
+            if (item.restriction[key] == pokemon.attackType) return true;
+            break;
+        case 'rangeType':
+            if (pokemon.id == 70) return false;	
+            if (item.restriction[key] == pokemon.rangeType) return true;
+            break;
+    }
+    return false;
+  }
+
+  equipItem(pokemon, item) {
+      try {
+          playSound("equip", "ui");
+          
+          if (!this.checkRestriction(pokemon, item)) {
+              console.warn("Item restriction check failed.");
+              this.finishSelection();
+              return;
+          }
+
+          this.main.player.obtainItem(item); // Add to global list
+          pokemon.equipItem(item);
+          
+          this.finishSelection();
+      } catch (e) {
+          console.error("Equip Item Error:", e);
+          this.finishSelection(); // Ensure window closes even on error
+      }
   }
 }
