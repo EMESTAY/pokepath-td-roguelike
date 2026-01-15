@@ -1,22 +1,22 @@
-import { Trait } from "../Trait.js";
+import { Trait } from '../Trait.js';
 
 export class TriageTrait extends Trait {
   constructor() {
-    super("triage", "Triage");
+    super('triage', 'Triage');
   }
 
   onEvent(event, payload) {
-    if (event === "RECALCULATE_AURAS") {
+    if (event === 'RECALCULATE_AURAS') {
       this.applyAura(payload.towers);
     }
   }
 
   applyAura(towers) {
     towers.forEach((source) => {
-      if (source.ability?.id !== "triage") return;
+      if (source.ability?.id !== 'triage') return;
 
       let auraRange = source.range;
-      if (source.pokemon?.item?.id == "revelationAroma") auraRange += 25;
+      if (source.pokemon?.item?.id == 'revelationAroma') auraRange += 25;
 
       towers.forEach((target) => {
         if (source === target) return;

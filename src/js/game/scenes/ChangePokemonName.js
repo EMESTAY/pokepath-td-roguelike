@@ -5,51 +5,54 @@ import { playSound } from '../../file/audio.js';
 import { Input } from '../../utils/Input.js';
 
 export class ChangePokemonName extends GameScene {
-	constructor(main) {
-		super(400, 130);
-		this.main = main;
-		
-		this.pokemon;
-		this.header.removeChild(this.closeButton);
-		this.render();
-	}
+  constructor(main) {
+    super(400, 130);
+    this.main = main;
 
-	render() {
-		this.title.innerHTML = text.changeName.title[this.main.lang].toUpperCase();
+    this.pokemon;
+    this.header.removeChild(this.closeButton);
+    this.render();
+  }
 
-		this.name = new Input(
-			this.container, 
-			"text", 
-			{ 
-				className: "name-change-name", 
-				maxlength: 10, 
-			}
-		);
-		
-		this.acceptButton = new Element(this.container, { className: 'name-change-accept-button' }).element;
+  render() {
+    this.title.innerHTML = text.changeName.title[this.main.lang].toUpperCase();
 
-		this.acceptButton.addEventListener('mouseenter', () => { playSound('hover2', 'ui') })
+    this.name = new Input(this.container, 'text', {
+      className: 'name-change-name',
+      maxlength: 10,
+    });
 
-		this.acceptButton.addEventListener('click', () => {
-			if (this.name.value.value.trim() !== "") this.pokemon.alias = this.name.value.value;
-			if (this.main.pokemonScene.isOpen) this.main.pokemonScene.update();
-			//this.main.boxScene.update();
-			this.main.UI.update();
-			this.close();
-		})
+    this.acceptButton = new Element(this.container, {
+      className: 'name-change-accept-button',
+    }).element;
 
-		this.background.addEventListener('click', (e) => { if (e.target == this.background) this.close() })
-	}
+    this.acceptButton.addEventListener('mouseenter', () => {
+      playSound('hover2', 'ui');
+    });
 
-	update() {
-		this.name.value.placeholder = this.pokemon.alias ?? this.pokemon.name[this.main.lang].toUpperCase();
-		this.acceptButton.innerText = text.changeName.rename[this.main.lang].toUpperCase();
-	}
+    this.acceptButton.addEventListener('click', () => {
+      if (this.name.value.value.trim() !== '') this.pokemon.alias = this.name.value.value;
+      if (this.main.pokemonScene.isOpen) this.main.pokemonScene.update();
+      //this.main.boxScene.update();
+      this.main.UI.update();
+      this.close();
+    });
 
-	open(pokemon) {
-		super.open();
-		this.name.value.value = "";
-		this.pokemon = pokemon;
-		this.update();
-	}
+    this.background.addEventListener('click', (e) => {
+      if (e.target == this.background) this.close();
+    });
+  }
+
+  update() {
+    this.name.value.placeholder =
+      this.pokemon.alias ?? this.pokemon.name[this.main.lang].toUpperCase();
+    this.acceptButton.innerText = text.changeName.rename[this.main.lang].toUpperCase();
+  }
+
+  open(pokemon) {
+    super.open();
+    this.name.value.value = '';
+    this.pokemon = pokemon;
+    this.update();
+  }
 }

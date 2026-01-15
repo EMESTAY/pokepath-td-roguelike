@@ -1,25 +1,16 @@
-import { Projectile } from "./Projectile.js";
-import { ObjectPool } from "../../utils/ObjectPool.js";
-import { Sprite } from "../../utils/Sprite.js";
-import { playSound } from "../../file/audio.js";
+import { Projectile } from './Projectile.js';
+import { ObjectPool } from '../../utils/ObjectPool.js';
+import { Sprite } from '../../utils/Sprite.js';
+import { playSound } from '../../file/audio.js';
 
 export class Tower extends Sprite {
   constructor(main, x, y, ctx, pokemon, tile, teleportBuff = false) {
-    super(
-      x,
-      y,
-      ctx,
-      pokemon.sprite.image,
-      pokemon.sprite.frames,
-      8,
-      0,
-      pokemon.sprite.hold
-    );
+    super(x, y, ctx, pokemon.sprite.image, pokemon.sprite.frames, 8, 0, pokemon.sprite.hold);
     this.main = main;
 
     this.tile = tile;
     this.ctx = ctx;
-    
+
     // Performance: Cache ADN canvas
     this.cachedAdnCanvas = null;
     this.cachedAdnCtx = null;
@@ -45,9 +36,7 @@ export class Tower extends Sprite {
     // HABILIDADES
     this.ricochet = pokemon.ricochet;
     this.revealInvisible =
-      this.ability.id === "frisk" || pokemon?.item?.id == "silphScope"
-        ? true
-        : false;
+      this.ability.id === 'frisk' || pokemon?.item?.id == 'silphScope' ? true : false;
     this.damageBoost = 0;
     this.speedBoost = 0;
     this.teleport = 0;
@@ -84,10 +73,7 @@ export class Tower extends Sprite {
     this.targetMode = pokemon.targetMode;
 
     if (this.pokemon.specie.id == 61) {
-      if (
-        this.tile.land == 2 ||
-        (this.tile.land == 1 && this.pokemon?.item?.id == "fertiliser")
-      )
+      if (this.tile.land == 2 || (this.tile.land == 1 && this.pokemon?.item?.id == 'fertiliser'))
         this.updateTowerSprite(
           this.pokemon.sprite.imageGrass,
           this.pokemon.sprite.framesGrass,
@@ -95,7 +81,7 @@ export class Tower extends Sprite {
         );
       else if (
         this.tile.land == 3 ||
-        (this.tile.land == 1 && this.pokemon?.item?.id == "squirtBottle")
+        (this.tile.land == 1 && this.pokemon?.item?.id == 'squirtBottle')
       )
         this.updateTowerSprite(
           this.pokemon.sprite.imageWater,
@@ -109,10 +95,7 @@ export class Tower extends Sprite {
           this.pokemon.specie.projectileMountain
         );
     } else if (this.pokemon?.adn?.id == 61) {
-      if (
-        this.tile.land == 2 ||
-        (this.tile.land == 1 && this.pokemon?.item?.id == "fertiliser")
-      )
+      if (this.tile.land == 2 || (this.tile.land == 1 && this.pokemon?.item?.id == 'fertiliser'))
         this.updateTowerSprite(
           this.pokemon.adn.sprite.imageGrass,
           this.pokemon.adn.sprite.framesGrass,
@@ -120,7 +103,7 @@ export class Tower extends Sprite {
         );
       else if (
         this.tile.land == 3 ||
-        (this.tile.land == 1 && this.pokemon?.item?.id == "squirtBottle")
+        (this.tile.land == 1 && this.pokemon?.item?.id == 'squirtBottle')
       )
         this.updateTowerSprite(
           this.pokemon.adn.sprite.imageWater,
@@ -135,12 +118,12 @@ export class Tower extends Sprite {
         );
     }
 
-    if (this.pokemon?.item?.id == "bicycle") {
+    if (this.pokemon?.item?.id == 'bicycle') {
       this.projectile.sprite = { image: this.pokemon.item.sprite, frames: 1 };
-      this.projectile.effect = "ding";
+      this.projectile.effect = 'ding';
     }
 
-    if (this.ability.id === "stanceChange") this.pokemon.attackType = "single";
+    if (this.ability.id === 'stanceChange') this.pokemon.attackType = 'single';
   }
 
   updateTowerSprite(
@@ -150,14 +133,12 @@ export class Tower extends Sprite {
   ) {
     this.loaded = false;
 
-    this.frames.max =
-      spriteFrames == undefined ? this.pokemon.sprite.frames : spriteFrames;
+    this.frames.max = spriteFrames == undefined ? this.pokemon.sprite.frames : spriteFrames;
     this.frames.hold = this.pokemon.sprite.hold;
     this.frames.current = 0; // reset animación
     this.frames.elapsed = 0; // proteger contador
 
-    if (projectileSprite != undefined)
-      this.projectile.sprite = projectileSprite.sprite;
+    if (projectileSprite != undefined) this.projectile.sprite = projectileSprite.sprite;
 
     this.sprite = new Image();
     this.sprite.onload = () => {
@@ -165,8 +146,7 @@ export class Tower extends Sprite {
       this.height = this.sprite.height / this.frames.rows;
       this.loaded = true;
     };
-    this.sprite.src =
-      spriteImage == undefined ? this.pokemon.sprite.image : spriteImage;
+    this.sprite.src = spriteImage == undefined ? this.pokemon.sprite.image : spriteImage;
   }
 
   updateStatsFromPokemon() {
@@ -203,45 +183,39 @@ export class Tower extends Sprite {
 
     if (this.pokemon.id == 65 || this.pokemon?.adn?.id == 65)
       this.speed -= 500 * this.main.player.fossilInTeam;
-    if (this.pokemon?.ability?.id == "speedBoost")
-      this.speed -= 300 * this.speedBoost;
-    if (this.pokemon?.item?.id == "shieldBreakerBullet") this.speed += 2000;
+    if (this.pokemon?.ability?.id == 'speedBoost') this.speed -= 300 * this.speedBoost;
+    if (this.pokemon?.item?.id == 'shieldBreakerBullet') this.speed += 2000;
 
     if (
-      this.pokemon?.item?.id == "quickClaw" ||
-      this.pokemon?.item?.id == "lifeOrb" ||
-      (this.main.area.heartScale && this.pokemon?.item?.id == "heartScale")
+      this.pokemon?.item?.id == 'quickClaw' ||
+      this.pokemon?.item?.id == 'lifeOrb' ||
+      (this.main.area.heartScale && this.pokemon?.item?.id == 'heartScale')
     )
       this.speed /= 2;
     if (
-      this.pokemon?.item?.id == "quickPowder" ||
-      (this.pokemon?.item?.id == "adrenalineOrb" &&
+      this.pokemon?.item?.id == 'quickPowder' ||
+      (this.pokemon?.item?.id == 'adrenalineOrb' &&
         this.main.player.health[this.main.area.routeNumber] <= 7)
     )
       this.speed -= this.speed / 4;
 
-    if (this.pokemon?.item?.id == "metalPowder") this.speed += this.speed / 4;
+    if (this.pokemon?.item?.id == 'metalPowder') this.speed += this.speed / 4;
     if (this.cherrimForm) this.speed /= 2;
 
-    if (this.pokemon?.item?.id == "choiceScarf") {
-      if (
-        this.ability.id === "quadraShot" ||
-        this.ability.id === "quadraShotSand"
-      )
+    if (this.pokemon?.item?.id == 'choiceScarf') {
+      if (this.ability.id === 'quadraShot' || this.ability.id === 'quadraShotSand')
         this.speed -= this.speed * 0.6;
-      else if (this.ability.id === "tripleShot") this.speed -= this.speed * 0.4;
+      else if (this.ability.id === 'tripleShot') this.speed -= this.speed * 0.4;
       else this.speed -= this.speed * 0.2;
     }
 
-    if (this.pokemon?.item?.id == "poisonBarb") this.speed -= this.speed * 0.2;
-    if (this.pokemon?.item?.id == "carbos") this.speed -= this.speed * 0.15;
+    if (this.pokemon?.item?.id == 'poisonBarb') this.speed -= this.speed * 0.2;
+    if (this.pokemon?.item?.id == 'carbos') this.speed -= this.speed * 0.15;
 
     if (
       this.tile &&
-      (this.tile.land === 2 ||
-        (this.tile.land == 1 && this.pokemon?.item?.id == "fertiliser")) &&
-      (this.pokemon.ability.id === "ambusher" ||
-        this.pokemon.ability.id === "castform")
+      (this.tile.land === 2 || (this.tile.land == 1 && this.pokemon?.item?.id == 'fertiliser')) &&
+      (this.pokemon.ability.id === 'ambusher' || this.pokemon.ability.id === 'castform')
     ) {
       this.power = this.basePower * 2;
       this.projectile.power = this.power;
@@ -250,38 +224,31 @@ export class Tower extends Sprite {
     if (
       this.tile &&
       this.tile.land === 4 &&
-      (this.pokemon.ability.id === "vigilant" ||
-        this.pokemon.ability.id === "castform")
+      (this.pokemon.ability.id === 'vigilant' || this.pokemon.ability.id === 'castform')
     ) {
       this.range = this.pokemon.range * 2;
     }
 
     if (
       [3, 4, 5].includes(this.main.area.routeNumber) &&
-      (this.pokemon.ability.id === "doubleShotSand" ||
-        this.pokemon.ability.id === "quadraShotSand")
+      (this.pokemon.ability.id === 'doubleShotSand' || this.pokemon.ability.id === 'quadraShotSand')
     ) {
       this.range = this.pokemon.range * 2;
     }
 
     if (
       this.tile &&
-      (this.tile.land == 3 ||
-        (this.tile.land == 1 && this.pokemon?.item?.id == "squirtBottle")) &&
-      (this.pokemon.ability.id === "swimmer" ||
-        this.pokemon.ability.id === "castform")
+      (this.tile.land == 3 || (this.tile.land == 1 && this.pokemon?.item?.id == 'squirtBottle')) &&
+      (this.pokemon.ability.id === 'swimmer' || this.pokemon.ability.id === 'castform')
     ) {
       this.speed = this.pokemon.speed / 2;
     }
 
-    if (this.pokemon?.item?.id == "helixFossil")
-      this.range += this.main.player.fossilInTeam * 10;
-    if (this.pokemon?.item?.id == "oldRod") this.range += 60;
-    if (this.pokemon?.item?.id == "revelationAroma") this.range += 25;
-    if (this.pokemon?.item?.id == "spindaCocktail")
-      this.range = this.range * 1.25;
-    if (this.pokemon?.item?.id == "starCandy")
-      this.range += this.main.player.stars * 0.1;
+    if (this.pokemon?.item?.id == 'helixFossil') this.range += this.main.player.fossilInTeam * 10;
+    if (this.pokemon?.item?.id == 'oldRod') this.range += 60;
+    if (this.pokemon?.item?.id == 'revelationAroma') this.range += 25;
+    if (this.pokemon?.item?.id == 'spindaCocktail') this.range = this.range * 1.25;
+    if (this.pokemon?.item?.id == 'starCandy') this.range += this.main.player.stars * 0.1;
   }
 
   recalculatePower() {
@@ -295,100 +262,83 @@ export class Tower extends Sprite {
 
     if (this.pokemon.id == 65 || this.pokemon?.adn?.id == 65)
       this.speed -= 500 * this.main.player.fossilInTeam;
-    if (this.pokemon?.ability?.id == "speedBoost")
-      this.speed -= 300 * this.speedBoost;
-    if (
-      this.pokemon?.item?.id == "quickClaw" ||
-      this.pokemon?.item?.id == "lifeOrb"
-    )
+    if (this.pokemon?.ability?.id == 'speedBoost') this.speed -= 300 * this.speedBoost;
+    if (this.pokemon?.item?.id == 'quickClaw' || this.pokemon?.item?.id == 'lifeOrb')
       this.speed /= 2;
-    if (this.pokemon?.item?.id == "shieldBreakerBullet") this.speed += 2000;
+    if (this.pokemon?.item?.id == 'shieldBreakerBullet') this.speed += 2000;
     if (
-      this.pokemon?.item?.id == "quickPowder" ||
-      (this.pokemon?.item?.id == "adrenalineOrb" &&
+      this.pokemon?.item?.id == 'quickPowder' ||
+      (this.pokemon?.item?.id == 'adrenalineOrb' &&
         this.main.player.health[this.main.area.routeNumber] <= 7)
     )
       this.speed -= this.speed / 4;
 
-    if (this.pokemon?.item?.id == "metalPowder") this.speed += this.speed / 4;
+    if (this.pokemon?.item?.id == 'metalPowder') this.speed += this.speed / 4;
     if (this.cherrimForm) this.speed /= 2;
 
-    if (this.pokemon?.item?.id == "choiceScarf") {
-      if (
-        this.ability.id === "quadraShot" ||
-        this.ability.id === "quadraShotSand"
-      )
+    if (this.pokemon?.item?.id == 'choiceScarf') {
+      if (this.ability.id === 'quadraShot' || this.ability.id === 'quadraShotSand')
         this.speed -= this.speed * 0.6;
-      else if (this.ability.id === "tripleShot") this.speed -= this.speed * 0.4;
+      else if (this.ability.id === 'tripleShot') this.speed -= this.speed * 0.4;
       else this.speed -= this.speed * 0.2;
     }
 
-    if (this.pokemon?.item?.id == "poisonBarb") this.speed -= this.speed * 0.2;
-    if (this.pokemon?.item?.id == "carbos") this.speed -= this.speed * 0.15;
+    if (this.pokemon?.item?.id == 'poisonBarb') this.speed -= this.speed * 0.2;
+    if (this.pokemon?.item?.id == 'carbos') this.speed -= this.speed * 0.15;
 
     // terreno
     if (
       this.tile &&
-      (this.tile.land === 2 ||
-        (this.tile.land == 1 && this.pokemon?.item?.id == "fertiliser")) &&
-      (this.pokemon.ability.id === "ambusher" ||
-        this.pokemon.ability.id === "castform")
+      (this.tile.land === 2 || (this.tile.land == 1 && this.pokemon?.item?.id == 'fertiliser')) &&
+      (this.pokemon.ability.id === 'ambusher' || this.pokemon.ability.id === 'castform')
     )
       this.power = Math.ceil(this.power * 2);
     if (
       this.tile &&
       this.tile.land === 4 &&
-      (this.pokemon.ability.id === "vigilant" ||
-        this.pokemon.ability.id === "castform")
+      (this.pokemon.ability.id === 'vigilant' || this.pokemon.ability.id === 'castform')
     )
       this.range = this.pokemon.range * 2;
     if (
       this.tile &&
-      (this.tile.land == 3 ||
-        (this.tile.land == 1 && this.pokemon?.item?.id == "squirtBottle")) &&
-      (this.pokemon.ability.id === "swimmer" ||
-        this.pokemon.ability.id === "castform")
+      (this.tile.land == 3 || (this.tile.land == 1 && this.pokemon?.item?.id == 'squirtBottle')) &&
+      (this.pokemon.ability.id === 'swimmer' || this.pokemon.ability.id === 'castform')
     )
       this.speed /= 2;
     if (
       [3, 4, 5].includes(this.main.area.routeNumber) &&
-      (this.pokemon.ability.id === "doubleShotSand" ||
-        this.pokemon.ability.id === "quadraShotSand")
+      (this.pokemon.ability.id === 'doubleShotSand' || this.pokemon.ability.id === 'quadraShotSand')
     ) {
       this.range = this.pokemon.range * 2;
     }
 
-    if (this.pokemon?.item?.id == "helixFossil")
-      this.range += this.main.player.fossilInTeam * 10;
-    if (this.pokemon?.item?.id == "oldRod") this.range += 60;
-    if (this.pokemon?.item?.id == "spindaCocktail")
-      this.range = this.range * 1.25;
-    if (this.pokemon?.item?.id == "starCandy")
-      this.range += this.main.player.stars * 0.1;
+    if (this.pokemon?.item?.id == 'helixFossil') this.range += this.main.player.fossilInTeam * 10;
+    if (this.pokemon?.item?.id == 'oldRod') this.range += 60;
+    if (this.pokemon?.item?.id == 'spindaCocktail') this.range = this.range * 1.25;
+    if (this.pokemon?.item?.id == 'starCandy') this.range += this.main.player.stars * 0.1;
 
     const nearbyPowerAuras = this.main.area.towers.filter(
       (t) =>
-        t.ability?.id === "powerAura" &&
+        t.ability?.id === 'powerAura' &&
         t !== this &&
         Math.hypot(t.center.x - this.center.x, t.center.y - this.center.y) <=
-          t.range + (t.pokemon?.item?.id === "revelationAroma" ? 25 : 0)
+          t.range + (t.pokemon?.item?.id === 'revelationAroma' ? 25 : 0)
     );
 
     const nearbyTriageAuras = this.main.area.towers.filter(
       (t) =>
-        t.ability?.id === "triage" &&
+        t.ability?.id === 'triage' &&
         t !== this &&
         Math.hypot(t.center.x - this.center.x, t.center.y - this.center.y) <=
-          t.range + (t.pokemon?.item?.id === "revelationAroma" ? 25 : 0)
+          t.range + (t.pokemon?.item?.id === 'revelationAroma' ? 25 : 0)
     );
 
     const nearbyCriticalAuras = this.main.area.towers.filter(
       (t) =>
         t.ability &&
-        t.ability.id === "criticalAura" &&
+        t.ability.id === 'criticalAura' &&
         t !== this &&
-        Math.hypot(t.center.x - this.center.x, t.center.y - this.center.y) <=
-          t.range
+        Math.hypot(t.center.x - this.center.x, t.center.y - this.center.y) <= t.range
     );
 
     if (nearbyPowerAuras.length > 0) {
@@ -443,12 +393,7 @@ export class Tower extends Sprite {
       y: this.position.y + tileSize / 2,
     };
 
-    if (
-      this.powerAura ||
-      this.criticalAura ||
-      this.triageAura ||
-      this.waterSynergyActive
-    ) {
+    if (this.powerAura || this.criticalAura || this.triageAura || this.waterSynergyActive) {
       const now = Date.now();
       const pulse = 1 + 0.08 * Math.sin(now / 180);
       const baseInner = 6;
@@ -462,60 +407,60 @@ export class Tower extends Sprite {
       // Combinaciones de auras y sus colores
       const auraColors = {
         power: {
-          inner: "rgba(255,200,50,0.28)",
-          middle: "rgba(255,150,40,0.16)",
-          outer: "rgba(255,120,20,0.06)",
+          inner: 'rgba(255,200,50,0.28)',
+          middle: 'rgba(255,150,40,0.16)',
+          outer: 'rgba(255,120,20,0.06)',
         },
         critical: {
-          inner: "rgba(180,0,255,0.38)",
-          middle: "rgba(140,0,220,0.26)",
-          outer: "rgba(100,0,180,0.16)",
+          inner: 'rgba(180,0,255,0.38)',
+          middle: 'rgba(140,0,220,0.26)',
+          outer: 'rgba(100,0,180,0.16)',
         },
         triage: {
-          inner: "rgba(50,200,255,0.28)",
-          middle: "rgba(40,150,255,0.16)",
-          outer: "rgba(20,120,255,0.06)",
+          inner: 'rgba(50,200,255,0.28)',
+          middle: 'rgba(40,150,255,0.16)',
+          outer: 'rgba(20,120,255,0.06)',
         },
         water: {
-          inner: "rgba(0,255,255,0.45)",
-          middle: "rgba(0,200,255,0.30)",
-          outer: "rgba(0,100,255,0.15)",
+          inner: 'rgba(0,255,255,0.45)',
+          middle: 'rgba(0,200,255,0.30)',
+          outer: 'rgba(0,100,255,0.15)',
         },
-        "power+critical": {
-          inner: "rgba(255,80,80,0.62)",
-          middle: "rgba(255,60,60,0.24)",
-          outer: "rgba(255,40,40,0.16)",
+        'power+critical': {
+          inner: 'rgba(255,80,80,0.62)',
+          middle: 'rgba(255,60,60,0.24)',
+          outer: 'rgba(255,40,40,0.16)',
         },
-        "power+triage": {
-          inner: "rgba(255,180,50,0.42)",
-          middle: "rgba(255,160,40,0.22)",
-          outer: "rgba(255,140,30,0.12)",
+        'power+triage': {
+          inner: 'rgba(255,180,50,0.42)',
+          middle: 'rgba(255,160,40,0.22)',
+          outer: 'rgba(255,140,30,0.12)',
         },
-        "critical+triage": {
-          inner: "rgba(120,0,255,0.42)",
-          middle: "rgba(90,0,220,0.26)",
-          outer: "rgba(60,0,180,0.16)",
+        'critical+triage': {
+          inner: 'rgba(120,0,255,0.42)',
+          middle: 'rgba(90,0,220,0.26)',
+          outer: 'rgba(60,0,180,0.16)',
         },
-        "power+critical+triage": {
-          inner: "rgba(255,100,100,0.52)",
-          middle: "rgba(255,80,80,0.26)",
-          outer: "rgba(255,60,60,0.16)",
+        'power+critical+triage': {
+          inner: 'rgba(255,100,100,0.52)',
+          middle: 'rgba(255,80,80,0.26)',
+          outer: 'rgba(255,60,60,0.16)',
         },
       };
 
       // CClave según las auras activas
       let key = [];
       if (this.waterSynergyActive) {
-        key = ["water"]; // Priority visual
+        key = ['water']; // Priority visual
       } else {
-        if (this.powerAura) key.push("power");
-        if (this.criticalAura) key.push("critical");
-        if (this.triageAura) key.push("triage");
+        if (this.powerAura) key.push('power');
+        if (this.criticalAura) key.push('critical');
+        if (this.triageAura) key.push('triage');
       }
 
-      key = key.join("+");
+      key = key.join('+');
 
-      const colors = auraColors[key] || auraColors["power"];
+      const colors = auraColors[key] || auraColors['power'];
       const { inner: colInner, middle: colMiddle, outer: colOuter } = colors;
 
       const grad = this.ctx.createRadialGradient(cx, cy, inner, cx, cy, outer);
@@ -524,7 +469,7 @@ export class Tower extends Sprite {
       grad.addColorStop(1, colOuter);
 
       this.ctx.save();
-      this.ctx.globalCompositeOperation = "lighter";
+      this.ctx.globalCompositeOperation = 'lighter';
       this.ctx.beginPath();
       this.ctx.fillStyle = grad;
       this.ctx.arc(cx, cy, outer, 0, Math.PI * 2);
@@ -532,12 +477,12 @@ export class Tower extends Sprite {
 
       this.ctx.lineWidth = 1.2 * pulse;
 
-      let strokeColor = "rgba(180,80,200,0.14)";
-      if (this.waterSynergyActive) strokeColor = "rgba(0,255,255,0.3)";
+      let strokeColor = 'rgba(180,80,200,0.14)';
+      if (this.waterSynergyActive) strokeColor = 'rgba(0,255,255,0.3)';
       else if (this.triageAura && !this.powerAura && !this.criticalAura)
-        strokeColor = "rgba(50,180,255,0.14)";
+        strokeColor = 'rgba(50,180,255,0.14)';
       else if (this.powerAura && !this.criticalAura && !this.triageAura)
-        strokeColor = "rgba(255,180,50,0.18)";
+        strokeColor = 'rgba(255,180,50,0.18)';
 
       this.ctx.strokeStyle = strokeColor;
       this.ctx.stroke();
@@ -559,13 +504,16 @@ export class Tower extends Sprite {
     if (this.pokemon.adn != undefined) {
       // PERFORMANCE FIX: Cached canvas for ADN blending
       if (!this.cachedAdnCanvas) {
-        this.cachedAdnCanvas = document.createElement("canvas");
-        this.cachedAdnCtx = this.cachedAdnCanvas.getContext("2d");
+        this.cachedAdnCanvas = document.createElement('canvas');
+        this.cachedAdnCtx = this.cachedAdnCanvas.getContext('2d');
       }
-      
-      if (this.cachedAdnCanvas.width !== crop.width || this.cachedAdnCanvas.height !== crop.height) {
-         this.cachedAdnCanvas.width = crop.width;
-         this.cachedAdnCanvas.height = crop.height;
+
+      if (
+        this.cachedAdnCanvas.width !== crop.width ||
+        this.cachedAdnCanvas.height !== crop.height
+      ) {
+        this.cachedAdnCanvas.width = crop.width;
+        this.cachedAdnCanvas.height = crop.height;
       }
 
       const tctx = this.cachedAdnCtx;
@@ -585,11 +533,11 @@ export class Tower extends Sprite {
       );
 
       // tinta rsa
-      tctx.globalCompositeOperation = "source-atop";
+      tctx.globalCompositeOperation = 'source-atop';
       if (this.pokemon.isShiny && !this.pokemon.hideShiny) {
-        tctx.fillStyle = "rgba(100, 180, 255, 0.65)"; // azul
+        tctx.fillStyle = 'rgba(100, 180, 255, 0.65)'; // azul
       } else {
-        tctx.fillStyle = "rgba(255, 100, 150, 0.6)"; // rosa
+        tctx.fillStyle = 'rgba(255, 100, 150, 0.6)'; // rosa
       }
       tctx.fillRect(0, 0, crop.width, crop.height);
 
@@ -609,43 +557,41 @@ export class Tower extends Sprite {
     const r = this.range;
 
     switch (this.rangeType) {
-      case "circle":
+      case 'circle':
         return distance <= r;
-      case "donut":
+      case 'donut':
         return distance >= this.innerRange && distance <= r;
-      case "cross":
-        if (this.pokemon?.item?.id == "starPiece") {
+      case 'cross':
+        if (this.pokemon?.item?.id == 'starPiece') {
           return (
             (Math.abs(Math.abs(dx) - Math.abs(dy)) < 24 && distance <= r) ||
             (Math.abs(dx) <= 24 && Math.abs(dy) <= r) ||
             (Math.abs(dy) <= 24 && Math.abs(dx) <= r)
           );
-        } else if (this.pokemon?.item?.id == "wideLens") {
+        } else if (this.pokemon?.item?.id == 'wideLens') {
           return (
-            (Math.abs(dx) <= 36 && Math.abs(dy) <= r) ||
-            (Math.abs(dy) <= 36 && Math.abs(dx) <= r)
+            (Math.abs(dx) <= 36 && Math.abs(dy) <= r) || (Math.abs(dy) <= 36 && Math.abs(dx) <= r)
           );
         } else {
           return (
-            (Math.abs(dx) <= 24 && Math.abs(dy) <= r) ||
-            (Math.abs(dy) <= 24 && Math.abs(dx) <= r)
+            (Math.abs(dx) <= 24 && Math.abs(dy) <= r) || (Math.abs(dy) <= 24 && Math.abs(dx) <= r)
           );
         }
-      case "xShape":
-        if (this.pokemon?.item?.id == "starPiece") {
+      case 'xShape':
+        if (this.pokemon?.item?.id == 'starPiece') {
           return (
             (Math.abs(Math.abs(dx) - Math.abs(dy)) < 24 && distance <= r) ||
             (Math.abs(dx) <= 24 && Math.abs(dy) <= r) ||
             (Math.abs(dy) <= 24 && Math.abs(dx) <= r)
           );
-        } else if (this.pokemon?.item?.id == "wideLens") {
+        } else if (this.pokemon?.item?.id == 'wideLens') {
           return Math.abs(Math.abs(dx) - Math.abs(dy)) < 36 && distance <= r;
         } else {
           return Math.abs(Math.abs(dx) - Math.abs(dy)) < 24 && distance <= r;
         }
-      case "horizontalLine":
+      case 'horizontalLine':
         return Math.abs(dy) <= 24 && Math.abs(dx) <= r;
-      case "verticalLine":
+      case 'verticalLine':
         return Math.abs(dx) <= 24 && Math.abs(dy) <= r;
       default:
         return distance <= r;
@@ -666,16 +612,15 @@ export class Tower extends Sprite {
 
     this.draw();
 
-    if (!this.attackCooldown && this.attackCooldown !== 0)
-      this.attackCooldown = 0;
+    if (!this.attackCooldown && this.attackCooldown !== 0) this.attackCooldown = 0;
     // cds usan simDelta
     this.attackCooldown -= simDelta;
 
     if (this.pokemon.id == 70 && this.pokemon.adn.id == 70) return;
 
-    if (this.ability && this.ability.id === "powerAura") {
+    if (this.ability && this.ability.id === 'powerAura') {
       let auraRange = this.range;
-      if (this.pokemon?.item?.id == "revelationAroma") auraRange += 25;
+      if (this.pokemon?.item?.id == 'revelationAroma') auraRange += 25;
       let numAllies = 0;
       this.main.area.towers.forEach((tower) => {
         if (tower === this) return;
@@ -691,9 +636,9 @@ export class Tower extends Sprite {
       return;
     }
 
-    if (this.ability && this.ability.id === "triage") {
+    if (this.ability && this.ability.id === 'triage') {
       let auraRange = this.range;
-      if (this.pokemon?.item?.id == "revelationAroma") auraRange += 25;
+      if (this.pokemon?.item?.id == 'revelationAroma') auraRange += 25;
       let numAllies = 0;
       this.main.area.towers.forEach((tower) => {
         if (tower === this) return;
@@ -708,7 +653,7 @@ export class Tower extends Sprite {
       return;
     }
 
-    if (this.ability && this.ability.id === "criticalAura") {
+    if (this.ability && this.ability.id === 'criticalAura') {
       const auraRange = this.range;
       let numAllies = 0;
       this.main.area.towers.forEach((tower) => {
@@ -730,43 +675,40 @@ export class Tower extends Sprite {
     const ch = this.ctx ? this.ctx.canvas.height : 624;
 
     for (let i = 0; i < allEnemies.length; i++) {
-        const e = allEnemies[i];
-        if (e.dying || e.hp <= 0) continue;
-        
-        // Bounds check (Optimization: skip enemies strictly outside view)
-        // Adjusting slightly for enemy radius/size
-        if (e.center.x < -50 || e.center.x > cw + 50 || e.center.y < -50 || e.center.y > ch + 50) continue;
+      const e = allEnemies[i];
+      if (e.dying || e.hp <= 0) continue;
 
-        if (this.checkRange(e)) {
-            // Invisible check moved here
-            if (!this.revealInvisible && this.targetMode !== "invisible" && e.invisible) continue;
-            validEnemies.push(e);
-        }
+      // Bounds check (Optimization: skip enemies strictly outside view)
+      // Adjusting slightly for enemy radius/size
+      if (e.center.x < -50 || e.center.x > cw + 50 || e.center.y < -50 || e.center.y > ch + 50)
+        continue;
+
+      if (this.checkRange(e)) {
+        // Invisible check moved here
+        if (!this.revealInvisible && this.targetMode !== 'invisible' && e.invisible) continue;
+        validEnemies.push(e);
+      }
     }
 
-    if (
-      this.ability.id == "teleport" &&
-      validEnemies.length == 0 &&
-      this.main.area.waveActive
-    ) {
+    if (this.ability.id == 'teleport' && validEnemies.length == 0 && this.main.area.waveActive) {
       this.teleport += frameFactor;
       if (
         this.teleport >= 200 ||
-        (this.teleport >= 100 && this.pokemon?.item?.id == "ejectButton")
+        (this.teleport >= 100 && this.pokemon?.item?.id == 'ejectButton')
       ) {
         this.teleport = 0;
         this.tryTeleport();
       }
     }
 
-    if (this.ability.id === "stanceChange" && this.main.area.waveActive) {
+    if (this.ability.id === 'stanceChange' && this.main.area.waveActive) {
       this.stanceAegislash += frameFactor;
       if (this.stanceAegislash >= 500) {
         this.stanceAegislash = 0;
         if (Math.random() > 0.3) {
-          playSound("aegislashChange", "effect");
-          if (this.pokemon.attackType === "area") {
-            this.pokemon.attackType = "single";
+          playSound('aegislashChange', 'effect');
+          if (this.pokemon.attackType === 'area') {
+            this.pokemon.attackType = 'single';
             this.sprite = new Image();
             this.sprite.onload = () => {
               this.width = this.sprite.width / this.frames.max;
@@ -776,7 +718,7 @@ export class Tower extends Sprite {
             this.sprite.src = this.pokemon.sprite.image;
             this.projectile.effect = this.pokemon.specie.projectileSound;
           } else {
-            this.pokemon.attackType = "area";
+            this.pokemon.attackType = 'area';
             this.sprite = new Image();
             this.sprite.onload = () => {
               this.width = this.sprite.width / this.frames.max;
@@ -784,7 +726,7 @@ export class Tower extends Sprite {
               this.loaded = true;
             };
             this.sprite.src = this.pokemon.sprite.shield;
-            this.projectile.effect = "area1";
+            this.projectile.effect = 'area1';
           }
         }
       }
@@ -793,18 +735,14 @@ export class Tower extends Sprite {
     // TARGET
     let desiredTarget = null;
 
-    if (this.targetMode === "invisible") {
+    if (this.targetMode === 'invisible') {
       if (this.revealInvisible) {
         const invisibleList = validEnemies.filter((e) => e.invisible);
         if (invisibleList.length > 0) {
           const orderedInv = this.getOrderedEnemies(invisibleList);
           desiredTarget = orderedInv[0] || null;
         } else {
-          if (
-            this.target &&
-            validEnemies.includes(this.target) &&
-            this.target.hp > 0
-          ) {
+          if (this.target && validEnemies.includes(this.target) && this.target.hp > 0) {
             desiredTarget = this.target;
           } else {
             const ordered = this.getOrderedEnemies(validEnemies);
@@ -830,21 +768,21 @@ export class Tower extends Sprite {
     }
 
     // --- TORRES DE ÁREA ---
-    if (this.pokemon.attackType === "area") {
+    if (this.pokemon.attackType === 'area') {
       if (validEnemies.length > 0 && this.attackCooldown <= 0) {
-        playSound(this.projectile.effect, "effect");
+        playSound(this.projectile.effect, 'effect');
 
         validEnemies.forEach((enemy) => {
           let finalDamage = this.projectile.power;
 
-          if (this.pokemon?.item?.id == "softSand") {
+          if (this.pokemon?.item?.id == 'softSand') {
             let ssBonus = Math.max(0, 21 - validEnemies.length);
             finalDamage += Math.floor(finalDamage * (ssBonus / 100));
           }
 
-          if (this.pokemon?.item?.id == "protein") finalDamage += 10;
+          if (this.pokemon?.item?.id == 'protein') finalDamage += 10;
 
-          if (this.pokemon?.item?.id == "sharpBeak" && this.tile.land == 4) {
+          if (this.pokemon?.item?.id == 'sharpBeak' && this.tile.land == 4) {
             let dist = Math.sqrt(
               Math.pow(enemy.position.x - this.position.x, 2) +
                 Math.pow(enemy.position.y - this.position.y, 2)
@@ -852,57 +790,43 @@ export class Tower extends Sprite {
             let bonus = Math.sqrt(this.range / dist, 2);
             finalDamage = Math.floor(finalDamage * bonus);
           }
-          if (
-            this.pokemon?.item?.id == "quickPowder" ||
-            this.pokemon?.item?.id == "quickClaw"
-          )
+          if (this.pokemon?.item?.id == 'quickPowder' || this.pokemon?.item?.id == 'quickClaw')
             finalDamage -= Math.ceil(this.power / 2);
-          if (
-            this.pokemon?.item?.id == "metalPowder" ||
-            this.pokemon?.item?.id == "lifeOrb"
-          )
+          if (this.pokemon?.item?.id == 'metalPowder' || this.pokemon?.item?.id == 'lifeOrb')
             finalDamage += Math.ceil(this.power / 2);
-          if (this.pokemon?.item?.id == "hardStone")
-            finalDamage += Math.floor(finalDamage * 0.2);
+          if (this.pokemon?.item?.id == 'hardStone') finalDamage += Math.floor(finalDamage * 0.2);
 
-          if (this.ability?.id === "fieryDance" && enemy.burnedBy != null)
+          if (this.ability?.id === 'fieryDance' && enemy.burnedBy != null)
             finalDamage = Math.ceil(finalDamage * 2);
-          if (this.ability?.id === "stanceChange")
-            finalDamage = Math.ceil(finalDamage / 2);
+          if (this.ability?.id === 'stanceChange') finalDamage = Math.ceil(finalDamage / 2);
 
           let isCritical = false;
           if (
             Math.random() * 100 < this.critical &&
-            this.tower?.pokemon?.item?.id != "blueBandana"
+            this.tower?.pokemon?.item?.id != 'blueBandana'
           ) {
             isCritical = true;
-            let multiplier = this.ability?.id === "superCritical" ? 2.0 : 1.5;
+            let multiplier = this.ability?.id === 'superCritical' ? 2.0 : 1.5;
             if (this.criticalAura) multiplier *= 1.33;
             finalDamage = Math.ceil(finalDamage * multiplier);
           }
 
-          if (this.pokemon?.item?.id == "blueBandana");
+          if (this.pokemon?.item?.id == 'blueBandana');
 
-          finalDamage = Math.ceil(
-            finalDamage * (1 + (this.critical * 1.75) / 100)
-          );
+          finalDamage = Math.ceil(finalDamage * (1 + (this.critical * 1.75) / 100));
           finalDamage = Math.ceil(finalDamage * (1 + this.critical * 0.0075));
           enemy.getDamaged(
             finalDamage,
-            "physical",
+            'physical',
             this.pokemon.ability,
             isCritical,
             new Set(),
             this.pokemon
           );
 
-          if (
-            isCritical &&
-            this.pokemon?.item?.id == "razorClaw" &&
-            enemy.canSlow
-          )
+          if (isCritical && this.pokemon?.item?.id == 'razorClaw' && enemy.canSlow)
             enemy.applyStatusEffect({
-              type: "slow",
+              type: 'slow',
               duration: 0.2,
               slowPercent: 0.5,
             });
@@ -910,71 +834,70 @@ export class Tower extends Sprite {
           if (
             enemy.canBurn &&
             this.ability &&
-            this.ability.id === "burnNerf" &&
+            this.ability.id === 'burnNerf' &&
             Math.random() < 0.5
           ) {
-            if (this.pokemon?.item?.id == "heatRock")
+            if (this.pokemon?.item?.id == 'heatRock')
               enemy.applyStatusEffect(
-                { type: "burn", damagePercent: 0.005, duration: 20 },
+                { type: 'burn', damagePercent: 0.005, duration: 20 },
                 this.pokemon
               );
-            else if (this.pokemon?.item?.id == "falmeOrb")
+            else if (this.pokemon?.item?.id == 'falmeOrb')
               enemy.applyStatusEffect(
-                { type: "burn", damagePercent: 0.00625, duration: 10 },
+                { type: 'burn', damagePercent: 0.00625, duration: 10 },
                 this.pokemon
               );
             else
               enemy.applyStatusEffect(
-                { type: "burn", damagePercent: 0.005, duration: 10 },
+                { type: 'burn', damagePercent: 0.005, duration: 10 },
                 this.pokemon
               );
           }
-          if (enemy.canPoison && this.ability && this.ability.id === "poison") {
+          if (enemy.canPoison && this.ability && this.ability.id === 'poison') {
             enemy.applyStatusEffect(
-              { type: "poison", damagePercent: 0.001, stacks: 1 },
+              { type: 'poison', damagePercent: 0.001, stacks: 1 },
               this.pokemon
             );
             if (
-              this.pokemon?.item?.id == "toxicOrb" ||
-              (this.pokemon?.item?.id == "poisonBarb" && Math.random() < 0.5)
+              this.pokemon?.item?.id == 'toxicOrb' ||
+              (this.pokemon?.item?.id == 'poisonBarb' && Math.random() < 0.5)
             )
               enemy.applyStatusEffect(
-                { type: "poison", damagePercent: 0.001, stacks: 1 },
+                { type: 'poison', damagePercent: 0.001, stacks: 1 },
                 this.pokemon
               );
           }
           if (
             enemy.canStun &&
             this.ability &&
-            this.ability.id === "stunArea" &&
+            this.ability.id === 'stunArea' &&
             Math.random() < 0.3
           ) {
-            this.pokemon?.item?.id == "lightClay"
-              ? enemy.applyStatusEffect({ type: "stun", duration: 1.65 })
-              : enemy.applyStatusEffect({ type: "stun", duration: 1.5 });
+            this.pokemon?.item?.id == 'lightClay'
+              ? enemy.applyStatusEffect({ type: 'stun', duration: 1.65 })
+              : enemy.applyStatusEffect({ type: 'stun', duration: 1.5 });
           }
-          if (enemy.canSlow && this.ability && this.ability.id === "slow") {
-            if (this.pokemon?.item?.id == "lightClay")
+          if (enemy.canSlow && this.ability && this.ability.id === 'slow') {
+            if (this.pokemon?.item?.id == 'lightClay')
               enemy.applyStatusEffect({
-                type: "slow",
+                type: 'slow',
                 duration: 2.2,
                 slowPercent: 0.5,
               });
-            else if (this.pokemon?.item?.id == "berryJuice")
+            else if (this.pokemon?.item?.id == 'berryJuice')
               enemy.applyStatusEffect({
-                type: "slow",
+                type: 'slow',
                 duration: 2,
                 slowPercent: 0.25,
               });
             else
               enemy.applyStatusEffect({
-                type: "slow",
+                type: 'slow',
                 duration: 2,
                 slowPercent: 0.5,
               });
           }
-          if (this.ability.id === "curse")
-            enemy.applyStatusEffect({ type: "curse" });
+          if (this.ability.id === 'curse') enemy.applyStatusEffect({ type: 'curse' });
         });
 
         this.pulse.active = true;
@@ -987,15 +910,9 @@ export class Tower extends Sprite {
 
       if (this.pulse.active) {
         this.ctx.beginPath();
-        this.ctx.arc(
-          this.center.x,
-          this.center.y,
-          this.pulse.radius,
-          0,
-          Math.PI * 2
-        );
+        this.ctx.arc(this.center.x, this.center.y, this.pulse.radius, 0, Math.PI * 2);
 
-        const hex = (this.pokemon.specie.color || "#ffffff").replace("#", "");
+        const hex = (this.pokemon.specie.color || '#ffffff').replace('#', '');
         const r = parseInt(hex.substring(0, 2), 16) || 255;
         const g = parseInt(hex.substring(2, 4), 16) || 255;
         const b = parseInt(hex.substring(4, 6), 16) || 255;
@@ -1014,31 +931,29 @@ export class Tower extends Sprite {
     // --- TORRES CON PROYECTILES ---
     if (this.target && this.attackCooldown <= 0) {
       let maxShots =
-        this.ability && this.ability.id === "cradily"
+        this.ability && this.ability.id === 'cradily'
           ? this.main.player.fossilInTeam
           : this.ability &&
-            (this.ability.id === "quadraShot" ||
-              this.ability.id === "quadraShotSand")
-          ? 4
-          : this.ability && this.ability.id === "tripleShot"
-          ? 3
-          : this.ability &&
-            (this.ability.id === "doubleShot" ||
-              this.ability.id === "doubleShotSand" ||
-              this.ability.id === "curseDoubleShot" ||
-              this.ability.id === "poisonDoubleShot" ||
-              this.ability.id === "armorBreakDoubleShot" ||
-              this.pokemon?.item?.id == "zoomLens")
-          ? 2
-          : 1;
+              (this.ability.id === 'quadraShot' || this.ability.id === 'quadraShotSand')
+            ? 4
+            : this.ability && this.ability.id === 'tripleShot'
+              ? 3
+              : this.ability &&
+                  (this.ability.id === 'doubleShot' ||
+                    this.ability.id === 'doubleShotSand' ||
+                    this.ability.id === 'curseDoubleShot' ||
+                    this.ability.id === 'poisonDoubleShot' ||
+                    this.ability.id === 'armorBreakDoubleShot' ||
+                    this.pokemon?.item?.id == 'zoomLens')
+                ? 2
+                : 1;
 
-      if (this.pokemon?.item?.id == "choiceScarf") maxShots = 1;
+      if (this.pokemon?.item?.id == 'choiceScarf') maxShots = 1;
 
       const orderedAll = this.getOrderedEnemies(validEnemies);
 
       const targets = [];
-      if (this.target && validEnemies.includes(this.target))
-        targets.push(this.target);
+      if (this.target && validEnemies.includes(this.target)) targets.push(this.target);
 
       for (let i = 0; i < orderedAll.length && targets.length < maxShots; i++) {
         const cand = orderedAll[i];
@@ -1058,7 +973,7 @@ export class Tower extends Sprite {
         this.projectiles.push(proj);
       });
 
-      playSound(this.projectile.effect, "effect");
+      playSound(this.projectile.effect, 'effect');
       this.attackCooldown = this.speed;
     }
 
@@ -1079,13 +994,10 @@ export class Tower extends Sprite {
       if (
         !p.enemy ||
         p.enemy.hp <= 0 ||
-        (p.enemy.invisible &&
-          !(p.tower?.revealInvisible || p.tower?.targetMode === "invisible"))
+        (p.enemy.invisible && !(p.tower?.revealInvisible || p.tower?.targetMode === 'invisible'))
       ) {
         const fallbackSource = p.enemy ? p.enemy : { center: p.position };
-        const newTarget = p.tower
-          ? p.tower.findClosestEnemy(fallbackSource, 200)
-          : null;
+        const newTarget = p.tower ? p.tower.findClosestEnemy(fallbackSource, 200) : null;
         if (newTarget) {
           p.enemy = newTarget;
         } else {
@@ -1094,7 +1006,7 @@ export class Tower extends Sprite {
         }
       }
 
-      if (typeof p.update === "function") p.update(deltaTime); // pasamos delta ya escalado por Game
+      if (typeof p.update === 'function') p.update(deltaTime); // pasamos delta ya escalado por Game
       if (p.markedForDeletion) this.projectiles.splice(i, 1);
     }
   }
@@ -1122,108 +1034,71 @@ export class Tower extends Sprite {
 
     const hasStatus = (e, type) =>
       e.statusEffects && e.statusEffects.some((se) => se.type === type);
-    if (this.pokemon?.item?.id == "quickClaw" && this.ability.id !== "defiant")
-      this.targetMode = "faster";
+    if (this.pokemon?.item?.id == 'quickClaw' && this.ability.id !== 'defiant')
+      this.targetMode = 'faster';
 
     switch (this.targetMode) {
-      case "invisible":
-        arr.sort(
-          (a, b) => Number(b.invisible === true) - Number(a.invisible === true)
-        );
+      case 'invisible':
+        arr.sort((a, b) => Number(b.invisible === true) - Number(a.invisible === true));
         break;
-      case "first":
-        arr.sort(
-          (a, b) => (b.distanceTraveled || 0) - (a.distanceTraveled || 0)
-        ); // más recorrido primero
+      case 'first':
+        arr.sort((a, b) => (b.distanceTraveled || 0) - (a.distanceTraveled || 0)); // más recorrido primero
         break;
-      case "last":
-        arr.sort(
-          (a, b) => (a.distanceTraveled || 0) - (b.distanceTraveled || 0)
-        ); // menos recorrido primero
+      case 'last':
+        arr.sort((a, b) => (a.distanceTraveled || 0) - (b.distanceTraveled || 0)); // menos recorrido primero
         break;
-      case "faster":
+      case 'faster':
         arr.sort((a, b) => (b.speed || 0) - (a.speed || 0));
         break;
-      case "slower":
+      case 'slower':
         arr.sort((a, b) => (a.speed || 0) - (b.speed || 0));
         break;
-      case "highHP":
+      case 'highHP':
         arr.sort((a, b) => (b.hp || 0) - (a.hp || 0));
         break;
-      case "lowHP":
+      case 'lowHP':
         arr.sort((a, b) => (a.hp || 0) - (b.hp || 0));
         break;
-      case "highArmor":
+      case 'highArmor':
         arr.sort((a, b) => (b.armor || 0) - (a.armor || 0));
         break;
-      case "noArmor":
+      case 'noArmor':
         arr.sort((a, b) => Number(a.armor <= 0) - Number(b.armor <= 0));
         break;
-      case "poisoned":
-        arr.sort(
-          (a, b) =>
-            Number(hasStatus(b, "poison")) - Number(hasStatus(a, "poison"))
-        );
+      case 'poisoned':
+        arr.sort((a, b) => Number(hasStatus(b, 'poison')) - Number(hasStatus(a, 'poison')));
         break;
-      case "notPoisoned":
-        arr.sort(
-          (a, b) =>
-            Number(!hasStatus(b, "poison")) - Number(!hasStatus(a, "poison"))
-        );
+      case 'notPoisoned':
+        arr.sort((a, b) => Number(!hasStatus(b, 'poison')) - Number(!hasStatus(a, 'poison')));
         break;
-      case "burned":
-        arr.sort(
-          (a, b) => Number(hasStatus(b, "burn")) - Number(hasStatus(a, "burn"))
-        );
+      case 'burned':
+        arr.sort((a, b) => Number(hasStatus(b, 'burn')) - Number(hasStatus(a, 'burn')));
         break;
-      case "notBurned":
-        arr.sort(
-          (a, b) =>
-            Number(!hasStatus(b, "burn")) - Number(!hasStatus(a, "burn"))
-        );
+      case 'notBurned':
+        arr.sort((a, b) => Number(!hasStatus(b, 'burn')) - Number(!hasStatus(a, 'burn')));
         break;
-      case "stuned":
-        arr.sort(
-          (a, b) => Number(hasStatus(b, "stun")) - Number(hasStatus(a, "stun"))
-        );
+      case 'stuned':
+        arr.sort((a, b) => Number(hasStatus(b, 'stun')) - Number(hasStatus(a, 'stun')));
         break;
-      case "notStuned":
-        arr.sort(
-          (a, b) =>
-            Number(!hasStatus(b, "stun")) - Number(!hasStatus(a, "stun"))
-        );
+      case 'notStuned':
+        arr.sort((a, b) => Number(!hasStatus(b, 'stun')) - Number(!hasStatus(a, 'stun')));
         break;
-      case "slowed":
-        arr.sort(
-          (a, b) => Number(hasStatus(b, "slow")) - Number(hasStatus(a, "slow"))
-        );
+      case 'slowed':
+        arr.sort((a, b) => Number(hasStatus(b, 'slow')) - Number(hasStatus(a, 'slow')));
         break;
-      case "notSlowed":
-        arr.sort(
-          (a, b) =>
-            Number(!hasStatus(b, "slow")) - Number(!hasStatus(a, "slow"))
-        );
+      case 'notSlowed':
+        arr.sort((a, b) => Number(!hasStatus(b, 'slow')) - Number(!hasStatus(a, 'slow')));
         break;
-      case "cursed":
-        arr.sort(
-          (a, b) =>
-            Number(hasStatus(b, "curse")) - Number(hasStatus(a, "cursed"))
-        );
+      case 'cursed':
+        arr.sort((a, b) => Number(hasStatus(b, 'curse')) - Number(hasStatus(a, 'cursed')));
         break;
-      case "curseable":
-        arr.sort(
-          (a, b) =>
-            Number(!hasStatus(b, "curse")) - Number(!hasStatus(a, "cursed"))
-        );
+      case 'curseable':
+        arr.sort((a, b) => Number(!hasStatus(b, 'curse')) - Number(!hasStatus(a, 'cursed')));
         break;
-      case "nightmared":
-        arr.sort(
-          (a, b) =>
-            Number(hasStatus(b, "nightmare")) -
-            Number(hasStatus(a, "nightmare"))
-        );
+      case 'nightmared':
+        arr.sort((a, b) => Number(hasStatus(b, 'nightmare')) - Number(hasStatus(a, 'nightmare')));
         break;
-      case "random":
+      case 'random':
         for (let i = arr.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [arr[i], arr[j]] = [arr[j], arr[i]];
@@ -1238,118 +1113,95 @@ export class Tower extends Sprite {
 
   getTarget(validEnemies) {
     if (!validEnemies || validEnemies.length === 0) return null;
-    if (this.pokemon?.item?.id == "quickClaw" && this.ability.id !== "defiant")
-      this.targetMode = "faster";
+    if (this.pokemon?.item?.id == 'quickClaw' && this.ability.id !== 'defiant')
+      this.targetMode = 'faster';
 
     switch (this.targetMode) {
-      case "invisible":
+      case 'invisible':
         return validEnemies.find((e) => e.invisible) || validEnemies[0];
-      case "first":
+      case 'first':
         return validEnemies.reduce((prev, curr) =>
           curr.distanceTraveled > prev.distanceTraveled ? curr : prev
         );
-      case "last":
+      case 'last':
         return validEnemies.reduce((prev, curr) =>
           curr.distanceTraveled < prev.distanceTraveled ? curr : prev
         );
-      case "faster":
-        return validEnemies.reduce((prev, curr) =>
-          curr.speed > prev.speed ? curr : prev
-        );
-      case "slower":
-        return validEnemies.reduce((prev, curr) =>
-          curr.speed < prev.speed ? curr : prev
-        );
-      case "highHP":
-        return validEnemies.reduce((prev, curr) =>
-          curr.hp > prev.hp ? curr : prev
-        );
-      case "lowHP":
-        return validEnemies.reduce((prev, curr) =>
-          curr.hp < prev.hp ? curr : prev
-        );
-      case "highArmor":
+      case 'faster':
+        return validEnemies.reduce((prev, curr) => (curr.speed > prev.speed ? curr : prev));
+      case 'slower':
+        return validEnemies.reduce((prev, curr) => (curr.speed < prev.speed ? curr : prev));
+      case 'highHP':
+        return validEnemies.reduce((prev, curr) => (curr.hp > prev.hp ? curr : prev));
+      case 'lowHP':
+        return validEnemies.reduce((prev, curr) => (curr.hp < prev.hp ? curr : prev));
+      case 'highArmor':
         return validEnemies.reduce(
           (prev, curr) => (curr.armor > prev.armor ? curr : prev),
           validEnemies[0]
         );
-      case "noArmor":
+      case 'noArmor':
         return validEnemies.find((e) => e.armor <= 0) || validEnemies[0];
-      case "poisoned":
+      case 'poisoned':
         return (
-          validEnemies.find((e) =>
-            e.statusEffects.some((s) => s.type === "poison")
-          ) || validEnemies[0]
+          validEnemies.find((e) => e.statusEffects.some((s) => s.type === 'poison')) ||
+          validEnemies[0]
         );
-      case "notPoisoned":
-        return (
-          validEnemies.find(
-            (e) =>
-              e.canPoison !== false &&
-              !e.statusEffects.some((s) => s.type === "poison")
-          ) || validEnemies[0]
-        );
-      case "burned":
-        return (
-          validEnemies.find((e) =>
-            e.statusEffects.some((s) => s.type === "burn")
-          ) || validEnemies[0]
-        );
-      case "notBurned":
+      case 'notPoisoned':
         return (
           validEnemies.find(
-            (e) =>
-              e.canBurn !== false &&
-              !e.statusEffects.some((s) => s.type === "burn")
+            (e) => e.canPoison !== false && !e.statusEffects.some((s) => s.type === 'poison')
           ) || validEnemies[0]
         );
-      case "stuned":
+      case 'burned':
         return (
-          validEnemies.find((e) =>
-            e.statusEffects.some((s) => s.type === "stun")
-          ) || validEnemies[0]
+          validEnemies.find((e) => e.statusEffects.some((s) => s.type === 'burn')) ||
+          validEnemies[0]
         );
-      case "notStuned":
+      case 'notBurned':
         return (
           validEnemies.find(
-            (e) =>
-              e.canStun !== false &&
-              !e.statusEffects.some((s) => s.type === "stun")
+            (e) => e.canBurn !== false && !e.statusEffects.some((s) => s.type === 'burn')
           ) || validEnemies[0]
         );
-      case "slowed":
+      case 'stuned':
         return (
-          validEnemies.find((e) =>
-            e.statusEffects.some((s) => s.type === "slow")
-          ) || validEnemies[0]
+          validEnemies.find((e) => e.statusEffects.some((s) => s.type === 'stun')) ||
+          validEnemies[0]
         );
-      case "notSlowed":
+      case 'notStuned':
         return (
           validEnemies.find(
-            (e) =>
-              e.canSlow !== false &&
-              !e.statusEffects.some((s) => s.type === "slow")
+            (e) => e.canStun !== false && !e.statusEffects.some((s) => s.type === 'stun')
           ) || validEnemies[0]
         );
-      case "cursed":
+      case 'slowed':
         return (
-          validEnemies.find((e) =>
-            e.statusEffects.some((s) => s.type === "curse")
-          ) || validEnemies[0]
+          validEnemies.find((e) => e.statusEffects.some((s) => s.type === 'slow')) ||
+          validEnemies[0]
         );
-      case "curseable":
+      case 'notSlowed':
         return (
           validEnemies.find(
-            (e) => !e.statusEffects.some((s) => s.type === "curse")
+            (e) => e.canSlow !== false && !e.statusEffects.some((s) => s.type === 'slow')
           ) || validEnemies[0]
         );
-      case "nightmared":
+      case 'cursed':
         return (
-          validEnemies.find((e) =>
-            e.statusEffects.some((s) => s.type === "nightmare")
-          ) || validEnemies[0]
+          validEnemies.find((e) => e.statusEffects.some((s) => s.type === 'curse')) ||
+          validEnemies[0]
         );
-      case "random":
+      case 'curseable':
+        return (
+          validEnemies.find((e) => !e.statusEffects.some((s) => s.type === 'curse')) ||
+          validEnemies[0]
+        );
+      case 'nightmared':
+        return (
+          validEnemies.find((e) => e.statusEffects.some((s) => s.type === 'nightmare')) ||
+          validEnemies[0]
+        );
+      case 'random':
         return validEnemies[Math.floor(Math.random() * validEnemies.length)];
       default:
         return validEnemies[0];
@@ -1357,8 +1209,8 @@ export class Tower extends Sprite {
   }
 
   tryTeleport() {
-    if (this.pokemon?.item?.id == "twistedSpoon") {
-      playSound("teleport", "effect");
+    if (this.pokemon?.item?.id == 'twistedSpoon') {
+      playSound('teleport', 'effect');
       !this.teleportBuff ? (this.teleportBuff = 2) : this.teleportBuff++;
     } else {
       const tiles = this.main.area.placementTiles.filter(
@@ -1366,22 +1218,18 @@ export class Tower extends Sprite {
       );
       const tile = tiles[Math.floor(Math.random() * tiles.length)];
 
-      const index = this.main.area.towers.findIndex(
-        (tower) => tower.pokemon == this.pokemon
-      );
+      const index = this.main.area.towers.findIndex((tower) => tower.pokemon == this.pokemon);
       if (index !== -1) {
         this.main.area.towers[index].tile.tower = false;
         this.main.area.towers[index].pokemon.tilePosition = -1;
         this.main.area.towers.splice(index, 1);
       }
 
-      const indexTeam = this.main.team.pokemon.findIndex(
-        (pokemon) => pokemon == this.pokemon
-      );
+      const indexTeam = this.main.team.pokemon.findIndex((pokemon) => pokemon == this.pokemon);
 
       !this.teleportBuff ? (this.teleportBuff = 2) : this.teleportBuff++;
 
-      playSound("teleport", "effect");
+      playSound('teleport', 'effect');
       this.main.area.towers.push(
         new Tower(
           this.main,

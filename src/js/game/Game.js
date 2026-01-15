@@ -1,21 +1,21 @@
-import { Tower } from "./component/Tower.js";
-import { text } from "../file/text.js";
-import { playSound } from "../file/audio.js";
-import { GAME_CONFIG, COLORS } from "./Config.js";
+import { Tower } from './component/Tower.js';
+import { text } from '../file/text.js';
+import { playSound } from '../file/audio.js';
+import { GAME_CONFIG, COLORS } from './Config.js';
 
 export class Game {
   constructor(main) {
     this.main = main;
 
-    this.canvas = document.createElement("canvas");
+    this.canvas = document.createElement('canvas');
     this.canvas.width = GAME_CONFIG.CANVAS.WIDTH;
     this.canvas.height = GAME_CONFIG.CANVAS.HEIGHT;
-    this.ctx = this.canvas.getContext("2d");
+    this.ctx = this.canvas.getContext('2d');
     this.canvasBackground = new Image();
     this.canvasEffect = new Image();
     this.effectEnabled = false;
     this.effectTime = 0;
-    document.getElementById("screen").appendChild(this.canvas);
+    document.getElementById('screen').appendChild(this.canvas);
 
     this.deployingUnit = undefined;
     this.stopped = false;
@@ -66,17 +66,8 @@ export class Game {
 
     // render
     if (this.ctx) {
-      if (
-        this.canvasBackground.complete &&
-        this.canvasBackground.naturalWidth !== 0
-      ) {
-        this.ctx.drawImage(
-          this.canvasBackground,
-          0,
-          0,
-          this.canvas.width,
-          this.canvas.height
-        );
+      if (this.canvasBackground.complete && this.canvasBackground.naturalWidth !== 0) {
+        this.ctx.drawImage(this.canvasBackground, 0, 0, this.canvas.width, this.canvas.height);
       } else {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       }
@@ -106,7 +97,7 @@ export class Game {
           enemy.position.y - GAME_CONFIG.ENEMY_BOUNDS_MARGIN > this.canvas.height ||
           enemy.position.y < -GAME_CONFIG.ENEMY_BOUNDS_MARGIN
         ) {
-          playSound("hit2", "effect");
+          playSound('hit2', 'effect');
           this.main.player.getDamaged(enemy.power);
           const idx = enemies.indexOf(enemy);
           if (idx !== -1) enemies.splice(idx, 1);
@@ -119,12 +110,12 @@ export class Game {
 
     // update tiles
     for (let i = 0; i < tiles.length; i++) {
-        tiles[i].update(this.mouse);
+      tiles[i].update(this.mouse);
     }
 
     // update towers
     for (let i = 0; i < towers.length; i++) {
-        towers[i].update(enemies, scaledDelta);
+      towers[i].update(enemies, scaledDelta);
     }
 
     // end of wave
@@ -134,25 +125,25 @@ export class Game {
 
     // draw damage texts
     if (this.main.showDamage) {
-        for (let i = 0; i < enemies.length; i++) {
-            enemies[i].drawFloatingTexts();
-        }
+      for (let i = 0; i < enemies.length; i++) {
+        enemies[i].drawFloatingTexts();
+      }
     }
 
     if (this.ranges) {
-        for (let i = 0; i < tiles.length; i++) {
-            const tile = tiles[i];
-            if (tile.tower) {
-                tile.drawRange(
-                    tile.tower.range,
-                    tile.tower.rangeType,
-                    tile.tower.innerRange,
-                    tile.tower.ability,
-                    tile.tower.item,
-                    true
-                );
-            }
+      for (let i = 0; i < tiles.length; i++) {
+        const tile = tiles[i];
+        if (tile.tower) {
+          tile.drawRange(
+            tile.tower.range,
+            tile.tower.rangeType,
+            tile.tower.innerRange,
+            tile.tower.ability,
+            tile.tower.item,
+            true
+          );
         }
+      }
     }
 
     if (this.effectEnabled) {
@@ -161,13 +152,7 @@ export class Game {
 
       this.ctx.save();
       this.ctx.globalAlpha = 0.85 + 0.15 * Math.sin(this.effectTime * 0.002);
-      this.ctx.drawImage(
-        this.canvasEffect,
-        0,
-        0,
-        this.canvas.width,
-        this.canvas.height
-      );
+      this.ctx.drawImage(this.canvasEffect, 0, 0, this.canvas.width, this.canvas.height);
       this.ctx.restore();
     }
   }
@@ -194,26 +179,25 @@ export class Game {
     this.deployingUnit = this.main.team.pokemon[pos];
     if (this.deployingUnit.isDeployed) this.retireUnit();
     else {
-      playSound("click1", "ui");
+      playSound('click1', 'ui');
       // this.main.notification.display(text.notification.deploy[this.main.lang]);
-      this.main.UI.pokemon[pos].deploy.innerText =
-        text.ui.deploying[this.main.lang].toUpperCase();
-      this.main.UI.pokemon[pos].deploy.style.background = "var(--orange)";
+      this.main.UI.pokemon[pos].deploy.innerText = text.ui.deploying[this.main.lang].toUpperCase();
+      this.main.UI.pokemon[pos].deploy.style.background = 'var(--orange)';
 
       this.main.UI.nextWave.style.filter = `brightness(0.8)`;
-      this.main.UI.nextWave.style.pointerEvents = "none";
+      this.main.UI.nextWave.style.pointerEvents = 'none';
     }
   }
 
   cancelDeployUnit() {
-    playSound("pop0", "ui");
+    playSound('pop0', 'ui');
     this.deployingUnit = undefined;
 
     this.main.UI.updatePokemon();
     if (!this.main.area.waveActive) {
       this.main.UI.revertUI();
       this.main.UI.nextWave.style.filter = `revert-layer`;
-      this.main.UI.nextWave.style.pointerEvents = "revert-layer";
+      this.main.UI.nextWave.style.pointerEvents = 'revert-layer';
     }
   }
 
@@ -221,21 +205,13 @@ export class Game {
     if (!this.deployingUnit || !this.activeTile) return;
     if (
       !this.deployingUnit.tiles.includes(this.activeTile.land) &&
-      !(
-        this.deployingUnit?.item?.id == "airBalloon" &&
-        this.activeTile.land == 4
-      ) &&
-      !(
-        this.deployingUnit?.item?.id == "heavyDutyBoots" &&
-        this.activeTile.land == 2
-      ) &&
-      !(
-        this.deployingUnit?.item?.id == "dampMulch" && this.activeTile.land == 1
-      )
+      !(this.deployingUnit?.item?.id == 'airBalloon' && this.activeTile.land == 4) &&
+      !(this.deployingUnit?.item?.id == 'heavyDutyBoots' && this.activeTile.land == 2) &&
+      !(this.deployingUnit?.item?.id == 'dampMulch' && this.activeTile.land == 1)
     )
       return;
 
-    playSound("equip", "ui");
+    playSound('equip', 'ui');
     this.deployingUnit.isDeployed = true;
 
     // ADD TOWER
@@ -257,7 +233,7 @@ export class Game {
     if (!this.main.area.waveActive) {
       this.main.UI.revertUI();
       this.main.UI.nextWave.style.filter = `revert-layer`;
-      this.main.UI.nextWave.style.pointerEvents = "revert-layer";
+      this.main.UI.nextWave.style.pointerEvents = 'revert-layer';
     }
     this.main.UI.tilesCountNum[this.activeTile.land - 1]++;
     this.main.UI.update();
@@ -266,11 +242,9 @@ export class Game {
   retireUnit() {
     if (!this.deployingUnit) return;
     this.deployingUnit.isDeployed = false;
-    playSound("unequip", "ui");
+    playSound('unequip', 'ui');
 
-    const index = this.main.area.towers.findIndex(
-      (tower) => tower.pokemon == this.deployingUnit
-    );
+    const index = this.main.area.towers.findIndex((tower) => tower.pokemon == this.deployingUnit);
     if (index !== -1) {
       this.main.UI.tilesCountNum[this.main.area.towers[index].tile.land - 1]--;
       this.main.area.towers[index].tile.tower = false;
@@ -284,7 +258,7 @@ export class Game {
   }
 
   setEvents() {
-    this.canvas.addEventListener("mousemove", (event) => {
+    this.canvas.addEventListener('mousemove', (event) => {
       this.mouse.x = event.offsetX;
       this.mouse.y = event.offsetY;
 
@@ -304,7 +278,7 @@ export class Game {
       }
     });
 
-    this.canvas.addEventListener("click", (event) => {
+    this.canvas.addEventListener('click', (event) => {
       if (this.activeTile && !this.activeTile.tower && this.deployingUnit) {
         this.deployUnit();
       } else if (this.activeTile?.tower) {
@@ -317,7 +291,7 @@ export class Game {
       }
     });
 
-    this.canvas.addEventListener("contextmenu", (event) => {
+    this.canvas.addEventListener('contextmenu', (event) => {
       if (this.activeTile?.tower) {
         const index = this.main.team.pokemon.findIndex(
           (pokemon) => this.activeTile.tower === pokemon
@@ -328,7 +302,7 @@ export class Game {
   }
 
   toggleSpeed() {
-    playSound("option", "ui");
+    playSound('option', 'ui');
     if (this.speedFactor === GAME_CONFIG.SPEED_FACTORS.NORMAL) {
       this.speedFactor = GAME_CONFIG.SPEED_FACTORS.FAST;
       this.main.UI.speedWave.style.background = COLORS.SPEED_FAST;

@@ -1,20 +1,20 @@
-import { GameScene } from "../../utils/GameScene.js";
-import { Element } from "../../utils/Element.js";
-import { text } from "../../file/text.js";
-import { playSound, setVolume } from "../../file/audio.js";
-import { Input } from "../../utils/Input.js";
+import { GameScene } from '../../utils/GameScene.js';
+import { Element } from '../../utils/Element.js';
+import { text } from '../../file/text.js';
+import { playSound, setVolume } from '../../file/audio.js';
+import { Input } from '../../utils/Input.js';
 
 const OPTION = {
   language: [
-    "English",
-    "Español",
-    "Français",
-    "Português",
-    "Italiano",
-    "Deutsch",
-    "日本語",
-    "한국어",
-    "繁體中文",
+    'English',
+    'Español',
+    'Français',
+    'Português',
+    'Italiano',
+    'Deutsch',
+    '日本語',
+    '한국어',
+    '繁體中文',
   ],
   audio: Array.from({ length: 21 }, (_, i) => (i * 5).toString()),
   reset: [0, 1, 2],
@@ -23,190 +23,179 @@ const OPTION = {
 const CREDITS = {
   developer: {
     label: [
-      "Developer",
-      "Desarrollador",
-      "Développeur",
-      "Desenvolvedor",
-      "Sviluppatore",
-      "Entwickler",
-      "開発者",
-      "개발자",
-      "开发者",
+      'Developer',
+      'Desarrollador',
+      'Développeur',
+      'Desenvolvedor',
+      'Sviluppatore',
+      'Entwickler',
+      '開発者',
+      '개발자',
+      '开发者',
     ],
-    content:
-      '<a href="https://x.com/khydra98" target="_blank" class="link-red">KHYDRA</a>',
+    content: '<a href="https://x.com/khydra98" target="_blank" class="link-red">KHYDRA</a>',
   },
   mapArtist: {
     label: [
-      "Map Artist",
-      "Artista de mapas",
-      "Artiste des cartes",
-      "Artista de mapas",
-      "Artista di mappe",
-      "Kartenkünstler",
-      "マップアーティスト",
-      "지도 아티스트",
-      "地图绘师",
+      'Map Artist',
+      'Artista de mapas',
+      'Artiste des cartes',
+      'Artista de mapas',
+      'Artista di mappe',
+      'Kartenkünstler',
+      'マップアーティスト',
+      '지도 아티스트',
+      '地图绘师',
     ],
-    content: "NOELLE",
+    content: 'NOELLE',
   },
   testers: {
     label: [
-      "Testers",
-      "Testers",
-      "Testeurs",
-      "Testadores",
-      "Tester",
-      "Tester",
-      "テスター",
-      "테스터",
-      "测试员",
+      'Testers',
+      'Testers',
+      'Testeurs',
+      'Testadores',
+      'Tester',
+      'Tester',
+      'テスター',
+      '테스터',
+      '测试员',
     ],
     content:
       '<a href="https://www.youtube.com/@KhytrayerDofus/videos" target="_blank" class="link-red">KHYTRAYER</a> & SINGA',
   },
   traductions: {
     title: [
-      "translations",
-      "traducciones",
-      "traductions",
-      "traduções",
-      "traduzioni",
-      "Übersetzungen",
-      "翻訳",
-      "번역",
-      "翻译",
+      'translations',
+      'traducciones',
+      'traductions',
+      'traduções',
+      'traduzioni',
+      'Übersetzungen',
+      '翻訳',
+      '번역',
+      '翻译',
     ],
     label: {
       0: [
-        "German",
-        "Alemán",
-        "Allemand",
-        "Alemão",
-        "Tedesco",
-        "Deutsch",
-        "ドイツ語",
-        "독일어",
-        "德语",
+        'German',
+        'Alemán',
+        'Allemand',
+        'Alemão',
+        'Tedesco',
+        'Deutsch',
+        'ドイツ語',
+        '독일어',
+        '德语',
       ],
       1: [
-        "Korean",
-        "Coreano",
-        "Coréen",
-        "Coreano",
-        "Coreano",
-        "Koreanisch",
-        "韓国語",
-        "한국어",
-        "韩语",
+        'Korean',
+        'Coreano',
+        'Coréen',
+        'Coreano',
+        'Coreano',
+        'Koreanisch',
+        '韓国語',
+        '한국어',
+        '韩语',
       ],
       2: [
-        "French",
-        "Francés",
-        "Français",
-        "Francês",
-        "Francese",
-        "Französisch",
-        "フランス語",
-        "프랑스어",
-        "法语",
+        'French',
+        'Francés',
+        'Français',
+        'Francês',
+        'Francese',
+        'Französisch',
+        'フランス語',
+        '프랑스어',
+        '法语',
       ],
     },
     content: {
       0: '<a href="https://www.twitch.tv/tsukiya__" target="_blank" class="link-red">TSUKIYA</a> <br> Khaotik',
-      1: "NamedHwi",
-      2: "Lugiadrien <br>Pistol <br>Ymass <br>Erose <br>Gamonymous <br>Wololo <br>RoRoSoK <br>Cam <br>TaejaMyungsik",
+      1: 'NamedHwi',
+      2: 'Lugiadrien <br>Pistol <br>Ymass <br>Erose <br>Gamonymous <br>Wololo <br>RoRoSoK <br>Cam <br>TaejaMyungsik',
     },
   },
   assets: {
     title: [
-      "Assets",
-      "Recursos",
-      "Ressources",
-      "Recursos",
-      "Risorse",
-      "Assets",
-      "アセット",
-      "자산",
-      "资源",
+      'Assets',
+      'Recursos',
+      'Ressources',
+      'Recursos',
+      'Risorse',
+      'Assets',
+      'アセット',
+      '자산',
+      '资源',
     ],
     label: {
       0: [
-        "Projectiles",
-        "Proyectiles",
-        "Projectiles",
-        "Projéteis",
-        "Proiettili",
-        "Projektile",
-        "弾",
-        "투사체",
-        "投射物",
+        'Projectiles',
+        'Proyectiles',
+        'Projectiles',
+        'Projéteis',
+        'Proiettili',
+        'Projektile',
+        '弾',
+        '투사체',
+        '投射物',
       ],
       1: [
-        "Icons (menu)",
-        "Iconos (menú)",
-        "Icônes (menu)",
-        "Ícones (menu)",
-        "Icone (menu)",
-        "Symbole (Menü)",
-        "アイコン（メニュー）",
-        "아이콘(메뉴)",
-        "图标（菜单",
+        'Icons (menu)',
+        'Iconos (menú)',
+        'Icônes (menu)',
+        'Ícones (menu)',
+        'Icone (menu)',
+        'Symbole (Menü)',
+        'アイコン（メニュー）',
+        '아이콘(메뉴)',
+        '图标（菜单',
       ],
       2: [
-        "Icons (flags)",
-        "Iconos (banderas)",
-        "Icônes (drapeaux)",
-        "Ícones (bandeiras)",
-        "Icone (bandiere)",
-        "Symbole (Flaggen)",
-        "アイコン（旗）",
-        "아이콘(깃발)",
-        "图标（旗帜",
+        'Icons (flags)',
+        'Iconos (banderas)',
+        'Icônes (drapeaux)',
+        'Ícones (bandeiras)',
+        'Icone (bandiere)',
+        'Symbole (Flaggen)',
+        'アイコン（旗）',
+        '아이콘(깃발)',
+        '图标（旗帜',
       ],
-      3: [
-        "Music",
-        "Música",
-        "Musique",
-        "Música",
-        "Musica",
-        "Musik",
-        "音楽",
-        "음악",
-        "音乐",
-      ],
+      3: ['Music', 'Música', 'Musique', 'Música', 'Musica', 'Musik', '音楽', '음악', '音乐'],
       4: [
-        "Items",
-        "Objetos",
-        "Objets",
-        "Itens",
-        "Oggetti",
-        "Gegenstände",
-        "アイテム",
-        "아이템",
-        "物品",
+        'Items',
+        'Objetos',
+        'Objets',
+        'Itens',
+        'Oggetti',
+        'Gegenstände',
+        'アイテム',
+        '아이템',
+        '物品',
       ],
       5: [
-        "Tileset",
-        "Tileset",
-        "Tileset",
-        "Tileset",
-        "Tileset",
-        "Tileset",
-        "タイルセット",
-        "타일셋",
-        "图块集",
+        'Tileset',
+        'Tileset',
+        'Tileset',
+        'Tileset',
+        'Tileset',
+        'Tileset',
+        'タイルセット',
+        '타일셋',
+        '图块集',
       ],
       6: [
-        "Sprites",
-        "Sprites",
-        "Sprites",
-        "Sprites",
-        "Sprites",
-        "Sprites",
-        "スプライト",
-        "스프라이트",
-        "精灵",
+        'Sprites',
+        'Sprites',
+        'Sprites',
+        'Sprites',
+        'Sprites',
+        'Sprites',
+        'スプライト',
+        '스프라이트',
+        '精灵',
       ],
     },
     content: {
@@ -232,7 +221,7 @@ const CREDITS = {
 				<br> fledermaus <br> FlowerSnek <br> FrivolousAqua <br> Frostdrop1 <br> G〜 <br> Gayschlatt <br> Gelius <br> Ginnie 
 				<br> Giru <br> Grimlin <br> gromchurch <br> Gust <br> GustavoMusinTG <br> Hanbei <br> Hemlock <br> <span style="font-size: 12px;">HopeBurnsBright2008 </span>
 				<br> Ichor <br> Inv3rse <br> <span style="font-size: 10px;">jackolanternjackalope</span> <br> Jarleypeño <br> Jelly <br> JemDragons <br> JFain <br> Jhony-Rex 
-				<br> JkKU　(Jenrikku) <br> JuanmaSG <br> JustAGunk <br> Katach314 <br> Kawaiitron <br> KCN015 <br> Keldaan <br> Kevin0itachi 
+				<br> JkKU (Jenrikku) <br> JuanmaSG <br> JustAGunk <br> Katach314 <br> Kawaiitron <br> KCN015 <br> Keldaan <br> Kevin0itachi 
 				<br> LazerBlitz <br> leafia_barrett <br> LegendaryPhoenix <br> Leif <br> lemongrass <br> LightBlueBlaze <br> Limomon <br> lokatts 
 				<br> LornaWR <br> lovefulpup <br> Lovi <br> LT <br> Luca <br> LuchuIsASquirrel <br> Luna-Alex <br> Magu <br> Maruvert 
 				<br> MeepTheMareep02 <br> Meganai <br> metalbear <br> Michael12 <br> Miju <br> MilesFarber <br> mixy:3 <br> Mojo <br> Mond 
@@ -284,208 +273,158 @@ const CREDITS = {
 
 const SHORTCUTS = {
   key: {
-    0: ["0–9", "0–9", "0–9", "0–9", "0–9", "0–9", "0-9", "0–9", "0–9"],
-    1: ["Q", "Q", "A", "Q", "Q", "Q", "Q", "Q", "Q"],
-    2: ["W", "W", "Z", "W", "W", "W", "W", "W", "W"],
-    3: ["E", "E", "E", "E", "E", "E", "E", "E", "E"],
-    4: ["S", "S", "S", "S", "S", "S", "S", "S", "S"],
-    5: ["Z", "Z", "W", "Z", "Z", "Y", "Z", "Z", "Z"],
-    6: ["X", "X", "X", "X", "X", "X", "X", "X", "X"],
-    7: ["Esc", "Esc", "Échap", "Esc", "Esc", "Esc", "Esc", "Esc", "Esc"],
+    0: ['0–9', '0–9', '0–9', '0–9', '0–9', '0–9', '0-9', '0–9', '0–9'],
+    1: ['Q', 'Q', 'A', 'Q', 'Q', 'Q', 'Q', 'Q', 'Q'],
+    2: ['W', 'W', 'Z', 'W', 'W', 'W', 'W', 'W', 'W'],
+    3: ['E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E'],
+    4: ['S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'],
+    5: ['Z', 'Z', 'W', 'Z', 'Z', 'Y', 'Z', 'Z', 'Z'],
+    6: ['X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'],
+    7: ['Esc', 'Esc', 'Échap', 'Esc', 'Esc', 'Esc', 'Esc', 'Esc', 'Esc'],
     8: [
-      "Space",
-      "Espacio",
-      "Espace",
-      "Espaço",
-      "Spazio",
-      "Leertaste",
-      "スペース",
-      "스페이스",
-      "空格",
+      'Space',
+      'Espacio',
+      'Espace',
+      'Espaço',
+      'Spazio',
+      'Leertaste',
+      'スペース',
+      '스페이스',
+      '空格',
     ],
-    9: [
-      "Shift",
-      "Shift",
-      "Maj",
-      "Shift",
-      "Shift",
-      "Shift",
-      "Shift",
-      "Shift",
-      "Shift",
-    ],
+    9: ['Shift', 'Shift', 'Maj', 'Shift', 'Shift', 'Shift', 'Shift', 'Shift', 'Shift'],
     10: [
-      "Ctrl + (1-5)",
-      "Ctrl + (1-5)",
-      "Ctrl + (1-5)",
-      "Ctrl + (1-5)",
-      "Ctrl + (1-5)",
-      "Ctrl + (1-5)",
-      "Ctrl + (1-5)",
-      "Ctrl + (1-5)",
-      "Ctrl + (1-5)",
+      'Ctrl + (1-5)',
+      'Ctrl + (1-5)',
+      'Ctrl + (1-5)',
+      'Ctrl + (1-5)',
+      'Ctrl + (1-5)',
+      'Ctrl + (1-5)',
+      'Ctrl + (1-5)',
+      'Ctrl + (1-5)',
+      'Ctrl + (1-5)',
     ],
-    11: [
-      "F1-F5",
-      "F1-F5",
-      "F1-F5",
-      "F1-F5",
-      "F1-F5",
-      "F1-F5",
-      "F1-F5",
-      "F1-F5",
-      "F1-F5",
-    ],
-    12: ["F11", "F11", "F11", "F11", "F11", "F11", "F11", "F11", "F11"],
+    11: ['F1-F5', 'F1-F5', 'F1-F5', 'F1-F5', 'F1-F5', 'F1-F5', 'F1-F5', 'F1-F5', 'F1-F5'],
+    12: ['F11', 'F11', 'F11', 'F11', 'F11', 'F11', 'F11', 'F11', 'F11'],
   },
   do: {
     0: [
-      "Place Pokémon",
-      "Colocar Pokémon",
-      "Placer un Pokémon",
-      "Colocar Pokémon",
-      "Posiziona Pokémon",
-      "Pokémon platz.",
-      "ポケモンを配置",
-      "포켓몬 배치",
-      "放置宝可梦",
+      'Place Pokémon',
+      'Colocar Pokémon',
+      'Placer un Pokémon',
+      'Colocar Pokémon',
+      'Posiziona Pokémon',
+      'Pokémon platz.',
+      'ポケモンを配置',
+      '포켓몬 배치',
+      '放置宝可梦',
     ],
     1: [
-      "Profile",
-      "Perfil",
-      "Profil",
-      "Perfil",
-      "Profilo",
-      "Profil",
-      "プロフィール",
-      "프로필",
-      "个人资料",
+      'Profile',
+      'Perfil',
+      'Profil',
+      'Perfil',
+      'Profilo',
+      'Profil',
+      'プロフィール',
+      '프로필',
+      '个人资料',
     ],
-    2: [
-      "Map",
-      "Mapa",
-      "Carte",
-      "Mapa",
-      "Mappa",
-      "Karte",
-      "マップ",
-      "맵",
-      "地图",
-    ],
-    3: [
-      "Box",
-      "Caja",
-      "Boite",
-      "Caixa",
-      "Box",
-      "Box",
-      "ボックス",
-      "박스",
-      "箱子",
-    ],
-    4: [
-      "Shop",
-      "Tienda",
-      "Boutique",
-      "Loja",
-      "Negozio",
-      "Laden",
-      "ショップ",
-      "상점",
-      "商店",
-    ],
+    2: ['Map', 'Mapa', 'Carte', 'Mapa', 'Mappa', 'Karte', 'マップ', '맵', '地图'],
+    3: ['Box', 'Caja', 'Boite', 'Caixa', 'Box', 'Box', 'ボックス', '박스', '箱子'],
+    4: ['Shop', 'Tienda', 'Boutique', 'Loja', 'Negozio', 'Laden', 'ショップ', '상점', '商店'],
     5: [
-      "Graphic Mode",
-      "Modo gráfico",
-      "Mode graphique",
-      "Modo gráfico",
-      "Modalità grafica",
-      "Graphmodus",
-      "グラフィックモード",
-      "그래픽 모드",
-      "图形模式",
+      'Graphic Mode',
+      'Modo gráfico',
+      'Mode graphique',
+      'Modo gráfico',
+      'Modalità grafica',
+      'Graphmodus',
+      'グラフィックモード',
+      '그래픽 모드',
+      '图形模式',
     ],
     6: [
-      "Show ranges",
-      "Mostrar rangos",
-      "Afficher portées",
-      "Most. intervalos",
-      "Mostra intervalli",
-      "Reichweite zeigen",
-      "範囲を表示",
-      "범위 표시",
-      "顯示範圍",
+      'Show ranges',
+      'Mostrar rangos',
+      'Afficher portées',
+      'Most. intervalos',
+      'Mostra intervalli',
+      'Reichweite zeigen',
+      '範囲を表示',
+      '범위 표시',
+      '顯示範圍',
     ],
     7: [
-      "Close window",
-      "Cerrar ventana",
-      "Fermer la fenêtre",
-      "Fechar janela",
-      "Chiudi finestra",
-      "Schließen",
-      "ウィンドウを閉じる",
-      "창 닫기",
-      "关闭窗口",
+      'Close window',
+      'Cerrar ventana',
+      'Fermer la fenêtre',
+      'Fechar janela',
+      'Chiudi finestra',
+      'Schließen',
+      'ウィンドウを閉じる',
+      '창 닫기',
+      '关闭窗口',
     ],
     8: [
-      "Next wave",
-      "Siguiente oleada",
-      "Vague suivante",
-      "Próxima onda",
-      "Ondata successiva",
-      "Nächste Welle",
-      "次のウェーブ",
-      "다음 웨이브",
-      "下一波",
+      'Next wave',
+      'Siguiente oleada',
+      'Vague suivante',
+      'Próxima onda',
+      'Ondata successiva',
+      'Nächste Welle',
+      '次のウェーブ',
+      '다음 웨이브',
+      '下一波',
     ],
     9: [
-      "Toggle Speed",
-      "Cambiar Velocidad",
-      "Modifier Vitesse",
-      "Alternar Velocidade",
-      "Cambia Velocità",
-      "Geschw. wechseln",
-      "速度切替",
-      "속도 전환",
-      "切換速度",
+      'Toggle Speed',
+      'Cambiar Velocidad',
+      'Modifier Vitesse',
+      'Alternar Velocidade',
+      'Cambia Velocità',
+      'Geschw. wechseln',
+      '速度切替',
+      '속도 전환',
+      '切換速度',
     ],
     10: [
-      "Save Team",
-      "Guardar equipo",
+      'Save Team',
+      'Guardar equipo',
       "Enregistrer l'équipe",
-      "Salvar equipe",
-      "Salva squadra",
-      "Team speichern",
-      "チームを保存",
-      "팀 저장",
-      "保存队伍",
+      'Salvar equipe',
+      'Salva squadra',
+      'Team speichern',
+      'チームを保存',
+      '팀 저장',
+      '保存队伍',
     ],
     11: [
-      "Load Team",
-      "Cargar equipo",
+      'Load Team',
+      'Cargar equipo',
       "Charger l'équipe",
-      "Carregar equipe",
-      "Carica squadra",
-      "Team laden",
-      "チームを読み込む",
-      "팀 불러오기",
-      "加载队伍",
+      'Carregar equipe',
+      'Carica squadra',
+      'Team laden',
+      'チームを読み込む',
+      '팀 불러오기',
+      '加载队伍',
     ],
     12: [
-      "Full Screen",
-      "Pantalla completa",
-      "Plein écran",
-      "Tela cheia",
-      "Schermo intero",
-      "Vollbild",
-      "全画面",
-      "전체 화면",
-      "全螢幕",
+      'Full Screen',
+      'Pantalla completa',
+      'Plein écran',
+      'Tela cheia',
+      'Schermo intero',
+      'Vollbild',
+      '全画面',
+      '전체 화면',
+      '全螢幕',
     ],
   },
 };
 
-const audioKeys = ["master", "music", "ui", "effects"];
+const audioKeys = ['master', 'music', 'ui', 'effects'];
 
 export class MenuScene extends GameScene {
   constructor(main) {
@@ -510,80 +449,80 @@ export class MenuScene extends GameScene {
   render() {
     this.title.innerHTML = text.menu.title[this.main.lang].toUpperCase();
     this.menuContainer = new Element(this.container, {
-      className: "menu-scene-container",
+      className: 'menu-scene-container',
     }).element;
 
     // SETTINGS
     this.sectionSettings = new Element(this.menuContainer, {
-      className: "menu-scene-section",
+      className: 'menu-scene-section',
     }).element;
     this.titleSettings = new Element(this.sectionSettings, {
-      className: "menu-scene-section-title",
+      className: 'menu-scene-section-title',
     }).element;
     this.contentSettings = new Element(this.sectionSettings, {
-      className: "menu-scene-section-content",
+      className: 'menu-scene-section-content',
     }).element;
 
     this.languageRow = new Element(this.contentSettings, {
-      className: "menu-scene-row",
+      className: 'menu-scene-row',
     }).element;
     this.languageRow.label = new Element(this.languageRow, {
-      className: "menu-scene-label",
+      className: 'menu-scene-label',
     }).element;
     this.languageRow.prev = new Element(this.languageRow, {
-      className: "menu-scene-arrow",
-      text: "<",
+      className: 'menu-scene-arrow',
+      text: '<',
     }).element;
     this.languageRow.value = new Element(this.languageRow, {
-      className: "menu-scene-value",
+      className: 'menu-scene-value',
     }).element;
     this.languageRow.next = new Element(this.languageRow, {
-      className: "menu-scene-arrow",
-      text: ">",
+      className: 'menu-scene-arrow',
+      text: '>',
     }).element;
 
-    this.languageRow.prev.addEventListener("click", () => {
+    this.languageRow.prev.addEventListener('click', () => {
       this.updateLanguage(-1);
     });
-    this.languageRow.next.addEventListener("click", () => {
+    this.languageRow.next.addEventListener('click', () => {
       this.updateLanguage(1);
     });
-    this.languageRow.prev.addEventListener("mouseenter", () => {
-      playSound("hover1", "ui");
+    this.languageRow.prev.addEventListener('mouseenter', () => {
+      playSound('hover1', 'ui');
     });
-    this.languageRow.next.addEventListener("mouseenter", () => {
-      playSound("hover1", "ui");
+    this.languageRow.next.addEventListener('mouseenter', () => {
+      playSound('hover1', 'ui');
     });
 
     this.damageRow = new Element(this.contentSettings, {
-      className: "menu-scene-row",
+      className: 'menu-scene-row',
     }).element;
     this.damageRow.label = new Element(this.damageRow, {
-      className: "menu-scene-label",
+      className: 'menu-scene-label',
     }).element;
     this.damageRow.prev = new Element(this.damageRow, {
-      className: "menu-scene-arrow",
-      text: "<",
+      className: 'menu-scene-arrow',
+      text: '<',
     }).element;
     this.damageRow.value = new Element(this.damageRow, {
-      className: "menu-scene-value",
+      className: 'menu-scene-value',
     }).element;
     this.damageRow.next = new Element(this.damageRow, {
-      className: "menu-scene-arrow",
-      text: ">",
+      className: 'menu-scene-arrow',
+      text: '>',
     }).element;
 
-    this.damageRow.prev.addEventListener("click", () => {
+    this.damageRow.prev.addEventListener('click', () => {
       this.updateShowDamage();
     });
-    this.damageRow.next.addEventListener("click", () => {
+    this.damageRow.next.addEventListener('click', () => {
       this.updateShowDamage();
     });
-    this.damageRow.prev.addEventListener("mouseenter", () => {
-      playSound("hover1", "ui");
+    this.damageRow.prev.addEventListener('mouseenter', () => {
+      playSound('hover1', 'ui');
     });
-    this.damageRow.next.addEventListener("mouseenter", () => {
-      playSound("hover1", "ui");
+    this.damageRow.next.addEventListener('mouseenter', () => {
+      playSound('hover1', 'ui');
     });
 
     // this.showRouteRow = new Element(this.contentSettings, { className: 'menu-scene-row' }).element;
@@ -609,347 +548,346 @@ export class MenuScene extends GameScene {
     // this.showTCRow.next.addEventListener('mouseenter', () => { playSound('hover1', 'ui') })
 
     this.autoStopRow = new Element(this.contentSettings, {
-      className: "menu-scene-row",
+      className: 'menu-scene-row',
     }).element;
     this.autoStopRow.label = new Element(this.autoStopRow, {
-      className: "menu-scene-label",
+      className: 'menu-scene-label',
     }).element;
     this.autoStopRow.prev = new Element(this.autoStopRow, {
-      className: "menu-scene-arrow",
-      text: "<",
+      className: 'menu-scene-arrow',
+      text: '<',
     }).element;
     this.autoStopRow.value = new Element(this.autoStopRow, {
-      className: "menu-scene-value",
+      className: 'menu-scene-value',
     }).element;
     this.autoStopRow.next = new Element(this.autoStopRow, {
-      className: "menu-scene-arrow",
-      text: ">",
+      className: 'menu-scene-arrow',
+      text: '>',
     }).element;
 
-    this.autoStopRow.prev.addEventListener("click", () => {
+    this.autoStopRow.prev.addEventListener('click', () => {
       this.updateAutoStop();
     });
-    this.autoStopRow.next.addEventListener("click", () => {
+    this.autoStopRow.next.addEventListener('click', () => {
       this.updateAutoStop();
     });
-    this.autoStopRow.prev.addEventListener("mouseenter", () => {
-      playSound("hover1", "ui");
+    this.autoStopRow.prev.addEventListener('mouseenter', () => {
+      playSound('hover1', 'ui');
     });
-    this.autoStopRow.next.addEventListener("mouseenter", () => {
-      playSound("hover1", "ui");
+    this.autoStopRow.next.addEventListener('mouseenter', () => {
+      playSound('hover1', 'ui');
     });
 
     this.autoStopBossRow = new Element(this.contentSettings, {
-      className: "menu-scene-row",
+      className: 'menu-scene-row',
     }).element;
     this.autoStopBossRow.label = new Element(this.autoStopBossRow, {
-      className: "menu-scene-label",
+      className: 'menu-scene-label',
     }).element;
     this.autoStopBossRow.prev = new Element(this.autoStopBossRow, {
-      className: "menu-scene-arrow",
-      text: "<",
+      className: 'menu-scene-arrow',
+      text: '<',
     }).element;
     this.autoStopBossRow.value = new Element(this.autoStopBossRow, {
-      className: "menu-scene-value",
+      className: 'menu-scene-value',
     }).element;
     this.autoStopBossRow.next = new Element(this.autoStopBossRow, {
-      className: "menu-scene-arrow",
-      text: ">",
+      className: 'menu-scene-arrow',
+      text: '>',
     }).element;
 
-    this.autoStopBossRow.prev.addEventListener("click", () => {
+    this.autoStopBossRow.prev.addEventListener('click', () => {
       this.updateAutoStopBoss();
     });
-    this.autoStopBossRow.next.addEventListener("click", () => {
+    this.autoStopBossRow.next.addEventListener('click', () => {
       this.updateAutoStopBoss();
     });
-    this.autoStopBossRow.prev.addEventListener("mouseenter", () => {
-      playSound("hover1", "ui");
+    this.autoStopBossRow.prev.addEventListener('mouseenter', () => {
+      playSound('hover1', 'ui');
     });
-    this.autoStopBossRow.next.addEventListener("mouseenter", () => {
-      playSound("hover1", "ui");
+    this.autoStopBossRow.next.addEventListener('mouseenter', () => {
+      playSound('hover1', 'ui');
     });
 
     this.autoResetRow = new Element(this.contentSettings, {
-      className: "menu-scene-row",
+      className: 'menu-scene-row',
     }).element;
     this.autoResetRow.label = new Element(this.autoResetRow, {
-      className: "menu-scene-label",
+      className: 'menu-scene-label',
     }).element;
     this.autoResetRow.prev = new Element(this.autoResetRow, {
-      className: "menu-scene-arrow",
-      text: "<",
+      className: 'menu-scene-arrow',
+      text: '<',
     }).element;
     this.autoResetRow.value = new Element(this.autoResetRow, {
-      className: "menu-scene-value",
+      className: 'menu-scene-value',
     }).element;
     this.autoResetRow.next = new Element(this.autoResetRow, {
-      className: "menu-scene-arrow",
-      text: ">",
+      className: 'menu-scene-arrow',
+      text: '>',
     }).element;
 
-    this.autoResetRow.prev.addEventListener("click", () => {
+    this.autoResetRow.prev.addEventListener('click', () => {
       this.updateAutoReset(-1);
     });
-    this.autoResetRow.next.addEventListener("click", () => {
+    this.autoResetRow.next.addEventListener('click', () => {
       this.updateAutoReset(1);
     });
-    this.autoResetRow.prev.addEventListener("mouseenter", () => {
-      playSound("hover1", "ui");
+    this.autoResetRow.prev.addEventListener('mouseenter', () => {
+      playSound('hover1', 'ui');
     });
-    this.autoResetRow.next.addEventListener("mouseenter", () => {
-      playSound("hover1", "ui");
+    this.autoResetRow.next.addEventListener('mouseenter', () => {
+      playSound('hover1', 'ui');
     });
 
     this.displayHealthRow = new Element(this.contentSettings, {
-      className: "menu-scene-row",
+      className: 'menu-scene-row',
     }).element;
     this.displayHealthRow.label = new Element(this.displayHealthRow, {
-      className: "menu-scene-label",
+      className: 'menu-scene-label',
     }).element;
     this.displayHealthRow.prev = new Element(this.displayHealthRow, {
-      className: "menu-scene-arrow",
-      text: "<",
+      className: 'menu-scene-arrow',
+      text: '<',
     }).element;
     this.displayHealthRow.value = new Element(this.displayHealthRow, {
-      className: "menu-scene-value",
+      className: 'menu-scene-value',
     }).element;
     this.displayHealthRow.next = new Element(this.displayHealthRow, {
-      className: "menu-scene-arrow",
-      text: ">",
+      className: 'menu-scene-arrow',
+      text: '>',
     }).element;
 
-    this.displayHealthRow.prev.addEventListener("click", () => {
+    this.displayHealthRow.prev.addEventListener('click', () => {
       this.updateDisplayHealth(-1);
     });
-    this.displayHealthRow.next.addEventListener("click", () => {
+    this.displayHealthRow.next.addEventListener('click', () => {
       this.updateDisplayHealth(1);
     });
-    this.displayHealthRow.prev.addEventListener("mouseenter", () => {
-      playSound("hover1", "ui");
+    this.displayHealthRow.prev.addEventListener('mouseenter', () => {
+      playSound('hover1', 'ui');
     });
-    this.displayHealthRow.next.addEventListener("mouseenter", () => {
-      playSound("hover1", "ui");
+    this.displayHealthRow.next.addEventListener('mouseenter', () => {
+      playSound('hover1', 'ui');
     });
 
     this.resetGameRow = new Element(this.contentSettings, {
-      className: "menu-scene-row",
+      className: 'menu-scene-row',
     }).element;
     this.resetGameRow.label = new Element(this.resetGameRow, {
-      className: "menu-scene-label",
+      className: 'menu-scene-label',
     }).element;
     this.resetGameRow.button = new Element(this.resetGameRow, {
-      className: "menu-scene-value",
-      text: "DELETE",
+      className: 'menu-scene-value',
+      text: 'DELETE',
     }).element; // Initial placeholder, will update
-    this.resetGameRow.button.style.cursor = "pointer";
+    this.resetGameRow.button.style.cursor = 'pointer';
 
-    this.resetGameRow.button.addEventListener("click", () => {
+    this.resetGameRow.button.addEventListener('click', () => {
       this.deleteScene.open();
     });
-    this.resetGameRow.button.addEventListener("mouseenter", () => {
-      playSound("hover2", "ui");
+    this.resetGameRow.button.addEventListener('mouseenter', () => {
+      playSound('hover2', 'ui');
     });
 
     this.audioRow = [];
 
     for (let i = 0; i < 4; i++) {
       this.audioRow[i] = new Element(this.contentSettings, {
-        className: "menu-scene-row",
+        className: 'menu-scene-row',
       }).element;
       this.audioRow[i].label = new Element(this.audioRow[i], {
-        className: "menu-scene-label",
+        className: 'menu-scene-label',
       }).element;
       this.audioRow[i].prev = new Element(this.audioRow[i], {
-        className: "menu-scene-arrow",
-        text: "<",
+        className: 'menu-scene-arrow',
+        text: '<',
       }).element;
       this.audioRow[i].value = new Element(this.audioRow[i], {
-        className: "menu-scene-value",
+        className: 'menu-scene-value',
       }).element;
       this.audioRow[i].next = new Element(this.audioRow[i], {
-        className: "menu-scene-arrow",
-        text: ">",
+        className: 'menu-scene-arrow',
+        text: '>',
       }).element;
 
-      this.audioRow[i].prev.addEventListener("click", () => {
+      this.audioRow[i].prev.addEventListener('click', () => {
         this.updateAudio(audioKeys[i], -1);
       });
-      this.audioRow[i].next.addEventListener("click", () => {
+      this.audioRow[i].next.addEventListener('click', () => {
         this.updateAudio(audioKeys[i], 1);
       });
-      this.audioRow[i].prev.addEventListener("mouseenter", () => {
-        playSound("hover1", "ui");
+      this.audioRow[i].prev.addEventListener('mouseenter', () => {
+        playSound('hover1', 'ui');
       });
-      this.audioRow[i].next.addEventListener("mouseenter", () => {
-        playSound("hover1", "ui");
+      this.audioRow[i].next.addEventListener('mouseenter', () => {
+        playSound('hover1', 'ui');
       });
     }
 
     //SHORTCUTS
     this.sectionShortcuts = new Element(this.menuContainer, {
-      className: "menu-scene-section",
+      className: 'menu-scene-section',
     }).element;
     this.titleShortcuts = new Element(this.sectionShortcuts, {
-      className: "menu-scene-section-title",
+      className: 'menu-scene-section-title',
     }).element;
     this.contentShortcuts = new Element(this.sectionShortcuts, {
-      className: "menu-scene-section-content",
+      className: 'menu-scene-section-content',
     }).element;
 
     this.shortcutRow = [];
 
     for (let i = 0; i < 13; i++) {
       this.shortcutRow[i] = new Element(this.contentShortcuts, {
-        className: "menu-scene-row",
+        className: 'menu-scene-row',
       }).element;
       this.shortcutRow[i].label = new Element(this.shortcutRow[i], {
-        className: "menu-scene-label",
+        className: 'menu-scene-label',
       }).element;
       this.shortcutRow[i].content = new Element(this.shortcutRow[i], {
-        className: "menu-scene-value-credits",
+        className: 'menu-scene-value-credits',
       }).element;
     }
 
     // DELETE DATA
     this.sectionData = new Element(this.menuContainer, {
-      className: "menu-scene-section",
+      className: 'menu-scene-section',
     }).element;
     this.titleData = new Element(this.sectionData, {
-      className: "menu-scene-section-title",
+      className: 'menu-scene-section-title',
     }).element;
     this.contentData = new Element(this.sectionData, {
-      className: "menu-scene-section-content",
+      className: 'menu-scene-section-content',
     }).element;
     this.deleteData = new Element(this.contentData, {
-      className: "menu-scene-delete-data",
+      className: 'menu-scene-delete-data',
     }).element;
 
-    this.deleteData.addEventListener("click", () => {
+    this.deleteData.addEventListener('click', () => {
       this.deleteScene.open();
     });
 
     this.exportData = new Element(this.contentData, {
-      className: "menu-scene-export-data",
+      className: 'menu-scene-export-data',
     }).element;
-    this.exportData.addEventListener("click", () => {
+    this.exportData.addEventListener('click', () => {
       this.exportScene.open();
     });
 
     this.importData = new Element(this.contentData, {
-      className: "menu-scene-import-data",
+      className: 'menu-scene-import-data',
     }).element;
-    this.importData.addEventListener("click", () => {
+    this.importData.addEventListener('click', () => {
       this.importScene.open();
     });
 
-    this.deleteData.addEventListener("mouseenter", () => {
-      playSound("hover2", "ui");
+    this.deleteData.addEventListener('mouseenter', () => {
+      playSound('hover2', 'ui');
     });
-    this.exportData.addEventListener("mouseenter", () => {
-      playSound("hover2", "ui");
+    this.exportData.addEventListener('mouseenter', () => {
+      playSound('hover2', 'ui');
     });
-    this.importData.addEventListener("mouseenter", () => {
-      playSound("hover2", "ui");
+    this.importData.addEventListener('mouseenter', () => {
+      playSound('hover2', 'ui');
     });
 
     this.version = new Element(this.contentData, {
-      className: "menu-scene-version",
+      className: 'menu-scene-version',
       text: `v 1.3.6`,
     }).element;
 
     // CREDITS
     this.sectionCredits = new Element(this.menuContainer, {
-      className: "menu-scene-section",
+      className: 'menu-scene-section',
     }).element;
     this.titleCredits = new Element(this.sectionCredits, {
-      className: "menu-scene-section-title",
+      className: 'menu-scene-section-title',
     }).element;
     this.contentCredits = new Element(this.sectionCredits, {
-      className: "menu-scene-section-content",
+      className: 'menu-scene-section-content',
     }).element;
 
     this.developer = new Element(this.contentCredits, {
-      className: "menu-scene-row",
+      className: 'menu-scene-row',
     }).element;
     this.developer.label = new Element(this.developer, {
-      className: "menu-scene-label",
+      className: 'menu-scene-label',
     }).element;
     this.developer.content = new Element(this.developer, {
-      className: "menu-scene-value-credits",
+      className: 'menu-scene-value-credits',
     }).element;
     this.developer.content.innerHTML = CREDITS.developer.content;
 
     this.mapArtist = new Element(this.contentCredits, {
-      className: "menu-scene-row",
+      className: 'menu-scene-row',
     }).element;
     this.mapArtist.label = new Element(this.mapArtist, {
-      className: "menu-scene-label",
+      className: 'menu-scene-label',
     }).element;
     this.mapArtist.content = new Element(this.mapArtist, {
-      className: "menu-scene-value-credits",
+      className: 'menu-scene-value-credits',
     }).element;
     this.mapArtist.content.innerHTML = CREDITS.mapArtist.content;
 
     this.testers = new Element(this.contentCredits, {
-      className: "menu-scene-row",
+      className: 'menu-scene-row',
     }).element;
     this.testers.label = new Element(this.testers, {
-      className: "menu-scene-label",
+      className: 'menu-scene-label',
     }).element;
     this.testers.content = new Element(this.testers, {
-      className: "menu-scene-value-credits",
+      className: 'menu-scene-value-credits',
     }).element;
     this.testers.content.innerHTML = CREDITS.testers.content;
 
     this.traductionsContainer = new Element(this.contentCredits, {
-      className: "menu-scene-credits-container",
+      className: 'menu-scene-credits-container',
     }).element;
     this.traductionsTitle = new Element(this.traductionsContainer, {
-      className: "menu-scene-credits-title",
+      className: 'menu-scene-credits-title',
     }).element;
     this.traductionsList = [];
 
     for (let i = 0; i < 3; i++) {
       this.traductionsList[i] = new Element(this.traductionsContainer, {
-        className: "menu-scene-credit-row",
+        className: 'menu-scene-credit-row',
       }).element;
       this.traductionsList[i].label = new Element(this.traductionsList[i], {
-        className: "menu-scene-label",
+        className: 'menu-scene-label',
       }).element;
       this.traductionsList[i].content = new Element(this.traductionsList[i], {
-        className: "menu-scene-value-credits",
+        className: 'menu-scene-value-credits',
       }).element;
-      this.traductionsList[i].content.innerHTML =
-        CREDITS.traductions.content[i];
+      this.traductionsList[i].content.innerHTML = CREDITS.traductions.content[i];
     }
 
     this.assetsContainer = new Element(this.contentCredits, {
-      className: "menu-scene-credits-container",
+      className: 'menu-scene-credits-container',
     }).element;
     this.assetsTitle = new Element(this.assetsContainer, {
-      className: "menu-scene-credits-title",
+      className: 'menu-scene-credits-title',
     }).element;
     this.assetsList = [];
 
     for (let i = 0; i < 7; i++) {
       this.assetsList[i] = new Element(this.assetsContainer, {
-        className: "menu-scene-credit-row",
+        className: 'menu-scene-credit-row',
       }).element;
       this.assetsList[i].label = new Element(this.assetsList[i], {
-        className: "menu-scene-label",
+        className: 'menu-scene-label',
       }).element;
       this.assetsList[i].content = new Element(this.assetsList[i], {
-        className: "menu-scene-value-credits",
+        className: 'menu-scene-value-credits',
       }).element;
       this.assetsList[i].content.innerHTML = CREDITS.assets.content[i];
     }
 
     this.disclaimer = new Element(this.contentCredits, {
-      className: "menu-credits-disclaimer",
+      className: 'menu-credits-disclaimer',
     }).element;
 
-    this.background.addEventListener("click", (e) => {
+    this.background.addEventListener('click', (e) => {
       if (e.target == this.background) this.close();
     });
   }
@@ -958,30 +896,22 @@ export class MenuScene extends GameScene {
     const data = this.main.dataManager.data;
 
     this.title.innerHTML = text.menu.title[this.main.lang].toUpperCase();
-    this.titleSettings.innerHTML =
-      text.menu.settings.title[this.main.lang].toUpperCase();
-    this.titleCredits.innerHTML =
-      text.menu.credits.title[this.main.lang].toUpperCase();
-    this.titleShortcuts.innerHTML =
-      text.menu.shortcuts.title[this.main.lang].toUpperCase();
-    this.titleData.innerHTML =
-      text.menu.data.title[this.main.lang].toUpperCase();
+    this.titleSettings.innerHTML = text.menu.settings.title[this.main.lang].toUpperCase();
+    this.titleCredits.innerHTML = text.menu.credits.title[this.main.lang].toUpperCase();
+    this.titleShortcuts.innerHTML = text.menu.shortcuts.title[this.main.lang].toUpperCase();
+    this.titleData.innerHTML = text.menu.data.title[this.main.lang].toUpperCase();
 
     //SETINGS
 
-    this.languageRow.label.innerText =
-      text.menu.settings.language[this.main.lang].toUpperCase();
-    this.languageRow.value.innerText =
-      OPTION.language[this.main.lang].toUpperCase();
+    this.languageRow.label.innerText = text.menu.settings.language[this.main.lang].toUpperCase();
+    this.languageRow.value.innerText = OPTION.language[this.main.lang].toUpperCase();
 
     for (let i = 0; i < 4; i++) {
-      this.audioRow[i].label.innerHTML =
-        text.menu.settings.audio[i][this.main.lang].toUpperCase();
+      this.audioRow[i].label.innerHTML = text.menu.settings.audio[i][this.main.lang].toUpperCase();
       this.audioRow[i].value.innerHTML = this.getConfig().audio[audioKeys[i]];
     }
 
-    this.damageRow.label.innerText =
-      text.menu.settings.showDamage[this.main.lang].toUpperCase();
+    this.damageRow.label.innerText = text.menu.settings.showDamage[this.main.lang].toUpperCase();
     this.damageRow.value.innerText = data.config.showDamage
       ? text.ui.yes[this.main.lang].toUpperCase()
       : text.ui.no[this.main.lang].toUpperCase();
@@ -992,8 +922,7 @@ export class MenuScene extends GameScene {
     // this.showTCRow.label.innerText = text.menu.settings.showTC[this.main.lang].toUpperCase();
     // this.showTCRow.value.innerText = (data.config.showTC) ? text.ui.yes[this.main.lang].toUpperCase(): text.ui.no[this.main.lang].toUpperCase();
 
-    this.autoStopRow.label.innerText =
-      text.menu.settings.autoStop[this.main.lang].toUpperCase();
+    this.autoStopRow.label.innerText = text.menu.settings.autoStop[this.main.lang].toUpperCase();
     this.autoStopRow.value.innerText = data.config.autoStop
       ? text.ui.yes[this.main.lang].toUpperCase()
       : text.ui.no[this.main.lang].toUpperCase();
@@ -1004,78 +933,55 @@ export class MenuScene extends GameScene {
       ? text.ui.yes[this.main.lang].toUpperCase()
       : text.ui.no[this.main.lang].toUpperCase();
 
-    this.autoResetRow.label.innerText =
-      text.menu.settings.autoReset[this.main.lang].toUpperCase();
+    this.autoResetRow.label.innerText = text.menu.settings.autoReset[this.main.lang].toUpperCase();
     if (data.config.autoReset == 1)
-      this.autoResetRow.value.innerText =
-        text.menu.settings.reset[1][this.main.lang].toUpperCase();
+      this.autoResetRow.value.innerText = text.menu.settings.reset[1][this.main.lang].toUpperCase();
     else if (data.config.autoReset == 2)
-      this.autoResetRow.value.innerText =
-        text.menu.settings.reset[2][this.main.lang].toUpperCase();
+      this.autoResetRow.value.innerText = text.menu.settings.reset[2][this.main.lang].toUpperCase();
     else
-      this.autoResetRow.value.innerText =
-        text.menu.settings.reset[0][this.main.lang].toUpperCase();
+      this.autoResetRow.value.innerText = text.menu.settings.reset[0][this.main.lang].toUpperCase();
 
     this.displayHealthRow.label.innerText =
       text.menu.settings.displayHealth[this.main.lang].toUpperCase();
     if (data.config.displayHealth == 1)
       this.displayHealthRow.value.innerText =
-        text.menu.settings.displayHealthOptions[1][
-          this.main.lang
-        ].toUpperCase();
+        text.menu.settings.displayHealthOptions[1][this.main.lang].toUpperCase();
     else if (data.config.displayHealth == 2)
       this.displayHealthRow.value.innerText =
-        text.menu.settings.displayHealthOptions[2][
-          this.main.lang
-        ].toUpperCase();
+        text.menu.settings.displayHealthOptions[2][this.main.lang].toUpperCase();
     else
       this.displayHealthRow.value.innerText =
-        text.menu.settings.displayHealthOptions[0][
-          this.main.lang
-        ].toUpperCase();
+        text.menu.settings.displayHealthOptions[0][this.main.lang].toUpperCase();
 
-    this.resetGameRow.label.innerText =
-      text.menu.settings.resetGame[this.main.lang].toUpperCase();
-    this.resetGameRow.button.innerText =
-      text.menu.data.delete[this.main.lang].toUpperCase();
+    this.resetGameRow.label.innerText = text.menu.settings.resetGame[this.main.lang].toUpperCase();
+    this.resetGameRow.button.innerText = text.menu.data.delete[this.main.lang].toUpperCase();
 
     //SHORTCUTS
     for (let i = 0; i < 13; i++) {
-      this.shortcutRow[i].label.innerHTML =
-        SHORTCUTS.key[i][this.main.lang].toUpperCase();
-      this.shortcutRow[i].content.innerHTML =
-        SHORTCUTS.do[i][this.main.lang].toUpperCase();
+      this.shortcutRow[i].label.innerHTML = SHORTCUTS.key[i][this.main.lang].toUpperCase();
+      this.shortcutRow[i].content.innerHTML = SHORTCUTS.do[i][this.main.lang].toUpperCase();
     }
 
     // CREDITS
-    this.developer.label.innerHTML =
-      CREDITS.developer.label[this.main.lang].toUpperCase();
-    this.mapArtist.label.innerHTML =
-      CREDITS.mapArtist.label[this.main.lang].toUpperCase();
-    this.testers.label.innerHTML =
-      CREDITS.testers.label[this.main.lang].toUpperCase();
+    this.developer.label.innerHTML = CREDITS.developer.label[this.main.lang].toUpperCase();
+    this.mapArtist.label.innerHTML = CREDITS.mapArtist.label[this.main.lang].toUpperCase();
+    this.testers.label.innerHTML = CREDITS.testers.label[this.main.lang].toUpperCase();
 
-    this.traductionsTitle.innerHTML =
-      CREDITS.traductions.title[this.main.lang].toUpperCase();
+    this.traductionsTitle.innerHTML = CREDITS.traductions.title[this.main.lang].toUpperCase();
     for (let i = 0; i < 3; i++)
       this.traductionsList[i].label.innerHTML =
         CREDITS.traductions.label[i][this.main.lang].toUpperCase();
 
-    this.assetsTitle.innerHTML =
-      CREDITS.assets.title[this.main.lang].toUpperCase();
+    this.assetsTitle.innerHTML = CREDITS.assets.title[this.main.lang].toUpperCase();
     for (let i = 0; i < 7; i++)
-      this.assetsList[i].label.innerHTML =
-        CREDITS.assets.label[i][this.main.lang].toUpperCase();
+      this.assetsList[i].label.innerHTML = CREDITS.assets.label[i][this.main.lang].toUpperCase();
 
     this.disclaimer.innerHTML = CREDITS.disclaimer[this.main.lang];
 
     //DATA
-    this.deleteData.innerHTML =
-      text.menu.data.delete[this.main.lang].toUpperCase();
-    this.exportData.innerHTML =
-      text.menu.data.export[this.main.lang].toUpperCase();
-    this.importData.innerHTML =
-      text.menu.data.import[this.main.lang].toUpperCase();
+    this.deleteData.innerHTML = text.menu.data.delete[this.main.lang].toUpperCase();
+    this.exportData.innerHTML = text.menu.data.export[this.main.lang].toUpperCase();
+    this.importData.innerHTML = text.menu.data.import[this.main.lang].toUpperCase();
   }
 
   updateLanguage = (dir) => {
@@ -1083,18 +989,18 @@ export class MenuScene extends GameScene {
     if (pos < 0) pos = 8;
     else if (pos == 9) pos = 0;
 
-    if (pos == 6) document.body.style.fontFamily = "PixelMPlus";
-    else if (pos == 7) document.body.style.fontFamily = "NGC";
-    else document.body.style.fontFamily = "PressStart2P";
+    if (pos == 6) document.body.style.fontFamily = 'PixelMPlus';
+    else if (pos == 7) document.body.style.fontFamily = 'NGC';
+    else document.body.style.fontFamily = 'PressStart2P';
     this.main.lang = pos;
 
     this.update();
     this.main.updateLanguage();
 
-    const data = JSON.parse(window.localStorage.getItem("data"));
+    const data = JSON.parse(window.localStorage.getItem('data'));
     data.config.language = pos;
-    window.localStorage.setItem("data", JSON.stringify(data));
-    playSound("option", "ui");
+    window.localStorage.setItem('data', JSON.stringify(data));
+    playSound('option', 'ui');
   };
 
   updateAudio = (key, dir) => {
@@ -1107,7 +1013,7 @@ export class MenuScene extends GameScene {
     this.saveConfig(config);
     this.update();
     setVolume();
-    playSound("option", "ui");
+    playSound('option', 'ui');
 
     if (
       !this.main.player.secrets.chatot &&
@@ -1115,13 +1021,13 @@ export class MenuScene extends GameScene {
       !this.main.area.inChallenge
     ) {
       if (
-        config.audio["master"] == 0 &&
-        config.audio["music"] == 4 &&
-        config.audio["ui"] == 4 &&
-        config.audio["effects"] == 1
+        config.audio['master'] == 0 &&
+        config.audio['music'] == 4 &&
+        config.audio['ui'] == 4 &&
+        config.audio['effects'] == 1
       ) {
         this.main.player.secrets.chatot = true;
-        this.main.UI.getSecret("chatot");
+        this.main.UI.getSecret('chatot');
       }
     }
   };
@@ -1136,7 +1042,7 @@ export class MenuScene extends GameScene {
     this.main.dataManager.persist();
 
     this.update();
-    playSound("option", "ui");
+    playSound('option', 'ui');
   };
 
   updateDisplayHealth = (dir) => {
@@ -1149,7 +1055,7 @@ export class MenuScene extends GameScene {
     this.main.dataManager.persist();
 
     this.update();
-    playSound("option", "ui");
+    playSound('option', 'ui');
   };
 
   updateAutoStop = () => {
@@ -1159,7 +1065,7 @@ export class MenuScene extends GameScene {
     this.main.dataManager.persist();
 
     this.update();
-    playSound("option", "ui");
+    playSound('option', 'ui');
   };
 
   updateAutoStopBoss = () => {
@@ -1169,7 +1075,7 @@ export class MenuScene extends GameScene {
     this.main.dataManager.persist();
 
     this.update();
-    playSound("option", "ui");
+    playSound('option', 'ui');
   };
 
   // updateShowTC = () => {
@@ -1191,7 +1097,7 @@ export class MenuScene extends GameScene {
     this.main.dataManager.persist();
 
     this.update();
-    playSound("option", "ui");
+    playSound('option', 'ui');
   };
 
   // updateShowRoute = () => {
@@ -1223,37 +1129,34 @@ export class DeleteData extends GameScene {
 
   render() {
     this.prompt = new Element(this.container, {
-      className: "defeat-scene-prompt",
+      className: 'defeat-scene-prompt',
     }).element;
 
     this.yesButton = new Element(this.container, {
-      className: "delete-scene-yes-button",
+      className: 'delete-scene-yes-button',
     }).element;
     this.noButton = new Element(this.container, {
-      className: "delete-scene-no-button",
+      className: 'delete-scene-no-button',
     }).element;
 
-    this.yesButton.addEventListener("mouseenter", () => {
-      playSound("hover2", "ui");
+    this.yesButton.addEventListener('mouseenter', () => {
+      playSound('hover2', 'ui');
     });
-    this.noButton.addEventListener("mouseenter", () => {
-      playSound("hover2", "ui");
+    this.noButton.addEventListener('mouseenter', () => {
+      playSound('hover2', 'ui');
     });
 
-    this.noButton.addEventListener("click", () => this.close());
-    this.yesButton.addEventListener("click", () => {
+    this.noButton.addEventListener('click', () => this.close());
+    this.yesButton.addEventListener('click', () => {
       localStorage.clear();
       window.location.reload();
     });
   }
 
   update() {
-    this.prompt.innerHTML =
-      text.menu.data.deletePrompt[this.main.lang].toUpperCase();
-    this.yesButton.innerText =
-      text.menu.data.delete[this.main.lang].toUpperCase();
-    this.noButton.innerText =
-      text.menu.data.cancel[this.main.lang].toUpperCase();
+    this.prompt.innerHTML = text.menu.data.deletePrompt[this.main.lang].toUpperCase();
+    this.yesButton.innerText = text.menu.data.delete[this.main.lang].toUpperCase();
+    this.noButton.innerText = text.menu.data.cancel[this.main.lang].toUpperCase();
   }
 
   open() {
@@ -1271,23 +1174,23 @@ export class ImportData extends GameScene {
   }
 
   render() {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = ".txt";
-    input.style.display = "none";
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.txt';
+    input.style.display = 'none';
 
-    this.uploadButton = document.createElement("button");
-    this.uploadButton.className = "export-scene-button";
-    this.uploadButton.style.fontFamily = "inherit";
-    this.uploadButton.style.lineHeight = "24px";
-    this.uploadButton.style.height = "26px";
+    this.uploadButton = document.createElement('button');
+    this.uploadButton.className = 'export-scene-button';
+    this.uploadButton.style.fontFamily = 'inherit';
+    this.uploadButton.style.lineHeight = '24px';
+    this.uploadButton.style.height = '26px';
 
     this.container.appendChild(this.uploadButton);
     this.container.appendChild(input);
 
-    this.uploadButton.addEventListener("click", () => input.click());
+    this.uploadButton.addEventListener('click', () => input.click());
 
-    input.addEventListener("change", () => {
+    input.addEventListener('change', () => {
       const archivo = input.files[0];
       if (!archivo) return;
 
@@ -1303,22 +1206,22 @@ export class ImportData extends GameScene {
     });
 
     this.prompt = new Element(this.container, {
-      className: "defeat-scene-prompt",
+      className: 'defeat-scene-prompt',
     }).element;
     this.importButton = new Element(this.container, {
-      className: "export-scene-button",
+      className: 'export-scene-button',
     }).element;
     this.importMessage = new Element(this.container, {
-      className: "export-scene-message",
+      className: 'export-scene-message',
     }).element;
-    this.codeInput = new Input(this.container, "text", {
-      className: "import-export-code",
+    this.codeInput = new Input(this.container, 'text', {
+      className: 'import-export-code',
     });
 
-    this.importButton.addEventListener("mouseenter", () => {
-      playSound("hover2", "ui");
+    this.importButton.addEventListener('mouseenter', () => {
+      playSound('hover2', 'ui');
     });
-    this.importButton.addEventListener("click", () => {
+    this.importButton.addEventListener('click', () => {
       this.newData = decode(this.codeInput.value.value);
       if (this.newData != null) {
         this.main.data = this.newData;
@@ -1335,22 +1238,18 @@ export class ImportData extends GameScene {
         this.main.dataManager.persist();
         window.location.reload();
       } else {
-        playSound("pop0", "ui");
-        this.importMessage.innerHTML =
-          text.menu.data.importError[this.main.lang].toUpperCase();
+        playSound('pop0', 'ui');
+        this.importMessage.innerHTML = text.menu.data.importError[this.main.lang].toUpperCase();
       }
     });
   }
 
   update() {
-    this.prompt.innerHTML =
-      text.menu.data.importPrompt[this.main.lang].toUpperCase();
-    this.importButton.innerText =
-      text.menu.data.importButton[this.main.lang].toUpperCase();
-    this.uploadButton.textContent =
-      text.menu.data.uploadButton[this.main.lang].toUpperCase();
-    this.codeInput.value.value = "";
-    this.importMessage.innerHTML = "";
+    this.prompt.innerHTML = text.menu.data.importPrompt[this.main.lang].toUpperCase();
+    this.importButton.innerText = text.menu.data.importButton[this.main.lang].toUpperCase();
+    this.uploadButton.textContent = text.menu.data.uploadButton[this.main.lang].toUpperCase();
+    this.codeInput.value.value = '';
+    this.importMessage.innerHTML = '';
   }
 
   open() {
@@ -1369,56 +1268,54 @@ export class ExportData extends GameScene {
 
   render() {
     this.prompt = new Element(this.container, {
-      className: "defeat-scene-prompt",
+      className: 'defeat-scene-prompt',
     }).element;
     this.exportButton = new Element(this.container, {
-      className: "export-scene-button",
+      className: 'export-scene-button',
     }).element;
     this.downloadButton = new Element(this.container, {
-      className: "export-scene-button",
+      className: 'export-scene-button',
     }).element;
 
-    this.codeInput = new Input(this.container, "text", {
-      className: "import-export-code",
+    this.codeInput = new Input(this.container, 'text', {
+      className: 'import-export-code',
       readonly: true,
     });
     this.exportMessage = new Element(this.container, {
-      className: "import-scene-message",
+      className: 'import-scene-message',
     }).element;
-    this.exportButton.addEventListener("mouseenter", () => {
-      playSound("hover2", "ui");
+    this.exportButton.addEventListener('mouseenter', () => {
+      playSound('hover2', 'ui');
     });
-    this.exportButton.addEventListener("click", () => {
-      playSound("key1", "ui");
+    this.exportButton.addEventListener('click', () => {
+      playSound('key1', 'ui');
 
-      const tempInput = document.createElement("textarea");
+      const tempInput = document.createElement('textarea');
       tempInput.value = this.code;
       document.body.appendChild(tempInput);
       tempInput.select();
 
       try {
-        document.execCommand("copy");
-        this.exportMessage.innerHTML =
-          text.menu.data.codeCopied[this.main.lang].toUpperCase();
+        document.execCommand('copy');
+        this.exportMessage.innerHTML = text.menu.data.codeCopied[this.main.lang].toUpperCase();
       } catch (err) {
-        this.exportMessage.innerHTML =
-          "COPY FAILED, TRY CLICK -> CTRL + A -> CTRL + C";
+        this.exportMessage.innerHTML = 'COPY FAILED, TRY CLICK -> CTRL + A -> CTRL + C';
       }
 
       document.body.removeChild(tempInput);
     });
 
-    this.downloadButton.addEventListener("mouseenter", () => {
-      playSound("hover2", "ui");
+    this.downloadButton.addEventListener('mouseenter', () => {
+      playSound('hover2', 'ui');
     });
-    this.downloadButton.addEventListener("click", () => {
-      playSound("key1", "ui");
+    this.downloadButton.addEventListener('click', () => {
+      playSound('key1', 'ui');
 
-      const blob = new Blob([this.code], { type: "text/plain" });
+      const blob = new Blob([this.code], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
+      const a = document.createElement('a');
       a.href = url;
-      a.download = "PokePathSave.txt";
+      a.download = 'PokePathSave.txt';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -1427,18 +1324,15 @@ export class ExportData extends GameScene {
   }
 
   update() {
-    this.prompt.innerHTML =
-      text.menu.data.exportPrompt[this.main.lang].toUpperCase();
-    this.exportButton.innerText =
-      text.menu.data.exportButton[this.main.lang].toUpperCase();
-    this.downloadButton.innerText =
-      text.menu.data.downloadButton[this.main.lang].toUpperCase();
+    this.prompt.innerHTML = text.menu.data.exportPrompt[this.main.lang].toUpperCase();
+    this.exportButton.innerText = text.menu.data.exportButton[this.main.lang].toUpperCase();
+    this.downloadButton.innerText = text.menu.data.downloadButton[this.main.lang].toUpperCase();
 
     const data = this.main.dataManager.save;
 
     this.code = encode(data);
     this.codeInput.value.value = this.code;
-    this.exportMessage.innerHTML = "";
+    this.exportMessage.innerHTML = '';
   }
 
   open() {
@@ -1449,7 +1343,7 @@ export class ExportData extends GameScene {
 
 function encode(data) {
   const json = JSON.stringify(data, (key, value) => {
-    if (value instanceof Set) return { __type: "Set", values: [...value] };
+    if (value instanceof Set) return { __type: 'Set', values: [...value] };
     return value;
   });
   return btoa(unescape(encodeURIComponent(json)));
@@ -1459,7 +1353,7 @@ function decode(code) {
   try {
     const json = decodeURIComponent(escape(atob(code)));
     return JSON.parse(json, (key, value) => {
-      if (value && value.__type === "Set") return new Set(value.values);
+      if (value && value.__type === 'Set') return new Set(value.values);
       return value;
     });
   } catch (err) {

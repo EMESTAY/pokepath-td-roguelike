@@ -1,7 +1,7 @@
-import { GameScene } from "../../utils/GameScene.js";
-import { Element } from "../../utils/Element.js";
-import { text } from "../../file/text.js";
-import { playSound } from "../../file/audio.js";
+import { GameScene } from '../../utils/GameScene.js';
+import { Element } from '../../utils/Element.js';
+import { text } from '../../file/text.js';
+import { playSound } from '../../file/audio.js';
 
 export class BanetteScene extends GameScene {
   constructor(main) {
@@ -16,24 +16,23 @@ export class BanetteScene extends GameScene {
     this.title.innerHTML = text.defeat.banette[this.main.lang].toUpperCase();
 
     this.prompt = new Element(this.container, {
-      className: "banette-scene-prompt",
+      className: 'banette-scene-prompt',
     }).element;
 
     this.acceptButton = new Element(this.container, {
-      className: "banette-accept-button",
+      className: 'banette-accept-button',
     }).element;
-    this.acceptButton.addEventListener("click", () => {
+    this.acceptButton.addEventListener('click', () => {
       location.reload();
     });
-    this.acceptButton.addEventListener("mouseenter", () => {
-      playSound("open", "ui");
+    this.acceptButton.addEventListener('mouseenter', () => {
+      playSound('open', 'ui');
     });
   }
 
   update() {
     this.prompt.innerHTML = this.getText(this.main.lang).toUpperCase();
-    this.acceptButton.innerText =
-      text.defeat.banetteAccept[this.main.lang].toUpperCase();
+    this.acceptButton.innerText = text.defeat.banetteAccept[this.main.lang].toUpperCase();
   }
 
   open() {

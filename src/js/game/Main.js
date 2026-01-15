@@ -1,40 +1,40 @@
-import { Element } from "../utils/Element.js";
-import { Utility } from "../utils/Utility.js";
-import { KeyController } from "../utils/KeyController.js";
-import { Tooltip } from "../utils/Tooltip.js";
-import { Notification } from "../utils/Notification.js";
-import { UI } from "./UI.js";
-import { Game } from "./Game.js";
-import { GAME_CONFIG } from "./Config.js";
+import { Element } from '../utils/Element.js';
+import { Utility } from '../utils/Utility.js';
+import { KeyController } from '../utils/KeyController.js';
+import { Tooltip } from '../utils/Tooltip.js';
+import { Notification } from '../utils/Notification.js';
+import { UI } from './UI.js';
+import { Game } from './Game.js';
+import { GAME_CONFIG } from './Config.js';
 
-import { BoxScene } from "./scenes/BoxScene.js";
-import { MapScene } from "./scenes/MapScene.js";
-import { PokemonScene } from "./scenes/PokemonScene.js";
-import { ShopScene } from "./scenes/ShopScene.js";
-import { MenuScene } from "./scenes/MenuScene.js";
-import { ChallengeScene } from "./scenes/ChallengeScene.js";
-import { ProfileScene } from "./scenes/ProfileScene.js";
-import { DefeatScene } from "./scenes/DefeatScene.js";
-import { NewGameScene } from "./scenes/NewGameScene.js";
-import { TutorialScene } from "./scenes/TutorialScene.js";
-import { BanetteScene } from "./scenes/BanetteScene.js";
-import { FinalScene } from "./scenes/FinalScene.js";
-import { DraftScene } from "./scenes/DraftScene.js";
-import { RoguelikeScene } from "./scenes/RoguelikeScene.js";
-import { RoguelikeStarterScene } from "./scenes/RoguelikeStarterScene.js";
+import { BoxScene } from './scenes/BoxScene.js';
+import { MapScene } from './scenes/MapScene.js';
+import { PokemonScene } from './scenes/PokemonScene.js';
+import { ShopScene } from './scenes/ShopScene.js';
+import { MenuScene } from './scenes/MenuScene.js';
+import { ChallengeScene } from './scenes/ChallengeScene.js';
+import { ProfileScene } from './scenes/ProfileScene.js';
+import { DefeatScene } from './scenes/DefeatScene.js';
+import { NewGameScene } from './scenes/NewGameScene.js';
+import { TutorialScene } from './scenes/TutorialScene.js';
+import { BanetteScene } from './scenes/BanetteScene.js';
+import { FinalScene } from './scenes/FinalScene.js';
+import { DraftScene } from './scenes/DraftScene.js';
+import { RoguelikeScene } from './scenes/RoguelikeScene.js';
+import { RoguelikeStarterScene } from './scenes/RoguelikeStarterScene.js';
 
-import { Player } from "./core/Player.js";
-import { Team } from "./core/Team.js";
-import { Box } from "./core/Box.js";
-import { Area } from "./core/Area.js";
-import { Shop } from "./core/Shop.js";
-import { TeamManager } from "./core/TeamManager.js";
+import { Player } from './core/Player.js';
+import { Team } from './core/Team.js';
+import { Box } from './core/Box.js';
+import { Area } from './core/Area.js';
+import { Shop } from './core/Shop.js';
+import { TeamManager } from './core/TeamManager.js';
 
-import { pokemonData, eggListDataUpdate } from "./data/pokemonData.js";
+import { pokemonData, eggListDataUpdate } from './data/pokemonData.js';
 
-import { EventManager } from "./core/EventManager.js";
-import { ObjectPool } from "../utils/ObjectPool.js";
-import { Projectile } from "./component/Projectile.js";
+import { EventManager } from './core/EventManager.js';
+import { ObjectPool } from '../utils/ObjectPool.js';
+import { Projectile } from './component/Projectile.js';
 
 export class Main {
   constructor(dataManager) {
@@ -42,17 +42,8 @@ export class Main {
     this.dataManager = dataManager;
 
     this.projectilePool = new ObjectPool(
-      () =>
-        new Projectile(
-          0,
-          0,
-          null,
-          null,
-          { sprite: { image: "", frames: 1 } },
-          null
-        ),
-      (proj, x, y, enemy, ctx, projectile, tower) =>
-        proj.reset(x, y, enemy, ctx, projectile, tower)
+      () => new Projectile(0, 0, null, null, { sprite: { image: '', frames: 1 } }, null),
+      (proj, x, y, enemy, ctx, projectile, tower) => proj.reset(x, y, enemy, ctx, projectile, tower)
     );
 
     this.lang = dataManager.config.language;
@@ -67,8 +58,8 @@ export class Main {
     this.gameMode = this.data.gameMode || 0;
 
     // SCENES
-    this.scene = new Element(document.getElementById("screen"), {
-      id: "game-scene",
+    this.scene = new Element(document.getElementById('screen'), {
+      id: 'game-scene',
     }).element;
     this.UI = new UI(this, this.events);
     this.game = new Game(this);
@@ -122,7 +113,7 @@ export class Main {
         this.player.stats.timePlayed++;
       }, 60000);
     } catch (error) {
-      console.error("Critical error loading the game:", error);
+      console.error('Critical error loading the game:', error);
       // Optional: Display a user-friendly error notification
       // this.notification.display("Error loading game resources.");
     }
@@ -145,14 +136,11 @@ function resize() {
   const BASE_WIDTH = GAME_CONFIG.WINDOW.BASE_WIDTH;
   const BASE_HEIGHT = GAME_CONFIG.WINDOW.BASE_HEIGHT;
 
-  const scale = Math.min(
-    window.innerWidth / BASE_WIDTH,
-    window.innerHeight / BASE_HEIGHT
-  );
+  const scale = Math.min(window.innerWidth / BASE_WIDTH, window.innerHeight / BASE_HEIGHT);
 
-  const root = document.getElementById("screen-root");
+  const root = document.getElementById('screen-root');
   root.style.transform = `scale(${scale})`;
 }
 
-window.addEventListener("resize", resize);
+window.addEventListener('resize', resize);
 resize();

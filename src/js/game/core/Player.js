@@ -1,4 +1,4 @@
-import { itemData } from "../data/itemData.js";
+import { itemData } from '../data/itemData.js';
 
 export class Player {
   constructor(main, events, playerData) {
@@ -22,15 +22,11 @@ export class Player {
 
     this.stats = playerData.stats;
     this.stats.defeatedSpecies = new Set(
-      Array.isArray(playerData.stats.defeatedSpecies)
-        ? playerData.stats.defeatedSpecies
-        : []
+      Array.isArray(playerData.stats.defeatedSpecies) ? playerData.stats.defeatedSpecies : []
     );
 
-    if (this.stats.maxGoldPerWave == undefined)
-      this.stats.maxGoldPerWave = [0, null];
-    if (this.stats.maxGoldPerTime == undefined)
-      this.stats.maxGoldPerTime = [0, null];
+    if (this.stats.maxGoldPerWave == undefined) this.stats.maxGoldPerWave = [0, null];
+    if (this.stats.maxGoldPerTime == undefined) this.stats.maxGoldPerTime = [0, null];
 
     // this.challenges = playerData.challenges ?? {
     // 	0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: []
@@ -96,8 +92,7 @@ export class Player {
 
   getHealed(amount) {
     this.health[this.main.area.map.id] += amount;
-    if (this.health[this.main.area.map.id] > 14)
-      this.health[this.main.area.map.id] = 14;
+    if (this.health[this.main.area.map.id] > 14) this.health[this.main.area.map.id] = 14;
     this.main.UI.updatePlayer();
   }
 
@@ -108,17 +103,12 @@ export class Player {
     if (this.gold >= 1000000) this.unlockAchievement(3);
     if (this.gold >= 99999999999) this.gold = 99999999999;
 
-    this.events.emit("goldChange", this.gold);
+    this.events.emit('goldChange', this.gold);
   }
 
   obtainStar() {
     this.stars++;
-    if (
-      this.stars == 40 ||
-      this.stars == 160 ||
-      this.stars == 320 ||
-      this.stars == 540
-    )
+    if (this.stars == 40 || this.stars == 160 || this.stars == 320 || this.stars == 540)
       this.unlockTeamSlot();
     if (this.stars == 600) this.unlockAchievement(4);
     if (this.stars == 900) this.unlockAchievement(5);
@@ -169,7 +159,7 @@ export class Player {
       this.items[i].description = itemData[item.id].description;
       this.items[i].restriction = itemData[item.id].restriction;
       this.itemAmount++;
-      if (item.id == "bicycle") this.hasBike = true;
+      if (item.id == 'bicycle') this.hasBike = true;
     });
   }
 

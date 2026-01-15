@@ -12,9 +12,7 @@ export class EventManager {
 
   off(event, callback) {
     if (!this.listeners[event]) return;
-    this.listeners[event] = this.listeners[event].filter(
-      (cb) => cb !== callback
-    );
+    this.listeners[event] = this.listeners[event].filter((cb) => cb !== callback);
   }
 
   emit(event, payload) {

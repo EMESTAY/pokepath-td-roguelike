@@ -1,8 +1,8 @@
-import { GameScene } from "../../utils/GameScene.js";
-import { Element } from "../../utils/Element.js";
-import { text } from "../../file/text.js";
-import { saveData } from "../../file/data.js";
-import { playSound } from "../../file/audio.js";
+import { GameScene } from '../../utils/GameScene.js';
+import { Element } from '../../utils/Element.js';
+import { text } from '../../file/text.js';
+import { saveData } from '../../file/data.js';
+import { playSound } from '../../file/audio.js';
 
 export class DefeatScene extends GameScene {
   constructor(main) {
@@ -19,29 +19,29 @@ export class DefeatScene extends GameScene {
     this.title.innerHTML = text.defeat.title[this.main.lang].toUpperCase();
 
     this.prompt = new Element(this.container, {
-      className: "defeat-scene-prompt",
+      className: 'defeat-scene-prompt',
     }).element;
     this.image = new Element(this.container, {
-      className: "defeat-scene-image",
+      className: 'defeat-scene-image',
     }).element;
     this.restartButton = new Element(this.container, {
-      className: "defeat-restart-button",
+      className: 'defeat-restart-button',
     }).element;
-    this.restartButton.addEventListener("click", () => this.restart());
-    this.restartButton.addEventListener("mouseenter", () => {
-      playSound("open", "ui");
+    this.restartButton.addEventListener('click', () => this.restart());
+    this.restartButton.addEventListener('mouseenter', () => {
+      playSound('open', 'ui');
     });
 
     this.retryButton = new Element(this.container, {
-      className: "defeat-retry-button",
+      className: 'defeat-retry-button',
     }).element;
-    this.retryButton.addEventListener("click", () => this.retry());
-    this.retryButton.addEventListener("mouseenter", () => {
-      playSound("open", "ui");
+    this.retryButton.addEventListener('click', () => this.retry());
+    this.retryButton.addEventListener('mouseenter', () => {
+      playSound('open', 'ui');
     });
 
     this.info = new Element(this.container, {
-      className: "defeat-scene-info",
+      className: 'defeat-scene-info',
     }).element;
 
     // this.banette = new Element(this.window, { className: 'defeat-scene-banette' }).element;
@@ -59,19 +59,17 @@ export class DefeatScene extends GameScene {
     ].toUpperCase()} ${this.main.area.waveNumber - 1} ${text.map.waves[
       this.main.lang
     ].toUpperCase()}`;
-    this.restartButton.innerText =
-      text.defeat.restart[this.main.lang].toUpperCase();
-    this.retryButton.innerText =
-      text.defeat.retry[this.main.lang].toUpperCase();
+    this.restartButton.innerText = text.defeat.restart[this.main.lang].toUpperCase();
+    this.retryButton.innerText = text.defeat.retry[this.main.lang].toUpperCase();
 
     if (this.main.area.waveNumber > 25) {
       this.getRetryWave();
-      this.retryButton.style.filter = "revert-layer";
-      this.retryButton.style.pointerEvents = "revert-layer";
+      this.retryButton.style.filter = 'revert-layer';
+      this.retryButton.style.pointerEvents = 'revert-layer';
       this.info.innerHTML = this.getRetryText(this.main.lang).toUpperCase();
     } else {
-      this.retryButton.style.filter = "brightness(0.8)";
-      this.retryButton.style.pointerEvents = "none";
+      this.retryButton.style.filter = 'brightness(0.8)';
+      this.retryButton.style.pointerEvents = 'none';
       this.info.innerHTML = text.defeat.cantRetry[this.main.lang].toUpperCase();
     }
 
@@ -99,9 +97,7 @@ export class DefeatScene extends GameScene {
 
     let goldPerSecond =
       this.main.area.waveElapsedTime > 0
-        ? Math.round(
-            (this.main.area.goldWave / this.main.area.waveElapsedTime) * 100
-          ) / 100
+        ? Math.round((this.main.area.goldWave / this.main.area.waveElapsedTime) * 100) / 100
         : 0;
     if (goldPerSecond > this.main.player.stats.maxGoldPerTime[0]) {
       this.main.player.stats.maxGoldPerTime[0] = goldPerSecond;
@@ -134,7 +130,7 @@ export class DefeatScene extends GameScene {
       });
     }
 
-    playSound("results", "ui");
+    playSound('results', 'ui');
 
     if (this.main.autoReset == 1 && !challengeLost) {
       this.restart({
@@ -157,13 +153,7 @@ export class DefeatScene extends GameScene {
   }
 
   restart(autoReset = {}) {
-    this.main.area.loadArea(
-      this.main.area.map.id,
-      1,
-      true,
-      this.main.area.inChallenge,
-      true
-    );
+    this.main.area.loadArea(this.main.area.map.id, 1, true, this.main.area.inChallenge, true);
     this.main.player.getHealed(14);
     this.close();
 
@@ -195,10 +185,10 @@ export class DefeatScene extends GameScene {
     this.savedWave = 0;
 
     this.main.UI.nextWave.style.filter = `revert-layer`;
-    this.main.UI.nextWave.style.pointerEvents = "all";
+    this.main.UI.nextWave.style.pointerEvents = 'all';
 
     this.main.area.autoWave = false;
-    this.main.UI.autoWave.style.background = "#2c70e3";
+    this.main.UI.autoWave.style.background = '#2c70e3';
 
     //this.main.UI.saveTeamButton.style.display = 'revert-layer';
     //this.main.UI.importTeamButton.style.display = 'revert-layer';
@@ -207,10 +197,9 @@ export class DefeatScene extends GameScene {
     this.main.UI.revertUI();
     this.main.game.resume();
     this.main.player.stats.resets++;
-    if (this.main.player.stats.resets == 100)
-      this.main.player.unlockAchievement(11);
+    if (this.main.player.stats.resets == 100) this.main.player.unlockAchievement(11);
 
-    playSound("button2", "ui");
+    playSound('button2', 'ui');
     this.main.dataManager.saveGame(
       this.main.player,
       this.main.team,

@@ -1,11 +1,11 @@
-import { routeData } from "../data/routeData.js";
-import { PlacementTile } from "../component/PlacementTile.js";
-import { Element } from "../../utils/Element.js";
-import { Enemy } from "../component/Enemy.js";
-import { text } from "../../file/text.js";
-import { saveData } from "../../file/data.js";
-import { playMusic, playSound } from "../../file/audio.js";
-import { enemyData as e } from "../data/enemyData.js";
+import { routeData } from '../data/routeData.js';
+import { PlacementTile } from '../component/PlacementTile.js';
+import { Element } from '../../utils/Element.js';
+import { Enemy } from '../component/Enemy.js';
+import { text } from '../../file/text.js';
+import { saveData } from '../../file/data.js';
+import { playMusic, playSound } from '../../file/audio.js';
+import { enemyData as e } from '../data/enemyData.js';
 
 export class Area {
   constructor(main, areaData) {
@@ -46,15 +46,9 @@ export class Area {
     };
   }
 
-  loadArea(
-    routeNumber,
-    wave,
-    keepTowers = false,
-    challenge = false,
-    challengeRetry = false
-  ) {
+  loadArea(routeNumber, wave, keepTowers = false, challenge = false, challengeRetry = false) {
     this.autoWave = false;
-    this.main.UI.autoWave.style.background = "revert-layer";
+    this.main.UI.autoWave.style.background = 'revert-layer';
     if (!challengeRetry) {
       if (this.inChallenge) this.main.challengeScene.cancelChallenge();
 
@@ -73,9 +67,7 @@ export class Area {
           pokemon.isDeployed = false;
           pokemon.tilePosition = -1;
           // retirar torre
-          const index = this.main.area.towers.findIndex(
-            (tower) => tower.pokemon === pokemon
-          );
+          const index = this.main.area.towers.findIndex((tower) => tower.pokemon === pokemon);
           if (index !== -1) {
             this.main.area.towers[index].tile.tower = false;
             this.main.area.towers.splice(index, 1);
@@ -107,14 +99,7 @@ export class Area {
         row.forEach((symbol, x) => {
           if (symbol !== 0) {
             this.placementTiles.push(
-              new PlacementTile(
-                this.main,
-                x * 24,
-                y * 24,
-                this.main.game.ctx,
-                symbol,
-                counter
-              )
+              new PlacementTile(this.main, x * 24, y * 24, this.main.game.ctx, symbol, counter)
             );
             counter++;
           }
@@ -143,7 +128,7 @@ export class Area {
   newWave() {
     if (this.main.area.waveActive) return;
     this.goldWave = 0;
-    playSound("select", "ui");
+    playSound('select', 'ui');
 
     this.totalDamageDealt = 0;
     this.shellBellWaveUsed = false;
@@ -174,26 +159,19 @@ export class Area {
     if (this.main.player.health[this.routeNumber] <= 0) return;
 
     if (this.waveStartTime !== null) {
-      this.waveElapsedTime = Math.floor(
-        (performance.now() - this.waveStartTime) / 1000
-      );
+      this.waveElapsedTime = Math.floor((performance.now() - this.waveStartTime) / 1000);
       this.waveStartTime = null;
     }
 
     this.main.player.stats.wavesCompleted++;
     let bonusGold = Math.floor(
-      (5 * (this.routeNumber + 1) * this.waveNumber +
-        Math.pow(this.waveNumber, 1.4)) /
-        2
+      (5 * (this.routeNumber + 1) * this.waveNumber + Math.pow(this.waveNumber, 1.4)) / 2
     );
     if (this.main.player.stars > 150)
       bonusGold = Math.floor(bonusGold * (this.main.player.stars / 150));
 
     if (this.main.player.records[this.routeNumber] < this.waveNumber) {
-      this.main.player.records[this.routeNumber] = Math.min(
-        100,
-        this.waveNumber
-      );
+      this.main.player.records[this.routeNumber] = Math.min(100, this.waveNumber);
 
       if (this.main.player.stars > 50) {
         this.main.player.changeGold(bonusGold);
@@ -205,7 +183,7 @@ export class Area {
     this.towers.forEach((t) => {
       t.moxieBuff = 0;
       t.speedBoost = 0;
-      if (t.ability.id == "triage" && Math.random() < 0.05) {
+      if (t.ability.id == 'triage' && Math.random() < 0.05) {
         this.main.player.getHealed(1);
         this.main.player.achievementProgress.heartRestore += 1;
         if (this.main.player.achievementProgress.heartRestore > 10)
@@ -224,9 +202,7 @@ export class Area {
     }
 
     let goldPerSecond =
-      this.waveElapsedTime > 0
-        ? Math.round((this.goldWave / this.waveElapsedTime) * 100) / 100
-        : 0;
+      this.waveElapsedTime > 0 ? Math.round((this.goldWave / this.waveElapsedTime) * 100) / 100 : 0;
     if (goldPerSecond > this.main.player.stats.maxGoldPerTime[0]) {
       this.main.player.stats.maxGoldPerTime[0] = goldPerSecond;
       this.main.player.stats.maxGoldPerTime[1] = this.getRouteTag(
@@ -238,8 +214,7 @@ export class Area {
     this.goldWave = 0;
 
     this.waveActive = false;
-    if (this.main.player.health[this.routeNumber] === 1)
-      this.main.player.unlockAchievement(12);
+    if (this.main.player.health[this.routeNumber] === 1) this.main.player.unlockAchievement(12);
 
     // Apply Passive XP to deployed towers
     this.applyPassiveXP();
@@ -251,10 +226,10 @@ export class Area {
     this.autoWave = !this.autoWave;
     if (this.autoWave) {
       this.main.UI.autoWave.style.background =
-        "linear-gradient(39deg,rgba(112, 172, 76, 1) 0%, rgba(102, 145, 77, 1) 100%)";
+        'linear-gradient(39deg,rgba(112, 172, 76, 1) 0%, rgba(102, 145, 77, 1) 100%)';
       if (!this.waveActive) this.newWave();
     } else {
-      this.main.UI.autoWave.style.background = "revert-layer";
+      this.main.UI.autoWave.style.background = 'revert-layer';
     }
   }
 
@@ -266,8 +241,7 @@ export class Area {
 
     wave.forEach((enemy, i) => {
       const xOffset = (i + 1) * waveOffset;
-      const waypointEnemy =
-        this.waypoints[Math.floor(Math.random() * this.waypoints.length)];
+      const waypointEnemy = this.waypoints[Math.floor(Math.random() * this.waypoints.length)];
       if (enemy) {
         this.enemies.push(
           new Enemy(
@@ -299,10 +273,7 @@ export class Area {
         (t) => t.tower && t.tower.pokemon.specie.tiles.includes(3)
       );
 
-      if (
-        waterTiles.length > 0 &&
-        waterTiles.length === activeWaterTowers.length
-      ) {
+      if (waterTiles.length > 0 && waterTiles.length === activeWaterTowers.length) {
         activeWaterTowers.forEach((t) => {
           t.tower.waterSynergyActive = true;
           t.tower.power = Math.floor(t.tower.power * 1.1);
@@ -315,7 +286,7 @@ export class Area {
 
     // Reaplica auras activas
     this.towers.forEach((auraTower) => {
-      if (!auraTower.ability || auraTower.ability.id !== "powerAura") return;
+      if (!auraTower.ability || auraTower.ability.id !== 'powerAura') return;
       const auraRange = auraTower.range;
 
       this.towers.forEach((tower) => {
@@ -340,8 +311,8 @@ export class Area {
   }
 
   changeWave(i) {
-    if (this.waveActive) return playSound("pop0", "ui");
-    playSound("option", "ui");
+    if (this.waveActive) return playSound('pop0', 'ui');
+    playSound('option', 'ui');
 
     let nextWave = this.waveNumber + i;
     if (nextWave <= 0) nextWave = 100;
@@ -388,7 +359,7 @@ export class Area {
       );
 
       const msg = new Element(this.main.scene, {
-        className: "wave-completed",
+        className: 'wave-completed',
         text: text.map.waveCompleted[this.main.lang].toUpperCase(),
       }).element;
 
@@ -414,13 +385,13 @@ export class Area {
 
         // Wait for 1.5s (animation time) before opening rewards
         setTimeout(() => {
-           this.main.roguelikeScene.open();
+          this.main.roguelikeScene.open();
         }, 1500);
-        
+
         return; // Stop normal flow
       }
 
-      playSound("end", "ui");
+      playSound('end', 'ui');
       this.main.UI.displayEnemyInfo(this.waves[this.waveNumber].preview[0], 0);
 
       const futureWave = this.waves[((this.waveNumber - 1) % 100) + 1].preview;
@@ -451,10 +422,9 @@ export class Area {
       if (this.main.mapScene.isOpen) this.main.mapScene.update();
       if (this.main.shopScene.isOpen) this.main.shopScene.update();
     } else {
-      if (this.main.team.pokemon.some((p) => p.specie.name[0] == "shuckle"))
+      if (this.main.team.pokemon.some((p) => p.specie.name[0] == 'shuckle'))
         this.main.player.unlockAchievement(6);
-      if (this.main.player.health[this.routeNumber] >= 10)
-        this.main.player.unlockAchievement(7);
+      if (this.main.player.health[this.routeNumber] >= 10) this.main.player.unlockAchievement(7);
       if (this.routeNumber == 0) this.main.player.unlockAchievement(22);
       if (this.routeNumber == 1) this.main.player.unlockAchievement(23);
       if (this.routeNumber == 2) this.main.player.unlockAchievement(24);
@@ -469,44 +439,44 @@ export class Area {
   }
 
   applyPassiveXP() {
-      const xpAmount = Math.floor(20 + (this.waveNumber * 5));
-      
-      this.towers.forEach(tower => {
-          if (tower.pokemon) {
-              const oldLvl = tower.pokemon.lvl;
-              tower.pokemon.gainXp(xpAmount);
-              const newLvl = tower.pokemon.lvl;
-              
-              const text = newLvl > oldLvl ? `LEVEL UP!` : `+${xpAmount} XP`;
-              const color = newLvl > oldLvl ? '#ffd700' : '#ffffff';
-              const size = newLvl > oldLvl ? '12px' : '10px';
-              
-              const float = new Element(this.main.scene, {
-                  tagName: 'div',
-                  text: text
-              }).element;
-              
-              // Apply styles directly
-              float.style.position = 'absolute';
-              float.style.left = `${tower.x + 12}px`;
-              float.style.top = `${tower.y}px`;
-              float.style.color = color;
-              float.style.fontSize = size;
-              float.style.pointerEvents = 'none';
-              float.style.textShadow = '1px 1px black';
-              float.style.zIndex = '1000';
-              float.style.transition = 'top 1s, opacity 1s';
-              float.style.opacity = '1';
-              
-              setTimeout(() => {
-                  float.style.top = `${tower.y - 20}px`;
-                  float.style.opacity = "0";
-              }, 50);
-              
-              setTimeout(() => {
-                  float.remove();
-              }, 1050);
-          }
-      });
+    const xpAmount = Math.floor(20 + this.waveNumber * 5);
+
+    this.towers.forEach((tower) => {
+      if (tower.pokemon) {
+        const oldLvl = tower.pokemon.lvl;
+        tower.pokemon.gainXp(xpAmount);
+        const newLvl = tower.pokemon.lvl;
+
+        const text = newLvl > oldLvl ? `LEVEL UP!` : `+${xpAmount} XP`;
+        const color = newLvl > oldLvl ? '#ffd700' : '#ffffff';
+        const size = newLvl > oldLvl ? '12px' : '10px';
+
+        const float = new Element(this.main.scene, {
+          tagName: 'div',
+          text: text,
+        }).element;
+
+        // Apply styles directly
+        float.style.position = 'absolute';
+        float.style.left = `${tower.x + 12}px`;
+        float.style.top = `${tower.y}px`;
+        float.style.color = color;
+        float.style.fontSize = size;
+        float.style.pointerEvents = 'none';
+        float.style.textShadow = '1px 1px black';
+        float.style.zIndex = '1000';
+        float.style.transition = 'top 1s, opacity 1s';
+        float.style.opacity = '1';
+
+        setTimeout(() => {
+          float.style.top = `${tower.y - 20}px`;
+          float.style.opacity = '0';
+        }, 50);
+
+        setTimeout(() => {
+          float.remove();
+        }, 1050);
+      }
+    });
   }
 }

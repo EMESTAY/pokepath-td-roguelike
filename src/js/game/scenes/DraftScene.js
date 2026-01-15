@@ -1,9 +1,9 @@
-import { GameScene } from "../../utils/GameScene.js";
-import { Element } from "../../utils/Element.js";
-import { text } from "../../file/text.js";
-import { playSound, playMusic } from "../../file/audio.js";
-import { pokemonData } from "../data/pokemonData.js";
-import { Pokemon } from "../component/Pokemon.js";
+import { GameScene } from '../../utils/GameScene.js';
+import { Element } from '../../utils/Element.js';
+import { text } from '../../file/text.js';
+import { playSound, playMusic } from '../../file/audio.js';
+import { pokemonData } from '../data/pokemonData.js';
+import { Pokemon } from '../component/Pokemon.js';
 
 export class DraftScene extends GameScene {
   constructor(main) {
@@ -20,44 +20,43 @@ export class DraftScene extends GameScene {
   }
 
   render() {
-    this.title.innerHTML =
-      text.challenge.draft.title[this.main.lang].toUpperCase();
+    this.title.innerHTML = text.challenge.draft.title[this.main.lang].toUpperCase();
 
     this.roundLabel = new Element(this.container, {
-      className: "tutorial-scene-title",
+      className: 'tutorial-scene-title',
     }).element;
     this.pokemonContainer = new Element(this.container, {
-      className: "draft-scene-pokemon-container",
+      className: 'draft-scene-pokemon-container',
     }).element;
     this.pokemon = [];
 
     this.dataButtonContainer = new Element(this.container, {
-      className: "draft-scene-data-button-container",
+      className: 'draft-scene-data-button-container',
     }).element;
     this.dataButton = [];
 
     for (let i = 0; i < 3; i++) {
       this.pokemon[i] = new Element(this.pokemonContainer, {
-        className: "draft-scene-pokemon",
+        className: 'draft-scene-pokemon',
       }).element;
       this.pokemon[i].label = new Element(this.pokemon[i], {
-        className: "draft-scene-pokemon-label stroke",
+        className: 'draft-scene-pokemon-label stroke',
       }).element;
-      this.pokemon[i].addEventListener("click", () => {
+      this.pokemon[i].addEventListener('click', () => {
         this.selectPick(i);
       });
-      this.pokemon[i].addEventListener("mouseenter", () => {
-        playSound("hover1", "ui");
+      this.pokemon[i].addEventListener('mouseenter', () => {
+        playSound('hover1', 'ui');
       });
 
       this.dataButton[i] = new Element(this.dataButtonContainer, {
-        className: "draft-scene-pokemon-data",
+        className: 'draft-scene-pokemon-data',
       }).element;
-      this.dataButton[i].addEventListener("click", () => {
+      this.dataButton[i].addEventListener('click', () => {
         this.main.pokemonScene.open(this.currentPicks[i], null, null, true);
       });
-      this.dataButton[i].addEventListener("mouseenter", () => {
-        playSound("hover3", "ui");
+      this.dataButton[i].addEventListener('mouseenter', () => {
+        playSound('hover3', 'ui');
       });
     }
   }
@@ -66,9 +65,7 @@ export class DraftScene extends GameScene {
     this.roundLabel.innerHTML = `${text.challenge.draft.round[
       this.main.lang
     ].toUpperCase()} ${this.round + 1}/${this.maxRounds}`;
-    this.dataButton.forEach(
-      (btn) => (btn.innerHTML = text.ui.info[this.main.lang].toUpperCase())
-    );
+    this.dataButton.forEach((btn) => (btn.innerHTML = text.ui.info[this.main.lang].toUpperCase()));
     this.generatePicks();
   }
 
@@ -84,8 +81,7 @@ export class DraftScene extends GameScene {
 
     if (this.round === 0) {
       const guaranteedIds = [36, 4, 3];
-      guaranteedPick =
-        this.pool.find((p) => guaranteedIds.includes(p.id)) || null;
+      guaranteedPick = this.pool.find((p) => guaranteedIds.includes(p.id)) || null;
     }
 
     let picks = [];
@@ -101,23 +97,21 @@ export class DraftScene extends GameScene {
 
     for (let i = 0; i < this.pokemon.length; i++) {
       if (this.currentPicks[i]) {
-        this.pokemon[
-          i
-        ].style.backgroundImage = `url("${this.currentPicks[i].sprite.base}")`;
+        this.pokemon[i].style.backgroundImage = `url("${this.currentPicks[i].sprite.base}")`;
 
         this.pokemon[i].label.innerHTML =
           this.currentPicks[i].alias !== undefined
             ? this.currentPicks[i].alias.toUpperCase()
             : this.currentPicks[i].name[this.main.lang].toUpperCase();
       } else {
-        this.pokemon[i].style.backgroundImage = "";
-        this.pokemon[i].label.innerHTML = "";
+        this.pokemon[i].style.backgroundImage = '';
+        this.pokemon[i].label.innerHTML = '';
       }
     }
   }
 
   selectPick(i) {
-    playSound("select", "ui");
+    playSound('select', 'ui');
     let pickedPokemon = this.currentPicks[i];
     if (!pickedPokemon) return;
 

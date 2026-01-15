@@ -1,15 +1,15 @@
-import { pokemonData } from "../data/pokemonData.js";
-import { Gen1Manifest } from "../data/Gen1Manifest.js";
+import { pokemonData } from '../data/pokemonData.js';
+import { Gen1Manifest } from '../data/Gen1Manifest.js';
 
 class PokemonService {
   constructor() {
-    this.mode = "sandbox"; // 'sandbox' | 'roguelike'
+    this.mode = 'sandbox'; // 'sandbox' | 'roguelike'
   }
 
   setMode(mode) {
-    if (mode !== "sandbox" && mode !== "roguelike") {
+    if (mode !== 'sandbox' && mode !== 'roguelike') {
       console.error(`Invalid mode: ${mode}. Defaulting to sandbox.`);
-      this.mode = "sandbox";
+      this.mode = 'sandbox';
       return;
     }
     this.mode = mode;
@@ -19,7 +19,7 @@ class PokemonService {
   getSpecie(key) {
     if (!pokemonData[key]) return null;
 
-    if (this.mode === "roguelike") {
+    if (this.mode === 'roguelike') {
       if (!Gen1Manifest.has(key)) {
         return null;
       }
@@ -37,7 +37,7 @@ class PokemonService {
 
     const targetKey = specie.evolution.pokemon;
 
-    if (this.mode === "roguelike") {
+    if (this.mode === 'roguelike') {
       if (!Gen1Manifest.has(targetKey)) {
         console.log(
           `PokemonService: Blocking evolution ${currentKey} -> ${targetKey} (Gen 1 Restriction)`
@@ -55,18 +55,18 @@ class PokemonService {
     // 1. HARDCODED SAFE LIST (The "True" Starters + Icons)
     // These are guaranteed to exist and work.
     const SAFE_POOL = [
-      "bulbasaur",
-      "charmander",
-      "squirtle",
-      "pikachu",
-      "eevee",
-      "jigglypuff",
-      "meowth",
-      "psyduck",
-      "machop",
-      "geodude",
-      "abra",
-      "gastly",
+      'bulbasaur',
+      'charmander',
+      'squirtle',
+      'pikachu',
+      'eevee',
+      'jigglypuff',
+      'meowth',
+      'psyduck',
+      'machop',
+      'geodude',
+      'abra',
+      'gastly',
     ];
 
     // 2. Validate they exist in data (just in case)
@@ -88,7 +88,7 @@ class PokemonService {
       currentPool.splice(idx, 1);
     }
 
-    console.log("[PokemonService] getRandomGen1Starters Returning:", selected);
+    console.log('[PokemonService] getRandomGen1Starters Returning:', selected);
     return selected;
   }
 }

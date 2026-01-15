@@ -1,4 +1,4 @@
-import { RNG } from "../../utils/RNG.js";
+import { RNG } from '../../utils/RNG.js';
 
 export class RunState {
   constructor(seed = null, config = {}) {

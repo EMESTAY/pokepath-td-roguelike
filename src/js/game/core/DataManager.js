@@ -1,4 +1,4 @@
-import { loadData, saveData } from "../../file/data.js";
+import { loadData, saveData } from '../../file/data.js';
 
 export class DataManager {
   constructor() {

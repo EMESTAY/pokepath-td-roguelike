@@ -1,8 +1,8 @@
-import { eggListData } from "../game/data/pokemonData.js";
-import { achievementData } from "../game/data/achievementData.js";
+import { eggListData } from '../game/data/pokemonData.js';
+import { achievementData } from '../game/data/achievementData.js';
 
 export const loadData = () => {
-  const data = window.localStorage.getItem("data");
+  const data = window.localStorage.getItem('data');
   if (!data) {
     let newData = {
       config: {
@@ -25,7 +25,7 @@ export const loadData = () => {
       save: {
         new: true,
         player: {
-          name: "Player",
+          name: 'Player',
           update: 1,
           portrait: 0,
           gold: 50,
@@ -82,14 +82,14 @@ export const loadData = () => {
         teamManager: [[], [], [], [], [], [], [], [], []],
       },
     };
-    window.localStorage.setItem("data", JSON.stringify(newData));
+    window.localStorage.setItem('data', JSON.stringify(newData));
     return newData;
   }
   return JSON.parse(data);
 };
 
 export const saveData = (player, team, box, area, shop, teamManager) => {
-  const data = JSON.parse(window.localStorage.getItem("data"));
+  const data = JSON.parse(window.localStorage.getItem('data'));
   data.save = {
     new: false,
     gameMode: player.main.gameMode,
@@ -101,5 +101,5 @@ export const saveData = (player, team, box, area, shop, teamManager) => {
     teamManager: teamManager.getSaveData(),
   };
 
-  window.localStorage.setItem("data", JSON.stringify(data));
+  window.localStorage.setItem('data', JSON.stringify(data));
 };

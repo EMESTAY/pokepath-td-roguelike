@@ -1,12 +1,12 @@
-import { Trait } from "../Trait.js";
+import { Trait } from '../Trait.js';
 
 export class WaterRouteSynergy extends Trait {
   constructor() {
-    super("water_route_synergy", "Water Route Synergy");
+    super('water_route_synergy', 'Water Route Synergy');
   }
 
   onEvent(event, payload) {
-    if (event === "RECALCULATE_AURAS") {
+    if (event === 'RECALCULATE_AURAS') {
       this.applyEffect(payload.area, payload.towers);
     }
   }
@@ -17,10 +17,7 @@ export class WaterRouteSynergy extends Trait {
       (t) => t.tower && t.tower.pokemon.specie.tiles.includes(3)
     );
 
-    if (
-      waterTiles.length > 0 &&
-      waterTiles.length === activeWaterTowers.length
-    ) {
+    if (waterTiles.length > 0 && waterTiles.length === activeWaterTowers.length) {
       activeWaterTowers.forEach((t) => {
         const tower = t.tower;
         tower.waterSynergyActive = true;

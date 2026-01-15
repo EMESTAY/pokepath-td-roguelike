@@ -1,22 +1,22 @@
-import { Trait } from "../Trait.js";
+import { Trait } from '../Trait.js';
 
 export class PowerAuraTrait extends Trait {
   constructor() {
-    super("powerAura", "Power Aura");
+    super('powerAura', 'Power Aura');
   }
 
   onEvent(event, payload) {
-    if (event === "RECALCULATE_AURAS") {
+    if (event === 'RECALCULATE_AURAS') {
       this.applyEffect(payload.towers);
     }
   }
 
   applyEffect(towers) {
     towers.forEach((source) => {
-      if (source.ability?.id !== "powerAura") return;
+      if (source.ability?.id !== 'powerAura') return;
 
       let auraRange = source.range;
-      if (source.pokemon?.item?.id == "revelationAroma") auraRange += 25;
+      if (source.pokemon?.item?.id == 'revelationAroma') auraRange += 25;
 
       let numAllies = 0;
 

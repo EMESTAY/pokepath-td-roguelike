@@ -1,7 +1,7 @@
-import { Element } from "../utils/Element.js";
-import { text } from "../file/text.js";
-import { playSound, setVolume } from "../file/audio.js";
-import { Main } from "./Main.js";
+import { Element } from '../utils/Element.js';
+import { text } from '../file/text.js';
+import { playSound, setVolume } from '../file/audio.js';
+import { Main } from './Main.js';
 
 export class Init {
   constructor(dataManager) {
@@ -13,18 +13,18 @@ export class Init {
 
   render = () => {
     if (this.lang == 6) {
-      document.body.style.fontFamily = "PixelMPlus";
+      document.body.style.fontFamily = 'PixelMPlus';
     } else if (this.lang == 7) {
-      document.body.style.fontFamily = "NGC";
-    } else document.body.style.fontFamily = "PressStart2P";
+      document.body.style.fontFamily = 'NGC';
+    } else document.body.style.fontFamily = 'PressStart2P';
 
-    this.scene = new Element(document.getElementById("screen"), {
-      className: "init-scene",
+    this.scene = new Element(document.getElementById('screen'), {
+      className: 'init-scene',
     }).element;
     setVolume();
     this.createLoadingBar();
-    playSound("start", "ui");
-    fetch("./src/assets/assets.json")
+    playSound('start', 'ui');
+    fetch('./src/assets/assets.json')
       .then((res) => res.json())
       .then((assets) => {
         this.preloadAssets(assets, () => {
@@ -35,17 +35,17 @@ export class Init {
   };
 
   createLoadingBar() {
-    const loading = ["LOADING", "CARGANDO"];
+    const loading = ['LOADING', 'CARGANDO'];
 
     this.loadingText = new Element(this.scene, {
-      className: "loading-text",
+      className: 'loading-text',
       text: text.ui.loading[this.lang].toUpperCase(),
     }).element;
     this.loadingBarBackground = new Element(this.scene, {
-      className: "loading-bar-bg",
+      className: 'loading-bar-bg',
     }).element;
     this.loadingBar = new Element(this.loadingBarBackground, {
-      className: "loading-bar",
+      className: 'loading-bar',
     }).element;
   }
 

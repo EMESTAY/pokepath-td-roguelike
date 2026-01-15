@@ -1,9 +1,7 @@
 export class RNG {
   constructor(seed) {
     // Initialize state derived from string hash or use provided number/string
-    this.state = this.hashString(
-      seed ? seed.toString() : Math.random().toString()
-    );
+    this.state = this.hashString(seed ? seed.toString() : Math.random().toString());
   }
 
   hashString(str) {

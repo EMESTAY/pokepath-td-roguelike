@@ -1,5 +1,5 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
-    toggleFullscreen: () => ipcRenderer.invoke('toggle-fullscreen')
+  toggleFullscreen: () => ipcRenderer.invoke('toggle-fullscreen'),
 });

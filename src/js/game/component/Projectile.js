@@ -1,5 +1,5 @@
-import { Sprite } from "../../utils/Sprite.js";
-import { playSound } from "../../file/audio.js";
+import { Sprite } from '../../utils/Sprite.js';
+import { playSound } from '../../file/audio.js';
 
 export class Projectile extends Sprite {
   constructor(x, y, enemy, ctx, projectile, tower) {
@@ -56,7 +56,7 @@ export class Projectile extends Sprite {
       alpha: 0,
       maxRadius: 0,
       speed: 0,
-      color: "#ffffff",
+      color: '#ffffff',
     };
     this.impacting = false;
   }
@@ -110,7 +110,7 @@ export class Projectile extends Sprite {
       this.ctx.beginPath();
       this.ctx.arc(sp.x, sp.y, sp.radius, 0, Math.PI * 2);
 
-      const hex = (sp.color || "#ffffff").replace("#", "");
+      const hex = (sp.color || '#ffffff').replace('#', '');
       const r = parseInt(hex.substring(0, 2), 16) || 255;
       const g = parseInt(hex.substring(2, 4), 16) || 255;
       const b = parseInt(hex.substring(4, 6), 16) || 255;
@@ -155,75 +155,59 @@ export class Projectile extends Sprite {
     const hitRadius = (this.enemy.radius ?? 6) + 2; // margen pequeño
     if (distance < hitRadius) {
       // efectos de impacto
-      if (
-        this.tower?.ability?.id === "curse" ||
-        this.tower?.ability?.id === "curseDoubleShot"
-      ) {
-        this.enemy.applyStatusEffect({ type: "curse" });
+      if (this.tower?.ability?.id === 'curse' || this.tower?.ability?.id === 'curseDoubleShot') {
+        this.enemy.applyStatusEffect({ type: 'curse' });
       }
 
       // crítico
       let finalDamage = this.power;
       let isCritical = false;
 
-      if (this.tower?.ability?.id === "star") {
+      if (this.tower?.ability?.id === 'star') {
         finalDamage += this.tower.main.player.stars;
         if (this.tower?.pokemon?.favorite) finalDamage++;
         if (this.tower?.pokemon?.isShiny) finalDamage++;
-        if (this.tower?.pokemon?.item?.id == "starCandy") finalDamage++;
+        if (this.tower?.pokemon?.item?.id == 'starCandy') finalDamage++;
         this.tower.main.team.pokemon.forEach((poke) => {
           if (poke.id == 32) finalDamage++;
         });
       }
 
-      if (this.tower?.ability?.id === "scheme") {
-        let probs = this.tower?.pokemon?.item?.id == "shinyCharm" ? 3000 : 9000;
+      if (this.tower?.ability?.id === 'scheme') {
+        let probs = this.tower?.pokemon?.item?.id == 'shinyCharm' ? 3000 : 9000;
         const shiny = Math.floor(Math.random() * probs);
         if (shiny == 0) {
-          const pokes = [
-            ...this.tower.main.team.pokemon,
-            ...this.tower.main.box.pokemon,
-          ];
+          const pokes = [...this.tower.main.team.pokemon, ...this.tower.main.box.pokemon];
           const noShinyPokes = pokes.filter(
-            (pokemon) =>
-              !pokemon.isShiny && pokemon.specie.evolution === undefined
+            (pokemon) => !pokemon.isShiny && pokemon.specie.evolution === undefined
           );
 
           if (noShinyPokes.length > 0) {
-            const randomPokemon =
-              noShinyPokes[Math.floor(Math.random() * noShinyPokes.length)];
+            const randomPokemon = noShinyPokes[Math.floor(Math.random() * noShinyPokes.length)];
             randomPokemon.isShiny = true;
             randomPokemon.setShiny();
-            playSound("shiny", "effect");
+            playSound('shiny', 'effect');
             this.tower.main.player.shinyAmount++;
           }
         }
       }
 
-      if (
-        this.tower?.ability?.id === "speedBoost" &&
-        this.tower?.speedBoost < 10
-      ) {
+      if (this.tower?.ability?.id === 'speedBoost' && this.tower?.speedBoost < 10) {
         this.tower.speedBoost++;
       }
 
-      if (this.tower?.ability?.id == "chatter") {
-        finalDamage *= Math.floor(
-          this.tower.main.dataManager.config.audio["effects"] * 0.2
-        );
+      if (this.tower?.ability?.id == 'chatter') {
+        finalDamage *= Math.floor(this.tower.main.dataManager.config.audio['effects'] * 0.2);
       }
 
-      if (this.tower?.pokemon?.item?.id == "loadedDice") {
+      if (this.tower?.pokemon?.item?.id == 'loadedDice') {
         let bonus = Math.sqrt(this.ricochetsLeft * 0.5);
         finalDamage = Math.floor(finalDamage * bonus);
       }
 
-      if (this.tower?.pokemon?.item?.id == "protein") finalDamage += 10;
+      if (this.tower?.pokemon?.item?.id == 'protein') finalDamage += 10;
 
-      if (
-        this.tower?.pokemon?.item?.id == "sharpBeak" &&
-        this.tower?.tile.land == 4
-      ) {
+      if (this.tower?.pokemon?.item?.id == 'sharpBeak' && this.tower?.tile.land == 4) {
         let dist = Math.sqrt(
           Math.pow(this.enemy.position.x - this.tower.position.x, 2) +
             Math.pow(this.enemy.position.y - this.tower.position.y, 2)
@@ -232,113 +216,91 @@ export class Projectile extends Sprite {
         finalDamage = Math.floor(finalDamage * bonus);
       }
 
-      if (this.tower?.pokemon?.item?.id == "sniperScope") {
+      if (this.tower?.pokemon?.item?.id == 'sniperScope') {
         let dist = Math.sqrt(
           Math.pow(this.enemy.position.x - this.tower.position.x, 2) +
             Math.pow(this.enemy.position.y - this.tower.position.y, 2)
         );
         let bonus = dist > 150 ? 1.2 : 0.8;
-        if (this.tower?.ability?.id == "defiant") bonus = 1.2;
+        if (this.tower?.ability?.id == 'defiant') bonus = 1.2;
         finalDamage = Math.floor(finalDamage * bonus);
       }
 
-      if (this.tower?.pokemon?.ability.id == "sniper") {
+      if (this.tower?.pokemon?.ability.id == 'sniper') {
         let dist = Math.sqrt(
           Math.pow(this.enemy.position.x - this.tower.position.x, 2) +
             Math.pow(this.enemy.position.y - this.tower.position.y, 2)
         );
         let bonus = Math.min(7, Math.floor(dist / 120) * 2);
-        for (let i = 0; i < bonus; i++)
-          finalDamage = Math.floor(finalDamage * 2);
+        for (let i = 0; i < bonus; i++) finalDamage = Math.floor(finalDamage * 2);
       }
 
-      if (this.tower?.ability?.id === "moxie")
+      if (this.tower?.ability?.id === 'moxie')
         finalDamage += Math.floor(finalDamage * this.tower.moxieBuff * 0.03);
-      if (this.tower?.pokemon?.item?.id == "hardStone")
+      if (this.tower?.pokemon?.item?.id == 'hardStone')
         finalDamage += Math.floor(finalDamage * 0.2);
-      if (this.tower?.pokemon?.item?.id == "clawFossil")
-        finalDamage += Math.floor(
-          finalDamage * (this.tower.main.player.fossilInTeam * 0.05)
-        );
+      if (this.tower?.pokemon?.item?.id == 'clawFossil')
+        finalDamage += Math.floor(finalDamage * (this.tower.main.player.fossilInTeam * 0.05));
 
       if (
-        this.tower?.pokemon?.item?.id == "thickClub" ||
-        this.tower?.pokemon?.item?.id == "lightBall" ||
-        this.tower?.pokemon?.item?.id == "metalPowder" ||
-        this.tower?.pokemon?.item?.id == "lifeOrb"
+        this.tower?.pokemon?.item?.id == 'thickClub' ||
+        this.tower?.pokemon?.item?.id == 'lightBall' ||
+        this.tower?.pokemon?.item?.id == 'metalPowder' ||
+        this.tower?.pokemon?.item?.id == 'lifeOrb'
       )
         finalDamage += Math.ceil(this.power / 2);
 
       if (
-        this.tower?.pokemon?.item?.id == "zoomLens" ||
-        this.tower?.pokemon?.item?.id == "quickPowder" ||
-        this.tower?.pokemon?.item?.id == "quickClaw"
+        this.tower?.pokemon?.item?.id == 'zoomLens' ||
+        this.tower?.pokemon?.item?.id == 'quickPowder' ||
+        this.tower?.pokemon?.item?.id == 'quickClaw'
       ) {
-        if (this.tower?.ability?.id != "defiant")
-          finalDamage -= Math.ceil(this.power / 2);
+        if (this.tower?.ability?.id != 'defiant') finalDamage -= Math.ceil(this.power / 2);
         else finalDamage += Math.ceil(this.power / 2);
       }
 
-      if (this.tower?.ability?.id === "rampardos") {
+      if (this.tower?.ability?.id === 'rampardos') {
         let rampardosBonus = 0;
-        if (this.tower?.pokemon?.item?.id == "rockyHelmet")
+        if (this.tower?.pokemon?.item?.id == 'rockyHelmet')
           rampardosBonus =
             finalDamage *
-            (Math.abs(
-              this.tower.main.player.health[this.tower.main.area.routeNumber] -
-                14
-            ) *
-              0.1);
+            (Math.abs(this.tower.main.player.health[this.tower.main.area.routeNumber] - 14) * 0.1);
         else
           rampardosBonus =
             finalDamage *
-            (Math.abs(
-              this.tower.main.player.health[this.tower.main.area.routeNumber] -
-                14
-            ) *
-              0.05);
+            (Math.abs(this.tower.main.player.health[this.tower.main.area.routeNumber] - 14) * 0.05);
         finalDamage += Math.ceil(rampardosBonus);
       }
 
       if (this.tower.teleportBuff) {
-        if (this.tower?.pokemon?.item?.id == "twistedSpoon")
-          finalDamage += Math.ceil(
-            finalDamage * 0.25 * this.tower.teleportBuff
-          );
+        if (this.tower?.pokemon?.item?.id == 'twistedSpoon')
+          finalDamage += Math.ceil(finalDamage * 0.25 * this.tower.teleportBuff);
         else finalDamage = Math.ceil(finalDamage * this.tower.teleportBuff);
         this.tower.teleportBuff = 0;
       }
 
-      if (this.tower?.pokemon?.item?.id === "leek") this.critical *= 2;
-      if (this.tower?.pokemon?.item?.id === "domeFossil")
+      if (this.tower?.pokemon?.item?.id === 'leek') this.critical *= 2;
+      if (this.tower?.pokemon?.item?.id === 'domeFossil')
         this.critical += this.tower.main.player.fossilInTeam * 5;
 
       // rockruff
       if (
-        this.tower?.pokemon.ability.id == "toughClawsNight" &&
+        this.tower?.pokemon.ability.id == 'toughClawsNight' &&
         (this.tower?.tile.land == 2 ||
-          (this.tower?.tile.land == 1 &&
-            this.tower?.pokemon?.item?.id == "fertiliser"))
+          (this.tower?.tile.land == 1 && this.tower?.pokemon?.item?.id == 'fertiliser'))
       ) {
         finalDamage = Math.ceil(finalDamage * 1.5);
         this.critical = 100;
-      } else if (
-        this.tower?.pokemon.ability.id == "toughClawsDay" &&
-        this.tower?.tile.land == 4
-      ) {
+      } else if (this.tower?.pokemon.ability.id == 'toughClawsDay' && this.tower?.tile.land == 4) {
         finalDamage = Math.ceil(finalDamage * 1.5);
         this.critical = 100;
       } else if (
-        this.tower?.pokemon.ability.id == "toughClaws" &&
+        this.tower?.pokemon.ability.id == 'toughClaws' &&
         (this.tower?.tile.land == 2 ||
-          (this.tower?.tile.land == 1 &&
-            this.tower?.pokemon?.item?.id == "fertiliser"))
+          (this.tower?.tile.land == 1 && this.tower?.pokemon?.item?.id == 'fertiliser'))
       ) {
         this.critical = 100;
-      } else if (
-        this.tower?.pokemon.ability.id == "toughClaws" &&
-        this.tower?.tile.land == 4
-      ) {
+      } else if (this.tower?.pokemon.ability.id == 'toughClaws' && this.tower?.tile.land == 4) {
         finalDamage = Math.ceil(finalDamage * 1.5);
       }
 
@@ -346,26 +308,23 @@ export class Projectile extends Sprite {
 
       if (
         Math.random() * 100 < this.critical &&
-        (this.tower?.pokemon?.item?.id != "blueBandana" ||
-          this.tower?.ability?.id == "defiant")
+        (this.tower?.pokemon?.item?.id != 'blueBandana' || this.tower?.ability?.id == 'defiant')
       ) {
         isCritical = true;
-        let multiplier =
-          this.tower?.ability?.id === "superCritical" ? 2.0 : 1.5;
-        if (this.tower?.pokemon?.item?.id === "leek") multiplier *= 2;
+        let multiplier = this.tower?.ability?.id === 'superCritical' ? 2.0 : 1.5;
+        if (this.tower?.pokemon?.item?.id === 'leek') multiplier *= 2;
         if (this.tower.criticalAura) multiplier *= 1.33;
         finalDamage = Math.ceil(finalDamage * multiplier);
-        if (this.tower?.ability?.id === "armaldo") this.ricochetsLeft++;
+        if (this.tower?.ability?.id === 'armaldo') this.ricochetsLeft++;
       }
 
-      if (this.tower?.pokemon?.item?.id === "blueBandana") {
+      if (this.tower?.pokemon?.item?.id === 'blueBandana') {
         finalDamage = Math.ceil(finalDamage * (1 + this.critical * 0.0075));
       }
 
-      if (this.tower?.ability?.id === "focus") {
+      if (this.tower?.ability?.id === 'focus') {
         if (this.tower.lastTarget === this.enemy) {
-          this.tower.damageBoost =
-            (this.tower.damageBoost || 0) + Math.ceil(finalDamage * 0.075);
+          this.tower.damageBoost = (this.tower.damageBoost || 0) + Math.ceil(finalDamage * 0.075);
         } else {
           this.tower.damageBoost = 0;
           this.tower.lastTarget = this.enemy;
@@ -373,7 +332,7 @@ export class Projectile extends Sprite {
         finalDamage += this.tower.damageBoost || 0;
       }
 
-      if (this.tower?.ability?.id === "firstImpression") {
+      if (this.tower?.ability?.id === 'firstImpression') {
         if (this.tower.lastTarget !== this.enemy) {
           finalDamage = Math.ceil(finalDamage * 2);
           this.tower.lastTarget = this.enemy;
@@ -382,7 +341,7 @@ export class Projectile extends Sprite {
 
       this.enemy.getDamaged(
         finalDamage,
-        "physical",
+        'physical',
         this.tower?.pokemon?.ability,
         isCritical,
         new Set(),
@@ -390,108 +349,101 @@ export class Projectile extends Sprite {
         this.tower
       );
 
-      if (this.tower?.pokemon?.item?.id === "amuletCoin") {
+      if (this.tower?.pokemon?.item?.id === 'amuletCoin') {
         let g = Math.ceil(finalDamage * 0.03);
         this.tower.main.area.goldWave += g;
         this.tower.main.player.changeGold(g);
       }
 
       // efectos secundarios
-      if (
-        isCritical &&
-        this.tower?.pokemon?.item?.id == "razorClaw" &&
-        this.enemy.canSlow
-      )
+      if (isCritical && this.tower?.pokemon?.item?.id == 'razorClaw' && this.enemy.canSlow)
         this.enemy.applyStatusEffect({
-          type: "slow",
+          type: 'slow',
           duration: 0.2,
           slowPercent: 0.5,
         });
 
-      if (this.enemy.canBurn && this.tower?.ability?.id === "burn") {
-        if (this.tower?.pokemon?.item?.id == "falmeOrb")
+      if (this.enemy.canBurn && this.tower?.ability?.id === 'burn') {
+        if (this.tower?.pokemon?.item?.id == 'falmeOrb')
           this.enemy.applyStatusEffect(
-            { type: "burn", damagePercent: 0.00625, duration: 10 },
+            { type: 'burn', damagePercent: 0.00625, duration: 10 },
             this.tower.pokemon
           );
         else
           this.enemy.applyStatusEffect(
-            { type: "burn", damagePercent: 0.005, duration: 10 },
+            { type: 'burn', damagePercent: 0.005, duration: 10 },
             this.tower.pokemon
           );
       }
       if (
         this.enemy.canPoison &&
-        (this.tower?.ability?.id === "poison" ||
-          this.tower?.ability?.id === "poisonDoubleShot")
+        (this.tower?.ability?.id === 'poison' || this.tower?.ability?.id === 'poisonDoubleShot')
       ) {
         this.enemy.applyStatusEffect(
-          { type: "poison", damagePercent: 0.001, stacks: 1 },
+          { type: 'poison', damagePercent: 0.001, stacks: 1 },
           this.tower.pokemon
         );
         if (
-          this.tower?.pokemon?.item?.id == "toxicOrb" ||
-          (this.tower?.pokemon?.item?.id == "poisonBarb" && Math.random() < 0.5)
+          this.tower?.pokemon?.item?.id == 'toxicOrb' ||
+          (this.tower?.pokemon?.item?.id == 'poisonBarb' && Math.random() < 0.5)
         )
           this.enemy.applyStatusEffect(
-            { type: "poison", damagePercent: 0.001, stacks: 1 },
+            { type: 'poison', damagePercent: 0.001, stacks: 1 },
             this.tower.pokemon
           );
       }
       if (
         this.enemy.canSlow &&
-        (this.tower?.ability?.id === "slow" ||
-          this.tower?.ability?.id === "slowSplash" ||
-          this.tower?.ability?.id === "cradily")
+        (this.tower?.ability?.id === 'slow' ||
+          this.tower?.ability?.id === 'slowSplash' ||
+          this.tower?.ability?.id === 'cradily')
       ) {
-        this.tower?.pokemon?.item?.id == "lightClay"
+        this.tower?.pokemon?.item?.id == 'lightClay'
           ? this.enemy.applyStatusEffect({
-              type: "slow",
+              type: 'slow',
               slowPercent: 0.5,
               duration: 2.2,
             })
           : this.enemy.applyStatusEffect({
-              type: "slow",
+              type: 'slow',
               slowPercent: 0.5,
               duration: 2,
             });
       }
-      if (this.enemy.canStun && this.tower?.ability?.id === "stunMono") {
+      if (this.enemy.canStun && this.tower?.ability?.id === 'stunMono') {
         if (Math.random() < 0.3) {
-          this.tower?.pokemon?.item?.id == "lightClay"
-            ? this.enemy.applyStatusEffect({ type: "stun", duration: 2.2 })
-            : this.enemy.applyStatusEffect({ type: "stun", duration: 2 });
+          this.tower?.pokemon?.item?.id == 'lightClay'
+            ? this.enemy.applyStatusEffect({ type: 'stun', duration: 2.2 })
+            : this.enemy.applyStatusEffect({ type: 'stun', duration: 2 });
         }
       }
       if (
         this.enemy.canStun &&
-        (this.tower?.ability?.id === "stunMonoNerf" ||
-          this.tower?.ability?.id === "static")
+        (this.tower?.ability?.id === 'stunMonoNerf' || this.tower?.ability?.id === 'static')
       ) {
-        if (this.tower?.pokemon?.item?.id == "cellBattery")
-          this.enemy.applyStatusEffect({ type: "stun", duration: 0.1 });
+        if (this.tower?.pokemon?.item?.id == 'cellBattery')
+          this.enemy.applyStatusEffect({ type: 'stun', duration: 0.1 });
         else if (Math.random() < 0.05) {
-          this.tower?.pokemon?.item?.id == "lightClay"
-            ? this.enemy.applyStatusEffect({ type: "stun", duration: 1.65 })
-            : this.enemy.applyStatusEffect({ type: "stun", duration: 1.5 });
+          this.tower?.pokemon?.item?.id == 'lightClay'
+            ? this.enemy.applyStatusEffect({ type: 'stun', duration: 1.65 })
+            : this.enemy.applyStatusEffect({ type: 'stun', duration: 1.5 });
         }
       }
-      if (this.tower?.ability?.id === "nightmare") {
+      if (this.tower?.ability?.id === 'nightmare') {
         this.enemy.applyStatusEffect(
-          { type: "nightmare", damage: null, stacks: 1 },
+          { type: 'nightmare', damage: null, stacks: 1 },
           this.tower.pokemon
         );
       }
 
       // splash
       if (
-        this.tower?.ability?.id === "splash" ||
-        this.tower?.ability?.id === "slowSplash" ||
-        this.tower?.ability?.id === "synchronySplash" ||
-        this.tower?.pokemon?.item?.id == "sprayduck"
+        this.tower?.ability?.id === 'splash' ||
+        this.tower?.ability?.id === 'slowSplash' ||
+        this.tower?.ability?.id === 'synchronySplash' ||
+        this.tower?.pokemon?.item?.id == 'sprayduck'
       ) {
-        const splashRadius =
-          this.tower?.pokemon?.item?.id == "dragonFang" ? 130 : 65;
+        const splashRadius = this.tower?.pokemon?.item?.id == 'dragonFang' ? 130 : 65;
         this.tower.main.area.enemies.forEach((e) => {
           if (e !== this.enemy && e.hp > 0) {
             const dist = Math.hypot(
@@ -501,51 +453,51 @@ export class Projectile extends Sprite {
             if (dist <= splashRadius) {
               e.getDamaged(
                 Math.ceil(this.power * 0.5),
-                "physical",
+                'physical',
                 this.tower?.pokemon?.ability,
                 isCritical,
                 new Set(),
                 this.tower.pokemon
               );
-              if (e.canSlow && this.tower?.ability?.id === "slowSplash") {
-                this.tower?.pokemon?.item?.id == "lightClay"
+              if (e.canSlow && this.tower?.ability?.id === 'slowSplash') {
+                this.tower?.pokemon?.item?.id == 'lightClay'
                   ? e.applyStatusEffect({
-                      type: "slow",
+                      type: 'slow',
                       slowPercent: 0.5,
                       duration: 2.2,
                     })
                   : e.applyStatusEffect({
-                      type: "slow",
+                      type: 'slow',
                       slowPercent: 0.5,
                       duration: 2,
                     });
               }
-              if (this.tower?.ability?.id === "synchronySplash") {
+              if (this.tower?.ability?.id === 'synchronySplash') {
                 this.enemy.statusEffects.forEach((effect) => {
-                  if (effect.type === "burn" && e.canBurn)
+                  if (effect.type === 'burn' && e.canBurn)
                     e.applyStatusEffect(
-                      { type: "burn", damagePercent: 0.005, duration: 10 },
+                      { type: 'burn', damagePercent: 0.005, duration: 10 },
                       this.tower.pokemon
                     );
-                  if (effect.type === "poison" && e.canPoison)
+                  if (effect.type === 'poison' && e.canPoison)
                     e.applyStatusEffect(
-                      { type: "poison", damagePercent: 0.001, stacks: 1 },
+                      { type: 'poison', damagePercent: 0.001, stacks: 1 },
                       this.tower.pokemon
                     );
-                  if (effect.type === "slow" && e.canSlow)
+                  if (effect.type === 'slow' && e.canSlow)
                     e.applyStatusEffect({
-                      type: "slow",
+                      type: 'slow',
                       slowPercent: 0.5,
                       duration: 2,
                     });
-                  if (effect.type === "stun" && e.canStun)
-                    e.applyStatusEffect({ type: "stun", duration: 2 });
+                  if (effect.type === 'stun' && e.canStun)
+                    e.applyStatusEffect({ type: 'stun', duration: 2 });
                   if (
-                    effect.type == "nightmare" &&
-                    this.tower?.pokemon?.item?.id == "nightmareCloth"
+                    effect.type == 'nightmare' &&
+                    this.tower?.pokemon?.item?.id == 'nightmareCloth'
                   )
                     e.applyStatusEffect(
-                      { type: "nightmare", damage: null, stacks: 1 },
+                      { type: 'nightmare', damage: null, stacks: 1 },
                       this.tower.pokemon
                     );
                 });
@@ -556,15 +508,11 @@ export class Projectile extends Sprite {
       }
 
       // rebote
-      if (
-        this.ricochetsLeft > 0 &&
-        this.tower &&
-        this.tower?.pokemon?.item?.id != "loadedDice"
-      ) {
+      if (this.ricochetsLeft > 0 && this.tower && this.tower?.pokemon?.item?.id != 'loadedDice') {
         const next = this.findClosestEnemy(this.enemy, 200);
         if (next) {
           const reducedPower =
-            this.tower?.pokemon?.item?.id === "metronome"
+            this.tower?.pokemon?.item?.id === 'metronome'
               ? Math.ceil(this.power * 0.85)
               : Math.ceil(this.power * 0.7);
           const sx = this.enemy.center.x + (Math.random() - 0.5) * 6;
@@ -589,13 +537,12 @@ export class Projectile extends Sprite {
       }
 
       if (
-        this.tower?.ability?.id === "splash" ||
-        this.tower?.ability?.id === "slowSplash" ||
-        this.tower?.ability?.id === "synchronySplash" ||
-        this.tower?.pokemon?.item?.id == "sprayduck"
+        this.tower?.ability?.id === 'splash' ||
+        this.tower?.ability?.id === 'slowSplash' ||
+        this.tower?.ability?.id === 'synchronySplash' ||
+        this.tower?.pokemon?.item?.id == 'sprayduck'
       ) {
-        const pulseRadius =
-          this.tower?.pokemon?.item?.id == "dragonFang" ? 130 : 65;
+        const pulseRadius = this.tower?.pokemon?.item?.id == 'dragonFang' ? 130 : 65;
         this.pulse = {
           active: true,
           x: this.enemy.center.x,
@@ -604,7 +551,7 @@ export class Projectile extends Sprite {
           alpha: 0.75,
           maxRadius: pulseRadius,
           speed: pulseRadius / 12,
-          color: this.tower?.pokemon?.specie?.color || "#ffffff",
+          color: this.tower?.pokemon?.specie?.color || '#ffffff',
         };
 
         this.velocity.x = 0;
